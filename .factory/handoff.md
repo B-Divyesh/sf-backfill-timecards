@@ -24,7 +24,7 @@ Clean install and static checks:
 npm ci                 # 68 packages; npm reported 0 vulnerabilities
 npm run typecheck      # PASS
 npm run lint           # PASS
-npm test               # PASS: 6 Vitest tests; 20 Playwright runs (desktop + 390×844 mobile)
+npm test               # PASS: 6 Vitest tests; 19 passed + 1 intentional desktop-only skip across desktop + 390×844 mobile
 npm run build          # PASS; ./dist/index.html at the output root
 git diff --check       # PASS
 ```
