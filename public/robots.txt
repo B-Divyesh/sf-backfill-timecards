@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://backfill-timecards.sociobot.in/sitemap.xml

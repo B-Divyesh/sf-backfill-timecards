@@ -1,0 +1,11 @@
+# Backfill Timecards
+
+> A private, offline-first utility for freelancers reconstructing weekly timecards.
+
+Backfill Timecards helps a freelancer manually record work blocks, selectively import local calendar events, remember project-to-client mappings, reuse patterns, and export invoice-ready CSV. It does not track activity, infer time, monitor employees, or issue invoices. Work records remain in browser storage.
+
+## Pages
+
+- [Product](https://backfill-timecards.sociobot.in/): Local weekly reconstruction board
+- [Privacy](https://backfill-timecards.sociobot.in/privacy/): Local storage and billing verification details
+- [Terms](https://backfill-timecards.sociobot.in/terms/): Use and one-time unlock terms

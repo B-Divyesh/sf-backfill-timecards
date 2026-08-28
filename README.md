@@ -1,14 +1,61 @@
 # Backfill Timecards
 
-Live: https://backfill-timecards.sociobot.in — built by the Param Factory (`pwa-offline`).
+Backfill Timecards is a private, offline-first weekly board for freelancers who reconstruct work after the fact. It turns memory and selectively imported calendar events into clear client/project time blocks and an invoice-ready CSV—without surveillance, timers, accounts, or cloud storage.
 
-See `.factory/brief.json` for the researched problem this solves and `.factory/design.md` for the visual system.
+Live product: <https://backfill-timecards.sociobot.in>
+
+## What it does
+
+- Adds, edits, copies, and deletes source-labelled work blocks across a seven-day board.
+- Imports `.ics` calendar files locally, with event-by-event selection and optional descriptions.
+- Remembers project→client mappings to speed up repeat entry.
+- Exports the selected week as invoice-ready CSV.
+- Exports, restores, and erases a complete local JSON archive.
+- Installs as a PWA and works offline after the first visit.
+- Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. Checkout and license verification use Sociobot billing; no payment provider is embedded.
+
+All timecard data lives in IndexedDB on the current device. A purchased license token is kept in localStorage. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
 
 ## Develop
 
-```
+Requirements: Node.js 20+ and npm.
+
+```sh
 npm install
 npm run dev
-npm test
-npm run build   # -> dist/
 ```
+
+The app uses Vite and vanilla TypeScript. No backend, external fonts, or runtime UI dependencies are required.
+
+## Test and build
+
+```sh
+npm test          # unit + Chromium desktop/mobile end-to-end + axe + offline
+npm run build     # reproducible static output in ./dist
+npm run preview   # preview the production build
+```
+
+Playwright is pinned to 1.58.2. The test suite starts production preview servers automatically. The production `index.html` contains the small CSS/JS shell so a cached navigation cannot be stranded without its matching hashed asset.
+
+Optional build-time variables:
+
+```sh
+VITE_PRODUCT_SLUG=backfill-timecards
+VITE_BILLING_BASE=https://api.sociobot.in
+```
+
+Use `https://pilot-api.sociobot.in` as `VITE_BILLING_BASE` for registered staging products. Never commit license tokens or billing credentials.
+
+## Deploy
+
+Deploy the contents of `dist/` as a static site, with `index.html` at its root. The service worker is scoped to `/`; serve over HTTPS and avoid rewriting `/sw.js`, `/manifest.webmanifest`, `/privacy/`, or `/terms/` to another asset.
+
+## Product notes
+
+- Scope and research: [`.factory/brief.json`](.factory/brief.json)
+- Visual system and generated-art provenance: [`.factory/design.md`](.factory/design.md)
+- Build verification and known gaps: [`.factory/handoff.md`](.factory/handoff.md)
+
+## License
+
+MIT — see [LICENSE](LICENSE).
