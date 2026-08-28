@@ -42,14 +42,15 @@ export function formatWeekRange(start: string): string {
   return `${shortDate(first)}, ${first.getFullYear()}–${shortDate(last)}, ${last.getFullYear()}`;
 }
 
-export function minutesBetween(start: string, end: string): number {
+export function minutesBetween(start: string, end: string, endsNextDay = false): number {
   const [startHour, startMinute] = start.split(":").map(Number);
   const [endHour, endMinute] = end.split(":").map(Number);
-  return Math.max(0, endHour * 60 + endMinute - startHour * 60 - startMinute);
+  const difference = endHour * 60 + endMinute - startHour * 60 - startMinute;
+  return Math.max(0, difference + (endsNextDay ? 24 * 60 : 0));
 }
 
-export function entryMinutes(entry: Pick<TimeEntry, "start" | "end">): number {
-  return minutesBetween(entry.start, entry.end);
+export function entryMinutes(entry: Pick<TimeEntry, "start" | "end" | "endsNextDay">): number {
+  return minutesBetween(entry.start, entry.end, entry.endsNextDay);
 }
 
 export function formatDuration(minutes: number): string {

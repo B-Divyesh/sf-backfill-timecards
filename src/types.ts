@@ -12,6 +12,8 @@ export interface TimeEntry {
   source: EntrySource;
   createdAt: number;
   updatedAt: number;
+  /** The end clock time belongs to the following day. */
+  endsNextDay?: boolean;
 }
 
 export interface ProjectMapping {
@@ -30,6 +32,7 @@ export interface Pattern {
   description: string;
   billable: boolean;
   updatedAt: number;
+  endsNextDay?: boolean;
 }
 
 export interface CalendarEvent {
@@ -39,6 +42,8 @@ export interface CalendarEvent {
   end: string;
   title: string;
   description: string;
+  /** Calendar events may legitimately run past midnight. */
+  endsNextDay: boolean;
 }
 
 export interface AppBackup {

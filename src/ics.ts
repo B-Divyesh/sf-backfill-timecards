@@ -37,13 +37,25 @@ export function parseIcs(text: string): CalendarEvent[] {
       const start = parseIcsDate(startValue);
       const end = parseIcsDate(fields.DTEND ?? "");
       if (start && end && end > start && !/^\d{8}$/.test(startValue.trim())) {
+        const startDate = isoDate(start);
+        const endDate = isoDate(end);
+        // A work block lives on its start date. Preserve a normal overnight
+        // event rather than treating its earlier end clock time as zero work.
+        // Events lasting more than one midnight are not meaningful as one
+        // timecard row, so the review UI leaves them out for manual handling.
+        const endsNextDay = endDate === isoDate(new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1));
+        if (endDate !== startDate && !endsNextDay) {
+          fields = null;
+          continue;
+        }
         events.push({
           id: fields.UID || crypto.randomUUID(),
-          date: isoDate(start),
+          date: startDate,
           start: formatTime(start),
           end: formatTime(end),
           title: unescapeText(fields.SUMMARY || "Calendar event"),
           description: unescapeText(fields.DESCRIPTION || ""),
+          endsNextDay,
         });
       }
       fields = null;

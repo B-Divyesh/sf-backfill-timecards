@@ -1,49 +1,52 @@
-# Backfill Timecards — verification handoff
+# Backfill Timecards — repair handoff
 
 Date: 2026-08-28 UTC
 
-Work order: `backfill-timecards-verify-1`
+Work order: `backfill-timecards-repair-1`
 
-Candidate: `5edd6e9dbccf946470c2f15da7021b94c88826c1`
+Base verifier report: `2783c7f16a75f9c38c8752a961a5f093b7ac89b4` against candidate `5edd6e9dbccf946470c2f15da7021b94c88826c1`
 
-Live URL: <https://backfill-timecards.sociobot.in/>
+## Result: repaired and ready to deploy
 
-## Result: FAIL
+All three release-blocking P1 findings from the independent verification report have regression coverage.
 
-The live deployment is healthy and byte-for-byte matches all 18 artifacts from a clean production build of the candidate. The earlier deployment-only concern is therefore resolved. The candidate is not releasable because independent live testing found three P1 defects:
+1. The worker now precaches the actual app shell and legal pages separately. Navigation responses are never written to `/index.html`; an offline root navigation after online `/privacy/` therefore returns the weekly board.
+2. JSON backup records are fully validated before IndexedDB is changed. A replacement uses one read/write transaction across all three stores. Invalid legacy records are ignored when loading/exporting so Settings remains available for recovery.
+3. Timed ICS events that end the following day retain `endsNextDay`. Calendar review labels the boundary, weekly totals use the true duration, and CSV exports the correct decimal hours. The entry editor also exposes an `Ends the next day` control.
 
-1. Visiting `/privacy/` or `/terms/` replaces the service worker's cached `/index.html`; a cache-disabled offline root load then shows the legal page instead of the timecard app.
-2. A syntactically valid but structurally malformed backup clears valid IndexedDB data, persists invalid data, and causes a repeatable fatal screen on reload with no in-app recovery control.
-3. An imported `23:00–01:00` calendar event displays and exports `0.00` hours without warning.
+The repair additionally brings the previously noted root/footer mobile links to 44 px targets, adds explicit Static Web Apps cache/MIME/security policy, and restores focus to the invoking control after dialogs close.
 
-Additional findings: recurring ICS events are not expanded; four mobile links are below the required 44 px target size; all static files use 30-second revalidation rather than immutable caching; AVIF and manifest files use `application/octet-stream`; CSP/frame/permissions policies are absent.
+## Exact verification evidence
 
-Full reproduction steps, hashes, measurements, and remediation guidance are in [`.factory/verification.md`](verification.md).
-
-## Verification summary
-
-- `npm ci`: PASS, 0 vulnerabilities.
-- `npm test`: PASS, 4 unit + 6 Playwright tests.
-- `npm run build`: PASS, including `tsc --noEmit`; no lint script exists.
-- Live artifact identity: PASS, all 18 generated files matched by SHA-256.
-- Normal workflows: PASS for add/edit/copy/delete/undo, mapping recall, selective calendar import, CSV, JSON export/valid restore/delete, and a 30-entry import/export.
-- Accessibility: axe found zero violations on tested app/legal desktop/mobile states; keyboard/focus and reduced-motion checks passed apart from undersized mobile links.
-- Privacy: no third-party request during normal use; IndexedDB local-first behavior confirmed; disclosed license verification path confirmed.
-- PWA: install, root offline reload, persistence, and update toast passed; offline behavior after legal navigation failed.
-- Lighthouse mobile: 99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.2 s, TBT 120 ms, CLS 0.
-- Browser console/page errors: none in normal flows; malformed backup reload logs `TypeError: Cannot read properties of undefined (reading 'split')`.
-
-## How to rerun
+Clean install and static checks:
 
 ```sh
-git checkout 5edd6e9dbccf946470c2f15da7021b94c88826c1
+npm ci                 # 68 packages; npm reported 0 vulnerabilities
+npm run typecheck      # PASS
+npm run lint           # PASS
+npm test               # PASS: 6 Vitest tests; 20 Playwright runs (desktop + 390×844 mobile)
+npm run build          # PASS; ./dist/index.html at the output root
+git diff --check       # PASS
+```
+
+Browser coverage runs each end-to-end scenario in Chromium desktop and a 390 × 844 mobile viewport. It covers normal add/edit/persistence/CSV, selective calendar import, the exact `20260824T230000` → `20260825T010000` import and `2.00` CSV row, malformed backup preservation after reload, legal-page-then-offline root recovery, keyboard dialog Escape/focus return, local-only normal-use requests, offline reload, and 44 px target measurements.
+
+`@axe-core/playwright` reported no serious or critical violations on the app, Privacy, and Terms pages in both browser projects. The PWA root offline test passes after a service worker controls the page. The production shell is 52.8 KB raw (well within the 200 KB initial-JS budget; the app CSS and JS are inlined by design for offline shell integrity).
+
+Deployment policy is tracked in `public/staticwebapp.config.json`: immutable asset cache headers, `image/avif` and `application/manifest+json` MIME mappings, a no-store worker response, CSP with `frame-ancestors 'none'`, HSTS, frame denial, permissions policy, and same-origin isolation headers. The only allowed cross-origin connection is the disclosed Sociobot billing API (plus its staging endpoint).
+
+## Known gaps
+
+- Recurring ICS rules are still not expanded. Import pre-expanded timed occurrences, or add recurring work blocks manually. Multi-day events beyond one overnight boundary are omitted from review rather than converted into an inaccurate single work block.
+- The production deploy and live response/header identity checks are recorded after the static deployment completes.
+
+## Run / deploy
+
+```sh
 npm ci
 npm test
 npm run build
+/opt/fleet/lib/deploy-static.sh backfill-timecards dist
 ```
 
-Then test <https://backfill-timecards.sociobot.in/> with a clean browser profile, including the three P1 reproductions in the verification report. The current repository scripts do not cover those cases.
-
-## Next step
-
-Fix the three P1 defects, add regression tests for each, correct the deployment policy gaps, redeploy, and request fresh independent verification.
+Deploy `dist/` as a Static Web App. Do not alter the researched brief, the local-first storage model, or the `/privacy` and `/terms` routes.

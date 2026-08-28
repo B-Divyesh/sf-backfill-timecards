@@ -247,6 +247,7 @@ export class App {
           <datalist id="project-options">${this.mappings.map((mapping) => `<option value="${escapeHtml(mapping.project)}">${escapeHtml(mapping.client)}</option>`).join("")}</datalist>
           <label class="field">Client<input name="client" autocomplete="organization" value="${escapeHtml(entry?.client || "")}" /><span class="hint">Filled when this project has a remembered client.</span></label>
           <label class="field full-field">What did you do?<textarea name="description" rows="3" required>${escapeHtml(entry?.description || "")}</textarea><span class="hint">Use the wording you want to see on an invoice.</span></label>
+          <label class="check-field full-field"><input name="ends-next-day" type="checkbox" ${entry?.endsNextDay ? "checked" : ""} /><span>Ends the next day</span></label>
           <label class="check-field full-field"><input name="billable" type="checkbox" ${entry?.billable === false ? "" : "checked"} /><span>Billable work</span></label>
         </div>
         <p class="form-error" role="alert" aria-live="assertive"></p>
@@ -265,8 +266,9 @@ export class App {
       const start = String(data.get("start"));
       const end = String(data.get("end"));
       const error = form.querySelector<HTMLElement>(".form-error")!;
-      if (entryMinutes({ start, end }) <= 0) {
-        error.textContent = "End time must be later than start time.";
+      const endsNextDay = (form.elements.namedItem("ends-next-day") as HTMLInputElement).checked;
+      if ((endsNextDay && end >= start) || entryMinutes({ start, end, endsNextDay }) <= 0) {
+        error.textContent = endsNextDay ? "Choose different start and end times for an overnight block." : "End time must be later than start time.";
         (form.elements.namedItem("end") as HTMLInputElement).focus();
         return;
       }
@@ -283,6 +285,7 @@ export class App {
         source: entry?.source || "manual",
         createdAt: entry?.createdAt || now,
         updatedAt: now,
+        endsNextDay,
       };
       await store.saveEntry(saved);
       if (saved.project && saved.client) {
@@ -329,7 +332,7 @@ export class App {
       </div>
       <form id="calendar-form">
         <div class="event-list">${events.map((event, index) => `
-          <label class="event-row"><input type="checkbox" name="event" value="${index}" checked /><span><strong>${escapeHtml(event.title)}</strong><small>${escapeHtml(event.date)} · ${escapeHtml(event.start)}–${escapeHtml(event.end)}</small></span></label>`).join("")}</div>
+          <label class="event-row"><input type="checkbox" name="event" value="${index}" checked /><span><strong>${escapeHtml(event.title)}</strong><small>${escapeHtml(event.date)} · ${escapeHtml(event.start)}–${escapeHtml(event.end)}${event.endsNextDay ? " (next day)" : ""}</small></span></label>`).join("")}</div>
         <div class="import-assign"><label class="field">Project for selected events<input name="project" list="calendar-project-options" required /></label><datalist id="calendar-project-options">${this.mappings.map((item) => `<option value="${escapeHtml(item.project)}">`).join("")}</datalist><label class="field">Client<input name="client" /></label></div>
         <p class="form-error" role="alert"></p>
         <div class="dialog-actions"><button type="button" data-close>Cancel</button><button type="submit" class="primary-button">Add selected events</button></div>
@@ -353,7 +356,7 @@ export class App {
       const additions = selected.map((checkbox) => {
         const event = events[Number(checkbox.value)];
         return {
-          id: uid(), date: event.date, start: event.start, end: event.end,
+          id: uid(), date: event.date, start: event.start, end: event.end, endsNextDay: event.endsNextDay,
           project: project.value.trim(), client: client.value.trim(),
           description: includeDetails && event.description ? `${event.title} — ${event.description}` : event.title,
           billable: true, source: "calendar" as const, createdAt: now, updatedAt: now,
@@ -416,7 +419,7 @@ export class App {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry) return;
     const existing = this.patterns.find((item) => item.title === entry.description && item.project === entry.project);
-    const pattern: Pattern = { id: existing?.id || uid(), title: entry.description, start: entry.start, end: entry.end, project: entry.project, client: entry.client, description: entry.description, billable: entry.billable, updatedAt: Date.now() };
+    const pattern: Pattern = { id: existing?.id || uid(), title: entry.description, start: entry.start, end: entry.end, project: entry.project, client: entry.client, description: entry.description, billable: entry.billable, updatedAt: Date.now(), endsNextDay: entry.endsNextDay };
     await store.savePattern(pattern);
     this.patterns = this.patterns.filter((item) => item.id !== pattern.id).concat(pattern);
     this.showToast(`Saved “${pattern.title}” to the pattern deck.`);
@@ -496,13 +499,17 @@ export class App {
 
   private makeDialog(id: string, html: string): HTMLDialogElement {
     document.querySelector(`#${id}`)?.remove();
+    const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const dialog = document.createElement("dialog");
     dialog.id = id;
     dialog.innerHTML = html;
     document.body.append(dialog);
     dialog.querySelectorAll<HTMLElement>("[data-close]").forEach((button) => button.addEventListener("click", () => dialog.close()));
     dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
-    dialog.addEventListener("close", () => dialog.remove());
+    dialog.addEventListener("close", () => {
+      dialog.remove();
+      returnFocus?.focus();
+    });
     dialog.showModal();
     return dialog;
   }

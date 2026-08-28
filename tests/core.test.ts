@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { entriesToCsv } from "../src/csv";
 import { addDays, formatDuration, formatWeekRange, minutesBetween, weekStart } from "../src/dates";
 import { parseIcs } from "../src/ics";
+import { validateBackup } from "../src/db";
 import type { TimeEntry } from "../src/types";
 
 describe("week calculations", () => {
@@ -14,7 +15,21 @@ describe("week calculations", () => {
   it("calculates honest non-negative durations", () => {
     expect(minutesBetween("09:15", "10:45")).toBe(90);
     expect(minutesBetween("12:00", "11:00")).toBe(0);
+    expect(minutesBetween("23:00", "01:00", true)).toBe(120);
     expect(formatDuration(150)).toBe("2h 30m");
+  });
+});
+
+describe("backup validation", () => {
+  it("rejects incomplete records before an import can replace local data", () => {
+    expect(() => validateBackup({ version: 1, entries: [{ id: "bad", date: "2026-08-24" }], mappings: [], patterns: [] })).toThrow(/work block 1 is incomplete or invalid/i);
+  });
+});
+
+describe("overnight calendar events", () => {
+  it("preserves the date boundary as an overnight work block", () => {
+    const events = parseIcs("BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:overnight\nDTSTART:20260824T230000\nDTEND:20260825T010000\nSUMMARY:Overnight maintenance\nEND:VEVENT\nEND:VCALENDAR");
+    expect(events).toEqual([expect.objectContaining({ date: "2026-08-24", start: "23:00", end: "01:00", endsNextDay: true })]);
   });
 });
 

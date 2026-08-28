@@ -31,6 +31,8 @@ The app uses Vite and vanilla TypeScript. No backend, external fonts, or runtime
 
 ```sh
 npm test          # unit + Chromium desktop/mobile end-to-end + axe + offline
+npm run typecheck # TypeScript checks
+npm run lint      # repository static checks
 npm run build     # reproducible static output in ./dist
 npm run preview   # preview the production build
 ```
@@ -48,7 +50,7 @@ Use `https://pilot-api.sociobot.in` as `VITE_BILLING_BASE` for registered stagin
 
 ## Deploy
 
-Deploy the contents of `dist/` as a static site, with `index.html` at its root. The service worker is scoped to `/`; serve over HTTPS and avoid rewriting `/sw.js`, `/manifest.webmanifest`, `/privacy/`, or `/terms/` to another asset.
+Deploy the contents of `dist/` as a static site, with `index.html` at its root. The service worker is scoped to `/`; serve over HTTPS and avoid rewriting `/sw.js`, `/manifest.webmanifest`, `/privacy/`, or `/terms/` to another asset. `staticwebapp.config.json` carries the immutable asset caching, correct AVIF/manifest MIME types, and browser response headers for the Static Web Apps deployment.
 
 ## Product notes
 
