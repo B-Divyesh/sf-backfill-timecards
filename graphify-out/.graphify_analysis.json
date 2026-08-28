@@ -32,31 +32,31 @@
       "vitest"
     ],
     "1": [
-      "src_app",
-      "src_db_store",
+      "src_app_app_renderdays",
+      "src_app_app_renderentry",
+      "src_app_datelabel",
+      "src_csv",
+      "src_csv_entriestocsv",
+      "src_csv_quote",
+      "src_dates",
+      "src_dates_adddays",
+      "src_dates_dateonly",
+      "src_dates_entryminutes",
+      "src_dates_formatduration",
+      "src_dates_formatweekrange",
+      "src_dates_fromiso",
+      "src_dates_isodate",
+      "src_dates_minutesbetween",
+      "src_dates_weekdates",
+      "src_dates_weekstart",
       "src_ics",
       "src_ics_formattime",
       "src_ics_parseics",
       "src_ics_parseicsdate",
       "src_ics_unescapetext",
       "src_ics_unfold",
-      "src_license",
-      "src_license_cachedverdict",
-      "src_license_capturereturnedlicense",
-      "src_license_checkouturl",
-      "src_license_initiallicensestate",
-      "src_license_licensestate",
-      "src_license_savelicense",
-      "src_license_verifylicense",
-      "src_main",
-      "src_main_app",
-      "src_main_root",
-      "src_types",
-      "src_types_appbackup",
-      "src_types_calendarevent",
-      "src_types_entrysource",
-      "src_types_pattern",
-      "src_types_projectmapping"
+      "src_types_timeentry",
+      "tests_core_test"
     ],
     "2": [
       "src_app_app",
@@ -81,7 +81,8 @@
       "src_app_app_start",
       "src_app_app_weekentries",
       "src_app_escapehtml",
-      "src_app_uid"
+      "src_app_uid",
+      "src_csv_downloadtext"
     ],
     "3": [
       "ref_dom",
@@ -108,26 +109,25 @@
       "tsconfig_include"
     ],
     "4": [
-      "src_app_app_renderdays",
-      "src_app_app_renderentry",
-      "src_app_datelabel",
-      "src_csv",
-      "src_csv_downloadtext",
-      "src_csv_entriestocsv",
-      "src_csv_quote",
-      "src_dates",
-      "src_dates_adddays",
-      "src_dates_dateonly",
-      "src_dates_entryminutes",
-      "src_dates_formatduration",
-      "src_dates_formatweekrange",
-      "src_dates_fromiso",
-      "src_dates_isodate",
-      "src_dates_minutesbetween",
-      "src_dates_weekdates",
-      "src_dates_weekstart",
-      "src_types_timeentry",
-      "tests_core_test"
+      "src_app",
+      "src_db_store",
+      "src_license",
+      "src_license_cachedverdict",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_initiallicensestate",
+      "src_license_licensestate",
+      "src_license_savelicense",
+      "src_license_verifylicense",
+      "src_main",
+      "src_main_app",
+      "src_main_root",
+      "src_types",
+      "src_types_appbackup",
+      "src_types_calendarevent",
+      "src_types_entrysource",
+      "src_types_pattern",
+      "src_types_projectmapping"
     ],
     "5": [
       "src_db",
@@ -169,10 +169,10 @@
   },
   "cohesion": {
     "0": 0.06896551724137931,
-    "1": 0.14333333333333334,
-    "2": 0.30434782608695654,
+    "1": 0.19,
+    "2": 0.286231884057971,
     "3": 0.09090909090909091,
-    "4": 0.24210526315789474,
+    "4": 0.17543859649122806,
     "5": 0.2867647058823529,
     "6": 0.6666666666666666,
     "7": 1.0,
@@ -184,17 +184,12 @@
     {
       "id": "src_app_app",
       "label": "App",
-      "degree": 27
+      "degree": 24
     },
     {
       "id": "tsconfig_compileroptions",
       "label": "compilerOptions",
       "degree": 12
-    },
-    {
-      "id": "src_types_timeentry",
-      "label": "TimeEntry",
-      "degree": 11
     },
     {
       "id": "src_dates_adddays",
@@ -217,55 +212,27 @@
       "degree": 9
     },
     {
-      "id": "src_app_escapehtml",
-      "label": "escapeHtml()",
+      "id": "src_dates_weekstart",
+      "label": "weekStart()",
       "degree": 8
     },
     {
-      "id": "src_dates_weekstart",
-      "label": "weekStart()",
+      "id": "src_app_escapehtml",
+      "label": "escapeHtml()",
       "degree": 8
     },
     {
       "id": "src_dates_formatweekrange",
       "label": "formatWeekRange()",
       "degree": 7
+    },
+    {
+      "id": "src_db_istimeentry",
+      "label": "isTimeEntry()",
+      "degree": 7
     }
   ],
   "surprises": [
-    {
-      "source": "App",
-      "target": "Pattern",
-      "source_files": [
-        "src/app.ts",
-        "src/types.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "App",
-      "target": "ProjectMapping",
-      "source_files": [
-        "src/app.ts",
-        "src/types.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "App",
-      "target": "TimeEntry",
-      "source_files": [
-        "src/app.ts",
-        "src/types.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
-    },
     {
       "source": "parseIcs()",
       "target": "isoDate()",
@@ -275,7 +242,18 @@
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "bridges separate communities"
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
+      "source_files": [
+        "src/csv.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
     },
     {
       "source": "dateLabel()",
