@@ -1,52 +1,49 @@
-# Backfill Timecards — build handoff
+# Backfill Timecards — verification handoff
 
-Date: 2026-08-28
+Date: 2026-08-28 UTC
 
-Work order: `backfill-timecards-build-1`
+Work order: `backfill-timecards-verify-1`
 
-Deploy target: static `./dist`
+Candidate: `5edd6e9dbccf946470c2f15da7021b94c88826c1`
 
-## Shipped
+Live URL: <https://backfill-timecards.sociobot.in/>
 
-- A responsive weekly reconstruction board with Monday–Sunday navigation, daily and weekly totals, billable totals, client counts, and focused empty states.
-- Manual work blocks with date/start/end validation, invoice-language descriptions, billable choice, edit, copy, confirmed delete, and undo.
-- Local `.ics` parsing and review. Users choose events, opt into descriptions, assign project/client, and see calendar provenance. Untimed/all-day events are deliberately ignored rather than becoming false 24-hour work.
-- Remembered project→client mappings, applied visibly when a known project is entered.
-- Source stamps (`manual`, `calendar`, `pattern`) so every row remains explainable; no billability or time is inferred.
-- Invoice-ready weekly CSV and complete JSON backup/restore/delete controls. Records use IndexedDB; license state uses localStorage.
-- $18 one-time Pattern Deck unlock using the Sociobot contract: hosted buy link, return-token capture, daily-cached verification, optimistic offline access after a valid cached verdict, and paste-to-restore. Free entry, calendar import, CSV/JSON export, deletion, privacy, and accessibility are not gated.
-- Installable PWA with 192/512/maskable icons, versioned shell caches, cache-first local assets, offline fallback, update toast, and a production shell that inlines the small JS/CSS payload to avoid hashed-asset mismatch offline.
-- Dedicated `/privacy/` and `/terms/` documents, robots/sitemap/LLM metadata, MIT license, and expanded README.
-- Product-specific cassette-era zine system and original generated editorial art. Prompt and provenance are in `.factory/design.md` and `assets/src/`.
+## Result: FAIL
 
-## Verification
+The live deployment is healthy and byte-for-byte matches all 18 artifacts from a clean production build of the candidate. The earlier deployment-only concern is therefore resolved. The candidate is not releasable because independent live testing found three P1 defects:
 
-From a clean checkout:
+1. Visiting `/privacy/` or `/terms/` replaces the service worker's cached `/index.html`; a cache-disabled offline root load then shows the legal page instead of the timecard app.
+2. A syntactically valid but structurally malformed backup clears valid IndexedDB data, persists invalid data, and causes a repeatable fatal screen on reload with no in-app recovery control.
+3. An imported `23:00–01:00` calendar event displays and exports `0.00` hours without warning.
+
+Additional findings: recurring ICS events are not expanded; four mobile links are below the required 44 px target size; all static files use 30-second revalidation rather than immutable caching; AVIF and manifest files use `application/octet-stream`; CSP/frame/permissions policies are absent.
+
+Full reproduction steps, hashes, measurements, and remediation guidance are in [`.factory/verification.md`](verification.md).
+
+## Verification summary
+
+- `npm ci`: PASS, 0 vulnerabilities.
+- `npm test`: PASS, 4 unit + 6 Playwright tests.
+- `npm run build`: PASS, including `tsc --noEmit`; no lint script exists.
+- Live artifact identity: PASS, all 18 generated files matched by SHA-256.
+- Normal workflows: PASS for add/edit/copy/delete/undo, mapping recall, selective calendar import, CSV, JSON export/valid restore/delete, and a 30-entry import/export.
+- Accessibility: axe found zero violations on tested app/legal desktop/mobile states; keyboard/focus and reduced-motion checks passed apart from undersized mobile links.
+- Privacy: no third-party request during normal use; IndexedDB local-first behavior confirmed; disclosed license verification path confirmed.
+- PWA: install, root offline reload, persistence, and update toast passed; offline behavior after legal navigation failed.
+- Lighthouse mobile: 99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.2 s, TBT 120 ms, CLS 0.
+- Browser console/page errors: none in normal flows; malformed backup reload logs `TypeError: Cannot read properties of undefined (reading 'split')`.
+
+## How to rerun
 
 ```sh
-npm install
+git checkout 5edd6e9dbccf946470c2f15da7021b94c88826c1
+npm ci
 npm test
 npm run build
 ```
 
-- `npm test`: passed — 4 Vitest unit tests and 6 Playwright tests (Chromium desktop + Pixel 5 profile).
-- Playwright covers add/persist/map/export, selective local calendar import, axe analysis, and an actual offline reload from a clean service-worker origin.
-- Axe: no serious or critical violations in either tested viewport.
-- `/opt/fleet/lib/verify-url.sh`: passed; title present, `lang="en"`, exactly one `h1`, main landmark present, zero missing image alts, zero unlabeled buttons, and zero browser console errors. Evidence is in `.factory/evidence/`.
-- Final mobile Lighthouse: **Performance 100, Accessibility 100, Best Practices 100, SEO 100**; LCP 1.6s, TBT 50ms, CLS 0.
-- Production payload: `dist/index.html` 49.83 KB raw / 14.99 KB gzip including inline app JS and CSS. Source build reports JS about 33 KB raw and CSS about 16 KB raw. Mobile hero AVIF is 16 KB (WebP fallback 31 KB), below all stated budgets.
-- `npm run build`: passed and writes `dist/index.html` at the required root.
-- Responsive visual review completed at 1440×1100 and 390×844; dialogs and touch actions were exercised through Playwright.
+Then test <https://backfill-timecards.sociobot.in/> with a clean browser profile, including the three P1 reproductions in the verification report. The current repository scripts do not cover those cases.
 
-## Known gaps / release notes
+## Next step
 
-- The Sociobot product must still be registered by the factory. The source uses `backfill-timecards` as the slug and accepts `VITE_PRODUCT_SLUG` and `VITE_BILLING_BASE`; no provider or product ID is embedded. Use the pilot API only for staging.
-- Calendar recurrence rules are not expanded. Importers should export concrete occurrences for the week. Timed events are supported; all-day items are intentionally skipped.
-- The stated under-15-minute / 90%-no-correction success measure requires a real freelancer pilot after deployment; it is not claimed from automated tests.
-- Data is device-local by design. Clearing browser site data removes it unless the user first exports a JSON backup.
-
-## Next steps
-
-1. Register the one-time product in Sociobot billing and smoke-test checkout return plus revoke/refund behavior on staging.
-2. Deploy `dist/` over HTTPS, then rerun the URL verifier and offline install test against the production hostname.
-3. Run the brief’s pilot with at least three freelancers reconstructing 30-row weeks and record completion time plus CSV correction rate.
+Fix the three P1 defects, add regression tests for each, correct the deployment policy gaps, redeploy, and request fresh independent verification.
