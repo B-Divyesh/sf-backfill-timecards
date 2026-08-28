@@ -222,6 +222,11 @@
       "degree": 9
     },
     {
+      "id": "src_app_escapehtml",
+      "label": "escapeHtml()",
+      "degree": 8
+    },
+    {
       "id": "src_dates_formatweekrange",
       "label": "formatWeekRange()",
       "degree": 8
@@ -229,11 +234,6 @@
     {
       "id": "src_dates_weekstart",
       "label": "weekStart()",
-      "degree": 8
-    },
-    {
-      "id": "src_app_escapehtml",
-      "label": "escapeHtml()",
       "degree": 8
     },
     {
