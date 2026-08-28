@@ -1,64 +1,38 @@
 {
   "communities": {
     "0": [
-      "axe_core_playwright",
-      "package",
-      "package_devdependencies",
-      "package_devdependencies_axe_core_playwright",
-      "package_devdependencies_playwright_test",
-      "package_devdependencies_types_node",
-      "package_devdependencies_typescript",
-      "package_devdependencies_vite",
-      "package_devdependencies_vite_plugin_singlefile",
-      "package_devdependencies_vitest",
-      "package_name",
-      "package_private",
-      "package_scripts",
-      "package_scripts_build",
-      "package_scripts_dev",
-      "package_scripts_lint",
-      "package_scripts_preview",
-      "package_scripts_test",
-      "package_scripts_test_e2e",
-      "package_scripts_test_unit",
-      "package_scripts_typecheck",
-      "package_type",
-      "package_version",
-      "playwright_test",
-      "types_node",
-      "typescript",
-      "vite",
-      "vite_plugin_singlefile",
-      "vitest"
-    ],
-    "1": [
-      "src_app_app_renderdays",
-      "src_app_app_renderentry",
-      "src_app_datelabel",
+      "src_app",
       "src_csv",
+      "src_csv_downloadtext",
       "src_csv_entriestocsv",
       "src_csv_quote",
-      "src_dates",
-      "src_dates_adddays",
-      "src_dates_dateonly",
-      "src_dates_entryminutes",
-      "src_dates_formatduration",
-      "src_dates_formatweekrange",
-      "src_dates_fromiso",
-      "src_dates_isodate",
-      "src_dates_minutesbetween",
-      "src_dates_weekdates",
-      "src_dates_weekstart",
-      "src_ics",
-      "src_ics_formattime",
-      "src_ics_parseics",
-      "src_ics_parseicsdate",
-      "src_ics_unescapetext",
-      "src_ics_unfold",
-      "src_types_timeentry",
-      "tests_core_test"
+      "src_db",
+      "src_db_all",
+      "src_db_hasvalidtimerange",
+      "src_db_isisodate",
+      "src_db_ismapping",
+      "src_db_isnonemptystring",
+      "src_db_ispattern",
+      "src_db_isrecord",
+      "src_db_istime",
+      "src_db_istimeentry",
+      "src_db_istimestamp",
+      "src_db_opendb",
+      "src_db_put",
+      "src_db_remove",
+      "src_db_replaceall",
+      "src_db_store",
+      "src_db_timeminutes",
+      "src_db_validatebackup",
+      "src_types",
+      "src_types_appbackup",
+      "src_types_calendarevent",
+      "src_types_entrysource",
+      "src_types_pattern",
+      "src_types_projectmapping",
+      "src_types_timeentry"
     ],
-    "2": [
+    "1": [
       "src_app_app",
       "src_app_app_bindglobalevents",
       "src_app_app_changeweek",
@@ -66,6 +40,7 @@
       "src_app_app_deleteentry",
       "src_app_app_duplicateentry",
       "src_app_app_exportcsv",
+      "src_app_app_hydrateemptyshell",
       "src_app_app_makedialog",
       "src_app_app_opencalendardialog",
       "src_app_app_openentrydialog",
@@ -81,10 +56,9 @@
       "src_app_app_start",
       "src_app_app_weekentries",
       "src_app_escapehtml",
-      "src_app_uid",
-      "src_csv_downloadtext"
+      "src_app_uid"
     ],
-    "3": [
+    "2": [
       "ref_dom",
       "ref_dom_iterable",
       "ref_es2022",
@@ -108,9 +82,57 @@
       "tsconfig_compileroptions_usedefineforclassfields",
       "tsconfig_include"
     ],
+    "3": [
+      "axe_core_playwright",
+      "package_devdependencies",
+      "package_devdependencies_axe_core_playwright",
+      "package_devdependencies_playwright_test",
+      "package_devdependencies_types_node",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vite_plugin_singlefile",
+      "package_devdependencies_vitest",
+      "playwright_test",
+      "types_node",
+      "typescript",
+      "vite",
+      "vite_plugin_singlefile",
+      "vitest"
+    ],
     "4": [
-      "src_app",
-      "src_db_store",
+      "src_app_app_renderdays",
+      "src_app_app_renderentry",
+      "src_app_datelabel",
+      "src_dates",
+      "src_dates_adddays",
+      "src_dates_dateonly",
+      "src_dates_entryminutes",
+      "src_dates_formatduration",
+      "src_dates_formatweekrange",
+      "src_dates_fromiso",
+      "src_dates_isodate",
+      "src_dates_minutesbetween",
+      "src_dates_weekdates",
+      "src_dates_weekstart",
+      "tests_core_test"
+    ],
+    "5": [
+      "package",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_lint",
+      "package_scripts_preview",
+      "package_scripts_test",
+      "package_scripts_test_e2e",
+      "package_scripts_test_unit",
+      "package_scripts_typecheck",
+      "package_type",
+      "package_version"
+    ],
+    "6": [
       "src_license",
       "src_license_cachedverdict",
       "src_license_capturereturnedlicense",
@@ -121,75 +143,68 @@
       "src_license_verifylicense",
       "src_main",
       "src_main_app",
-      "src_main_root",
-      "src_types",
-      "src_types_appbackup",
-      "src_types_calendarevent",
-      "src_types_entrysource",
-      "src_types_pattern",
-      "src_types_projectmapping"
+      "src_main_root"
     ],
-    "5": [
-      "src_db",
-      "src_db_all",
-      "src_db_hasvalidtimerange",
-      "src_db_isisodate",
-      "src_db_ismapping",
-      "src_db_isnonemptystring",
-      "src_db_ispattern",
-      "src_db_isrecord",
-      "src_db_istime",
-      "src_db_istimeentry",
-      "src_db_istimestamp",
-      "src_db_opendb",
-      "src_db_put",
-      "src_db_remove",
-      "src_db_replaceall",
-      "src_db_timeminutes",
-      "src_db_validatebackup"
+    "7": [
+      "src_ics",
+      "src_ics_addcalendardays",
+      "src_ics_formattime",
+      "src_ics_parseics",
+      "src_ics_parseicsdate",
+      "src_ics_parsepositiveinteger",
+      "src_ics_recurrencestarts",
+      "src_ics_unescapetext",
+      "src_ics_unfold"
     ],
-    "6": [
+    "8": [
       "public_sw",
       "public_sw_extra_precache",
       "public_sw_precache"
     ],
-    "7": [
+    "9": [
       "vite_config",
       "vite_config_injectserviceworkerassets"
     ],
-    "8": [
+    "10": [
       "playwright_config"
     ],
-    "9": [
+    "11": [
       "tests_e2e_app_e2e"
     ],
-    "10": [
+    "12": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.06896551724137931,
-    "1": 0.19,
-    "2": 0.286231884057971,
-    "3": 0.09090909090909091,
-    "4": 0.17543859649122806,
-    "5": 0.2867647058823529,
-    "6": 0.6666666666666666,
-    "7": 1.0,
-    "8": 1.0,
+    "0": 0.15632183908045977,
+    "1": 0.286231884057971,
+    "2": 0.09090909090909091,
+    "3": 0.13333333333333333,
+    "4": 0.3047619047619048,
+    "5": 0.14285714285714285,
+    "6": 0.21818181818181817,
+    "7": 0.4722222222222222,
+    "8": 0.6666666666666666,
     "9": 1.0,
-    "10": 1.0
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0
   },
   "gods": [
     {
       "id": "src_app_app",
       "label": "App",
-      "degree": 24
+      "degree": 25
     },
     {
       "id": "tsconfig_compileroptions",
       "label": "compilerOptions",
       "degree": 12
+    },
+    {
+      "id": "src_ics_parseics",
+      "label": "parseIcs()",
+      "degree": 11
     },
     {
       "id": "src_dates_adddays",
@@ -202,14 +217,14 @@
       "degree": 9
     },
     {
-      "id": "src_ics_parseics",
-      "label": "parseIcs()",
-      "degree": 9
-    },
-    {
       "id": "package_scripts",
       "label": "scripts",
       "degree": 9
+    },
+    {
+      "id": "src_dates_formatweekrange",
+      "label": "formatWeekRange()",
+      "degree": 8
     },
     {
       "id": "src_dates_weekstart",
@@ -222,28 +237,12 @@
       "degree": 8
     },
     {
-      "id": "src_dates_formatweekrange",
-      "label": "formatWeekRange()",
-      "degree": 7
-    },
-    {
       "id": "src_db_istimeentry",
       "label": "isTimeEntry()",
       "degree": 7
     }
   ],
   "surprises": [
-    {
-      "source": "dateLabel()",
-      "target": "fromIso()",
-      "source_files": [
-        "src/app.ts",
-        "src/dates.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "cross-file semantic connection"
-    },
     {
       "source": "entriesToCsv()",
       "target": "entryMinutes()",
@@ -253,13 +252,24 @@
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "cross-file semantic connection"
+      "why": "bridges separate communities"
     },
     {
       "source": "parseIcs()",
       "target": "isoDate()",
       "source_files": [
         "src/ics.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "dateLabel()",
+      "target": "fromIso()",
+      "source_files": [
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
