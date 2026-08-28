@@ -1,0 +1,285 @@
+{
+  "communities": {
+    "0": [
+      "src_app_app",
+      "src_app_app_bindglobalevents",
+      "src_app_app_changeweek",
+      "src_app_app_constructor",
+      "src_app_app_deleteentry",
+      "src_app_app_duplicateentry",
+      "src_app_app_exportcsv",
+      "src_app_app_makedialog",
+      "src_app_app_opencalendardialog",
+      "src_app_app_openentrydialog",
+      "src_app_app_openpatternsdialog",
+      "src_app_app_opensettingsdialog",
+      "src_app_app_openunlockdialog",
+      "src_app_app_registerserviceworker",
+      "src_app_app_render",
+      "src_app_app_rendercalendarreview",
+      "src_app_app_renderemptystate",
+      "src_app_app_saveentryaspattern",
+      "src_app_app_showtoast",
+      "src_app_app_start",
+      "src_app_app_weekentries",
+      "src_app_escapehtml",
+      "src_app_uid",
+      "src_csv_downloadtext",
+      "src_license_savelicense"
+    ],
+    "1": [
+      "src_app",
+      "src_db",
+      "src_db_all",
+      "src_db_opendb",
+      "src_db_put",
+      "src_db_remove",
+      "src_db_store",
+      "src_license",
+      "src_license_cachedverdict",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_initiallicensestate",
+      "src_license_licensestate",
+      "src_license_verifylicense",
+      "src_main",
+      "src_main_app",
+      "src_main_root",
+      "src_types",
+      "src_types_appbackup",
+      "src_types_calendarevent",
+      "src_types_entrysource",
+      "src_types_pattern",
+      "src_types_projectmapping",
+      "src_types_timeentry"
+    ],
+    "2": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_es2022",
+      "ref_node",
+      "ref_src",
+      "ref_tests",
+      "ref_vite_client",
+      "ref_vite_config_ts",
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_nounusedlocals",
+      "tsconfig_compileroptions_nounusedparameters",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_compileroptions_types",
+      "tsconfig_compileroptions_usedefineforclassfields",
+      "tsconfig_include"
+    ],
+    "3": [
+      "src_app_app_renderdays",
+      "src_app_app_renderentry",
+      "src_app_datelabel",
+      "src_csv",
+      "src_csv_entriestocsv",
+      "src_csv_quote",
+      "src_dates",
+      "src_dates_adddays",
+      "src_dates_dateonly",
+      "src_dates_entryminutes",
+      "src_dates_formatduration",
+      "src_dates_formatweekrange",
+      "src_dates_fromiso",
+      "src_dates_isodate",
+      "src_dates_minutesbetween",
+      "src_dates_weekdates",
+      "src_dates_weekstart",
+      "tests_core_test"
+    ],
+    "4": [
+      "axe_core_playwright",
+      "package_devdependencies",
+      "package_devdependencies_axe_core_playwright",
+      "package_devdependencies_playwright_test",
+      "package_devdependencies_types_node",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vite_plugin_singlefile",
+      "package_devdependencies_vitest",
+      "playwright_test",
+      "types_node",
+      "typescript",
+      "vite",
+      "vite_plugin_singlefile",
+      "vitest"
+    ],
+    "5": [
+      "package",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_preview",
+      "package_scripts_test",
+      "package_scripts_test_e2e",
+      "package_scripts_test_unit",
+      "package_type",
+      "package_version"
+    ],
+    "6": [
+      "src_ics",
+      "src_ics_formattime",
+      "src_ics_parseics",
+      "src_ics_parseicsdate",
+      "src_ics_unescapetext",
+      "src_ics_unfold"
+    ],
+    "7": [
+      "public_sw",
+      "public_sw_extra_precache",
+      "public_sw_precache"
+    ],
+    "8": [
+      "vite_config",
+      "vite_config_injectserviceworkerassets"
+    ],
+    "9": [
+      "playwright_config"
+    ],
+    "10": [
+      "tests_e2e_app_e2e"
+    ],
+    "11": [
+      "vitest_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.26666666666666666,
+    "1": 0.15942028985507245,
+    "2": 0.09090909090909091,
+    "3": 0.26143790849673204,
+    "4": 0.13333333333333333,
+    "5": 0.16666666666666666,
+    "6": 0.6,
+    "7": 0.6666666666666666,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_app_app",
+      "label": "App",
+      "degree": 28
+    },
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 12
+    },
+    {
+      "id": "src_types_timeentry",
+      "label": "TimeEntry",
+      "degree": 11
+    },
+    {
+      "id": "src_dates_adddays",
+      "label": "addDays()",
+      "degree": 10
+    },
+    {
+      "id": "src_dates_entryminutes",
+      "label": "entryMinutes()",
+      "degree": 9
+    },
+    {
+      "id": "src_ics_parseics",
+      "label": "parseIcs()",
+      "degree": 9
+    },
+    {
+      "id": "src_app_escapehtml",
+      "label": "escapeHtml()",
+      "degree": 8
+    },
+    {
+      "id": "src_dates_weekstart",
+      "label": "weekStart()",
+      "degree": 8
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 7
+    },
+    {
+      "id": "src_dates_formatweekrange",
+      "label": "formatWeekRange()",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "App",
+      "target": "LicenseState",
+      "source_files": [
+        "src/app.ts",
+        "src/license.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "App",
+      "target": "Pattern",
+      "source_files": [
+        "src/app.ts",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "App",
+      "target": "ProjectMapping",
+      "source_files": [
+        "src/app.ts",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "App",
+      "target": "TimeEntry",
+      "source_files": [
+        "src/app.ts",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "parseIcs()",
+      "target": "isoDate()",
+      "source_files": [
+        "src/ics.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}
