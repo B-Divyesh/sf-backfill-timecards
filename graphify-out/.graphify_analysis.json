@@ -202,8 +202,8 @@
       "degree": 10
     },
     {
-      "id": "package_scripts",
-      "label": "scripts",
+      "id": "src_ics_parseics",
+      "label": "parseIcs()",
       "degree": 9
     },
     {
@@ -212,8 +212,8 @@
       "degree": 9
     },
     {
-      "id": "src_ics_parseics",
-      "label": "parseIcs()",
+      "id": "package_scripts",
+      "label": "scripts",
       "degree": 9
     },
     {
@@ -278,10 +278,10 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "entriesToCsv()",
-      "target": "entryMinutes()",
+      "source": "dateLabel()",
+      "target": "fromIso()",
       "source_files": [
-        "src/csv.ts",
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
