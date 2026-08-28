@@ -211,13 +211,13 @@
       "degree": 8
     },
     {
-      "id": "package_scripts",
-      "label": "scripts",
+      "id": "src_dates_formatweekrange",
+      "label": "formatWeekRange()",
       "degree": 7
     },
     {
-      "id": "src_dates_formatweekrange",
-      "label": "formatWeekRange()",
+      "id": "package_scripts",
+      "label": "scripts",
       "degree": 7
     }
   ],
