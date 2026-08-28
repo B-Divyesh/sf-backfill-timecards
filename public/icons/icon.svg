@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Backfill Timecards cassette mark</title>
+  <rect width="512" height="512" rx="72" fill="#F2E8D5"/>
+  <path d="M68 118h376v276H68z" fill="#FFFDF6" stroke="#171717" stroke-width="20"/>
+  <path d="M104 168h304M104 216h304M104 264h304" stroke="#155C78" stroke-width="16"/>
+  <path d="M132 310h248l34 62H98z" fill="#C83F36" stroke="#171717" stroke-width="16"/>
+  <circle cx="170" cy="342" r="29" fill="#F2E8D5" stroke="#171717" stroke-width="14"/>
+  <circle cx="342" cy="342" r="29" fill="#F2E8D5" stroke="#171717" stroke-width="14"/>
+</svg>

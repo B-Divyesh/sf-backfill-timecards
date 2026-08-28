@@ -1,0 +1,11 @@
+{
+  "slug": "backfill-timecards",
+  "title": "Backfill Timecards",
+  "territory": "utilities",
+  "user": "A freelancer who records a week of work after the fact and needs to reconstruct, copy, and associate repeated time entries with the right client/project before invoicing.",
+  "smallest_useful_product": "Offline weekly board that imports calendar events, clones prior patterns, fills project-to-client mappings, records explainable work blocks, and exports invoice-ready CSV.",
+  "success_measure": "Complete a 30-entry retrospective week in under 15 minutes with 90% of exported rows needing no correction.",
+  "artifact_class": "pwa-offline",
+  "monetization": "one-time",
+  "constraints": "Calendar event text may be confidential; import locally, allow selective fields, and provide data export/deletion; never infer billable time automatically."
+}
