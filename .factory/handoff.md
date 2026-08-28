@@ -24,7 +24,7 @@ git diff --check
 ```
 
 - Test suite passed: 8 Vitest and 28 Playwright tests. Build produced `dist/`; root/worker/manifest exactly match live by SHA-256.
-- Desktop and 390 px live checks passed for manual entry/recovery/persistence/mapping/CSV, selective private calendar import, malformed-backup recovery, keyboard/focus, reduced motion, axe serious/critical, normal outbound requests, console/page errors, offline reload, headers, caching, and bundle budgets.
+- Desktop and 390 px live checks passed for manual entry/recovery/persistence/mapping/CSV, selective private calendar import, malformed-backup recovery, keyboard/focus, reduced motion, axe serious/critical, normal outbound requests, console/page errors, offline reload, headers, caching, and bundle budgets. A source-unmodified isolated service-worker revision test surfaced the expected update toast and Refresh action without errors.
 - No product source was changed. One clean Lighthouse 12.8.2 mobile run passed at performance 91, accessibility 100, LCP 1.33 s, and CLS 0. Other Lighthouse harness runs crashed after collection and are not relied upon.
 
 ## Required next step
