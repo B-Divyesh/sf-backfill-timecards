@@ -7,7 +7,8 @@ Live product: <https://backfill-timecards.sociobot.in>
 ## What it does
 
 - Adds, edits, copies, and deletes source-labelled work blocks across a seven-day board.
-- Imports `.ics` calendar files locally, with event-by-event selection and optional descriptions.
+- Imports `.ics` calendar files locally, with event-by-event selection, optional descriptions, and an explicit billable choice that defaults off.
+- Expands bounded daily/weekly recurring events for review; open-ended or unsupported recurrence rules are rejected with export guidance rather than silently undercounted.
 - Remembers project→client mappings to speed up repeat entry.
 - Exports the selected week as invoice-ready CSV.
 - Exports, restores, and erases a complete local JSON archive.

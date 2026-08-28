@@ -33,14 +33,30 @@ export class App {
     this.bindGlobalEvents();
     this.registerServiceWorker();
     [this.entries, this.mappings, this.patterns] = await Promise.all([store.entries(), store.mappings(), store.patterns()]);
-    this.render();
-    if (localStorage.getItem("sb_license:backfill-timecards")) {
+    const hasLicense = Boolean(localStorage.getItem("sb_license:backfill-timecards"));
+    if (this.entries.length === 0 && !hasLicense) this.hydrateEmptyShell();
+    else this.render();
+    if (hasLicense) {
       this.license = { ...this.license, checking: true };
       verifyLicense().then((state) => {
         this.license = state;
         this.render();
         if (state.notice) this.showToast(state.notice);
       });
+    }
+  }
+
+  private hydrateEmptyShell(): void {
+    // index.html already contains the exact empty experience. Hydrate its few
+    // dynamic labels instead of replacing the whole document after first
+    // paint; this keeps startup work short on throttled mobile devices.
+    this.root.removeAttribute("aria-busy");
+    const heading = this.root.querySelector<HTMLElement>("#week-heading");
+    if (heading) heading.textContent = formatWeekRange(this.currentWeek);
+    const status = this.root.querySelector<HTMLElement>(".status-pill");
+    if (status && !navigator.onLine) {
+      status.classList.add("is-offline");
+      status.innerHTML = '<span aria-hidden="true">●</span> Offline · saved here';
     }
   }
 
@@ -329,6 +345,7 @@ export class App {
     review.innerHTML = `
       <div class="import-options">
         <label class="check-field"><input id="include-details" type="checkbox" /><span>Append calendar descriptions</span></label>
+        <label class="check-field"><input id="import-billable" type="checkbox" /><span>Mark selected events as billable</span></label>
         <p>${events.length} timed event${events.length === 1 ? "" : "s"} found. Select only work you want to record.</p>
       </div>
       <form id="calendar-form">
@@ -353,6 +370,7 @@ export class App {
         return;
       }
       const includeDetails = review.querySelector<HTMLInputElement>("#include-details")!.checked;
+      const billable = review.querySelector<HTMLInputElement>("#import-billable")!.checked;
       const now = Date.now();
       const additions = selected.map((checkbox) => {
         const event = events[Number(checkbox.value)];
@@ -360,7 +378,7 @@ export class App {
           id: uid(), date: event.date, start: event.start, end: event.end, endsNextDay: event.endsNextDay,
           project: project.value.trim(), client: client.value.trim(),
           description: includeDetails && event.description ? `${event.title} — ${event.description}` : event.title,
-          billable: true, source: "calendar" as const, createdAt: now, updatedAt: now,
+          billable, source: "calendar" as const, createdAt: now, updatedAt: now,
         };
       });
       await Promise.all(additions.map((entry) => store.saveEntry(entry)));
@@ -540,7 +558,11 @@ export class App {
         });
       } catch (error) { console.warn("Offline support could not be installed.", error); }
     };
-    if (document.readyState === "complete") register();
-    else window.addEventListener("load", register, { once: true });
+    const schedule = () => {
+      if ("requestIdleCallback" in window) window.requestIdleCallback(register, { timeout: 1500 });
+      else setTimeout(register, 0);
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
   }
 }

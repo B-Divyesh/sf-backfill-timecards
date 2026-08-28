@@ -39,6 +39,18 @@ describe("calendar parsing", () => {
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({ date: "2026-08-24", start: "09:00", end: "10:30", title: "Client, planning", description: "Roadmap review" });
   });
+
+  it("expands bounded daily recurrence masters into reviewable occurrences", () => {
+    const events = parseIcs(`BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:daily-review\nDTSTART:20260824T100000\nDTEND:20260824T110000\nRRULE:FREQ=DAILY;COUNT=5\nSUMMARY:Daily client review\nEND:VEVENT\nEND:VCALENDAR`);
+    expect(events).toHaveLength(5);
+    expect(events.map((event) => event.date)).toEqual(["2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28"]);
+    expect(new Set(events.map((event) => event.id)).size).toBe(5);
+  });
+
+  it("rejects recurrence rules that cannot be bounded honestly", () => {
+    const recurring = `BEGIN:VCALENDAR\nBEGIN:VEVENT\nDTSTART:20260824T100000\nDTEND:20260824T110000\nRRULE:FREQ=DAILY\nSUMMARY:Open-ended review\nEND:VEVENT\nEND:VCALENDAR`;
+    expect(() => parseIcs(recurring)).toThrow(/open-ended recurring event.*individual events/i);
+  });
 });
 
 describe("invoice CSV", () => {

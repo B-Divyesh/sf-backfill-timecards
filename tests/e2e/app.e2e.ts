@@ -34,9 +34,27 @@ test("ships a layout-stable empty board instead of a loading-only app mount", as
   expect(source).toContain('class="hero"');
   expect(source).toContain('class="workspace"');
   expect(source).toContain('class="empty-state"');
+  expect(source).not.toContain('rel="preload" as="image"');
 });
 
-test("reviews a local calendar file and imports only selected details", async ({ page }) => {
+test("hydrates the empty shell without replacing its rendered workspace", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.assign(window, { __appShellReplaced: false });
+    new MutationObserver((records) => {
+      if (records.some((record) => (record.target as Element).id === "app" && record.removedNodes.length > 0)) {
+        Object.assign(window, { __appShellReplaced: true });
+      }
+    }).observe(document, { childList: true, subtree: true });
+  });
+  await page.goto("/");
+  const workspace = await page.locator(".workspace").elementHandle();
+  await expect(page.locator("#app")).not.toHaveAttribute("aria-busy");
+  expect(await workspace?.evaluate((element) => element.isConnected)).toBe(true);
+  expect(await page.evaluate(() => Reflect.get(window, "__appShellReplaced"))).toBe(false);
+  await expect(page.locator("#week-heading")).not.toHaveText("This week");
+});
+
+test("imports calendar clues as non-billable by default and exports that decision", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Import calendar" }).first().click();
   const ics = `BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:one\r\nDTSTART:20260824T130000\r\nDTEND:20260824T140000\r\nSUMMARY:Design review\r\nDESCRIPTION:Confidential launch notes\r\nEND:VEVENT\r\nEND:VCALENDAR`;
@@ -48,6 +66,34 @@ test("reviews a local calendar file and imports only selected details", async ({
   await expect(page.locator(".track-title", { hasText: "Design review" })).toBeVisible();
   await expect(page.getByText("Confidential launch notes")).toHaveCount(0);
   await expect(page.getByText("calendar", { exact: true })).toBeVisible();
+  await expect(page.getByText("Not billable", { exact: true })).toBeVisible();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export CSV" }).click();
+  const csv = await readFile(await (await download).path(), "utf8");
+  expect(csv).toContain('"Design review","No","calendar"');
+});
+
+test("marks calendar events billable only after an explicit import choice", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Import calendar" }).first().click();
+  const ics = "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:billable\r\nDTSTART:20260824T130000\r\nDTEND:20260824T140000\r\nSUMMARY:Client workshop\r\nEND:VEVENT\r\nEND:VCALENDAR";
+  await page.locator("#calendar-file").setInputFiles({ name: "billable.ics", mimeType: "text/calendar", buffer: Buffer.from(ics) });
+  await page.getByLabel("Project for selected events").fill("Launch");
+  await page.getByLabel("Mark selected events as billable").check();
+  await page.getByRole("button", { name: "Add selected events" }).click();
+  await expect(page.getByText("✓ Billable", { exact: true })).toBeVisible();
+});
+
+test("expands recurring calendar masters before review and import", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Import calendar" }).first().click();
+  const ics = "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:daily\r\nDTSTART:20260824T100000\r\nDTEND:20260824T110000\r\nRRULE:FREQ=DAILY;COUNT=5\r\nSUMMARY:Daily review\r\nEND:VEVENT\r\nEND:VCALENDAR";
+  await page.locator("#calendar-file").setInputFiles({ name: "recurring.ics", mimeType: "text/calendar", buffer: Buffer.from(ics) });
+  await expect(page.getByText("5 timed events found. Select only work you want to record.")).toBeVisible();
+  await page.getByLabel("Project for selected events").fill("Client review");
+  await page.getByRole("button", { name: "Add selected events" }).click();
+  await expect(page.locator(".track-title", { hasText: "Daily review" })).toHaveCount(5);
+  await expect(page.getByText("5", { exact: true })).toBeVisible();
 });
 
 test("preserves an overnight calendar event in the board and CSV", async ({ page }) => {
