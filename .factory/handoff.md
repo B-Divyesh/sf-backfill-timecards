@@ -5,7 +5,7 @@ Work order: `backfill-timecards-repair-2`
 Base verifier report: `744847603115e2dc1b3c1dc4a8dd5b700f139aee`
 Repaired candidate: `f29b7dcf9c4cf8f0b2eea93cbe8ecd0c3d23075b`
 
-## Result: PASS locally; ready for production deployment
+## Result: PASS — repaired and deployed
 
 The verifier's release blocker was intermittent throttled-mobile performance:
 two of three previous runs fell below 90 and one had CLS `0.120`. The cause
@@ -60,14 +60,39 @@ final production build (`127.0.0.1:4173`) all cleared the gate:
 zero page/console errors. Its captured desktop/mobile screenshots and JSON
 are in `.factory/evidence/repair-2/`.
 
-## Deployment and privacy
+## Deployment, live identity, and privacy
 
 The static artifact remains a Vite + vanilla TypeScript PWA with IndexedDB
 data ownership, a hand-written versioned worker, manifest, local JSON/CSV
 export, and no analytics or third-party fonts/scripts. `staticwebapp.config.json`
 continues to define immutable assets, no-store worker caching, AVIF/manifest
-MIME types, CSP, HSTS, and browser hardening. The next operation is the
-production static deployment, followed by live identity/header verification.
+MIME types, CSP, HSTS, and browser hardening.
+
+Commit `99f25e0` was pushed to `origin/main` and deployed using:
+
+```sh
+/opt/fleet/lib/deploy-static.sh backfill-timecards dist
+```
+
+Azure deployment `55d25622-cdad-46fb-97c5-408eed868dfb` succeeded. The
+canonical URL <https://backfill-timecards.sociobot.in/> returned HTTPS `200`;
+HTTP redirects to that URL. All 18 public files in `dist/` matched the live
+response SHA-256 exactly (the deployment configuration file is intentionally
+not a public asset). Final `index.html` SHA-256 is
+`a6d9d557778eb11ff2dafa0b4bf4b0f673cf7f615307ad9260ab6ffcec48622e`.
+
+Live response checks confirmed the configured CSP, HSTS
+`max-age=63072000; includeSubDomains; preload`, `X-Frame-Options: DENY`,
+`nosniff`, COOP/CORP, Permissions-Policy, immutable AVIF assets, and
+`application/manifest+json`. The live `verify-url.sh` browser smoke passed
+with zero console/page errors and is captured in
+`.factory/evidence/repair-2-live/`.
+
+On a live 390 × 844 Chromium session, the worker controlled the app; after
+visiting `/privacy/`, an offline root navigation still presented **Add work
+block**. The first Tab focused Skip to main content, all home/footer links
+were 44 px tall, there was no horizontal overflow, and normal use issued no
+third-party requests or console/page errors.
 
 ## Known gap
 
