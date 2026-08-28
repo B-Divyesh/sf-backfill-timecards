@@ -27,9 +27,9 @@ export class App {
   constructor(private readonly root: HTMLElement) {}
 
   async start(): Promise<void> {
-    // Paint the complete empty shell synchronously so IndexedDB startup cannot
-    // shift the page after first render.
-    this.render();
+    // index.html supplies an inert, geometry-matched empty board. Keeping it
+    // in place while IndexedDB opens avoids replacing a small loading message
+    // with the full board after FCP (a mobile CLS source under CPU throttling).
     this.bindGlobalEvents();
     this.registerServiceWorker();
     [this.entries, this.mappings, this.patterns] = await Promise.all([store.entries(), store.mappings(), store.patterns()]);
@@ -88,6 +88,7 @@ export class App {
     const isCurrentWeek = this.currentWeek === weekStart();
     const offline = !navigator.onLine;
 
+    this.root.removeAttribute("aria-busy");
     this.root.innerHTML = `
       <header class="site-header">
         <a class="brand" href="/" aria-label="Backfill Timecards home">

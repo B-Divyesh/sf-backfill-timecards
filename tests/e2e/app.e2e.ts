@@ -27,6 +27,15 @@ test("adds, persists, maps, and exports work blocks", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("ships a layout-stable empty board instead of a loading-only app mount", async () => {
+  const source = await readFile(new URL("../../index.html", import.meta.url), "utf8");
+  expect(source).not.toContain("Loading your local timecard");
+  expect(source).toContain('id="app" aria-busy="true"');
+  expect(source).toContain('class="hero"');
+  expect(source).toContain('class="workspace"');
+  expect(source).toContain('class="empty-state"');
+});
+
 test("reviews a local calendar file and imports only selected details", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Import calendar" }).first().click();
