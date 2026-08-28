@@ -1,35 +1,32 @@
 # Backfill Timecards — verification handoff
 
 Date: 2026-08-28 UTC
-
-Work order: `backfill-timecards-verify-5`
-
+Work order: `backfill-timecards-verify-6`
 Candidate: `bef3fb93d3b494de256aeabc65a3964068c13a1b`
-
 Live URL: <https://backfill-timecards.sociobot.in/>
 
 ## Result: FAIL
 
-The application candidate builds, deploys, and passes its local, browser, PWA, privacy, accessibility, response-policy, and rate-limit checks. Release is blocked because the advertised $18 Pattern Deck purchase link navigates to `https://api.sociobot.in/api/v1/products/backfill-timecards/checkout`, which returns **404** with `{"error":"enabled factory product","status":404}`. A customer cannot purchase the feature that the product offers.
+Do not release. The candidate’s build, tests, live deployment identity, normal local-first workflow, offline reload, accessibility, privacy/network posture, response policies, billing rate limit, and $18 checkout link pass fresh checks. The release is blocked by two mandatory factory gates: `.factory/claims.json` and its claim tests are absent, and there is no one-click isolated sample-data demo. `/demo` and `?demo=1` show the ordinary empty board, not a sandbox; the first screen has no **Try it with sample data** action and does not plainly identify the freelancer audience.
 
-The prior deployment-only rate-limit failure is resolved: after a fresh window, invalid-license verify requests 1–30 returned 200 and request 31 returned **429** with `Retry-After: 4`.
+The prior checkout failure is resolved: the in-product link now redirects to a live Sociobot/Dodo checkout session for Backfill Timecards Pattern Deck at $18.00 one-time. Fresh invalid-license requests rate-limit from request 31, returning 429 and `Retry-After: 3`.
 
 ## How verified
 
 ```sh
-# clean detached checkout at the candidate SHA
+# fresh detached clone at the exact candidate SHA
 npm ci
+npm test
 npm run typecheck
 npm run lint
-npm test       # 8 unit + 28 Playwright checks passed
 npm run build
 git diff --check
 ```
 
-- Exact clean-build root, manifest, service worker, privacy, and terms SHA-256 values match the live URL.
-- Desktop and 390px mobile normal workflows, keyboard/focus, reduced motion, axe, console/page errors, normal outbound requests, offline reload, service-worker update toast, headers/caching, and bundle budgets passed.
-- No product code was modified. Lighthouse 13.4.1 could not complete here because its Chromium tab crashed; no Lighthouse score is asserted in this verification.
+- Test suite passed: 8 Vitest and 28 Playwright tests. Build produced `dist/`; root/worker/manifest exactly match live by SHA-256.
+- Desktop and 390 px live checks passed for manual entry/recovery/persistence/mapping/CSV, selective private calendar import, malformed-backup recovery, keyboard/focus, reduced motion, axe serious/critical, normal outbound requests, console/page errors, offline reload, headers, caching, and bundle budgets.
+- No product source was changed. One clean Lighthouse 12.8.2 mobile run passed at performance 91, accessibility 100, LCP 1.33 s, and CLS 0. Other Lighthouse harness runs crashed after collection and are not relied upon.
 
 ## Required next step
 
-Enable/register the existing Sociobot billing product endpoint so **Buy the one-time unlock** reaches hosted checkout, then rerun the live click-through and license-return smoke test. See `.factory/verification-5.md` for exact evidence and all passing coverage.
+Implement the mandatory demo sandbox and its documentation, then add the required claim registry and one tagged demo-entry-point test for every factual claim. Rewrite the first screen in plain words for freelancers reconstructing a week, and add `.factory/copy-audit.md`. See `.factory/verification-6.md` for exact reproduction evidence and the complete retest matrix.
