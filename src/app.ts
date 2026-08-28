@@ -27,10 +27,13 @@ export class App {
   constructor(private readonly root: HTMLElement) {}
 
   async start(): Promise<void> {
-    [this.entries, this.mappings, this.patterns] = await Promise.all([store.entries(), store.mappings(), store.patterns()]);
+    // Paint the complete empty shell synchronously so IndexedDB startup cannot
+    // shift the page after first render.
     this.render();
     this.bindGlobalEvents();
     this.registerServiceWorker();
+    [this.entries, this.mappings, this.patterns] = await Promise.all([store.entries(), store.mappings(), store.patterns()]);
+    this.render();
     if (localStorage.getItem("sb_license:backfill-timecards")) {
       this.license = { ...this.license, checking: true };
       verifyLicense().then((state) => {
