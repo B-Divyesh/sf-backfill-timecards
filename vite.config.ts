@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 function injectServiceWorkerAssets() {
   return {
@@ -10,6 +10,10 @@ function injectServiceWorkerAssets() {
       const path = "dist/sw.js";
       const worker = readFileSync(path, "utf8").replace("const EXTRA_PRECACHE = [];", `const EXTRA_PRECACHE = ${JSON.stringify(assets)};`);
       writeFileSync(path, worker);
+      // `/demo` is a real address, not a client-side catch-all. A physical
+      // entry lets Static Web Apps return a genuine 404 for unknown routes.
+      mkdirSync("dist/demo", { recursive: true });
+      copyFileSync("dist/index.html", "dist/demo/index.html");
     },
   };
 }

@@ -55,7 +55,7 @@ Use `https://pilot-api.sociobot.in` as `VITE_BILLING_BASE` for registered stagin
 
 ## Deploy
 
-Deploy the contents of `dist/` as a static site, with `index.html` at its root. The service worker is scoped to `/`; serve over HTTPS and avoid rewriting `/sw.js`, `/manifest.webmanifest`, `/privacy/`, or `/terms/` to another asset. `staticwebapp.config.json` carries the immutable asset caching, correct AVIF/manifest MIME types, and browser response headers for the Static Web Apps deployment.
+Deploy the contents of `dist/` as a static site, with `index.html` at its root. The build also emits a physical `/demo/index.html`, so Static Web Apps can return the designed 404 for unknown routes. The service worker is scoped to `/`; serve over HTTPS and avoid rewriting `/sw.js`, `/manifest.webmanifest`, `/privacy/`, or `/terms/` to another asset. `staticwebapp.config.json` carries the immutable asset caching, correct AVIF/manifest MIME types, and browser response headers for the Static Web Apps deployment.
 
 ## Product notes
 

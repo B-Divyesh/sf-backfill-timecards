@@ -14,7 +14,7 @@ Every release blocker in `.factory/verification-7.md` was reproduced against the
 - Demo writes now use tab-scoped `sessionStorage` under `demo:backfill-timecards`, not IndexedDB. Browser tab closure therefore discards the sample by construction rather than depending on an asynchronous `pagehide` transaction. The app also removes a stale legacy demo IndexedDB database when a demo starts.
 - Returned and pasted license tokens now begin locked. A positive cached verdict is written only after a successful Sociobot verification. A network outage retains access only for a previously successful verdict; a new or forged token remains locked.
 - The claim registry now has nine complete, uniquely tagged browser claims. It covers demo tab closure, local/no-account/no-third-party runtime behavior, install metadata/offline behavior, and the full billing entitlement boundary in addition to the existing workflows.
-- Added the designed `404.html`, Static Web Apps 404 response override, canonical/Open Graph/Twitter/apple-touch metadata, versioned shared footers, and a reviewed 1200×630 social card derived from the product’s existing original artwork.
+- Added the designed `404.html`, a physical generated `/demo/index.html` entry, a Static Web Apps 404 response override with no catch-all navigation fallback, canonical/Open Graph/Twitter/apple-touch metadata, versioned shared footers, and a reviewed 1200×630 social card derived from the product’s existing original artwork.
 - Replaced the large inline production bundle with immutable hashed CSS/JS assets. The worker injects those assets into its precache and now matches its named shell cache directly, preserving external assets on offline app-route reloads.
 
 ## Verification evidence
@@ -67,7 +67,7 @@ npm test
 npm run build
 ```
 
-Deploy `dist/` as the static site root. `staticwebapp.config.json` is copied into `dist/` and supplies the SPA fallback, designed 404 response, cache policy, MIME types, and response headers.
+Deploy `dist/` as the static site root. `staticwebapp.config.json` is copied into `dist/` and supplies the designed 404 response, cache policy, MIME types, and response headers; `/demo` is emitted as a physical entry rather than a catch-all SPA route.
 
 ## Known gaps
 

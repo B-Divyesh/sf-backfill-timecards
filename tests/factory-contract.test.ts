@@ -16,6 +16,7 @@ const privacy = readFileSync(new URL("../public/privacy/index.html", import.meta
 const terms = readFileSync(new URL("../public/terms/index.html", import.meta.url), "utf8");
 const notFound = readFileSync(new URL("../public/404.html", import.meta.url), "utf8");
 const staticConfig = readFileSync(new URL("../public/staticwebapp.config.json", import.meta.url), "utf8");
+const viteConfig = readFileSync(new URL("../vite.config.ts", import.meta.url), "utf8");
 
 describe("factory release contracts", () => {
   it("declares each claim once and maps it to exactly one tagged browser test", () => {
@@ -55,5 +56,7 @@ describe("factory release contracts", () => {
     expect(staticConfig).toContain('"responseOverrides"');
     expect(staticConfig).toContain('"404"');
     expect(staticConfig).toContain('"rewrite": "/404.html"');
+    expect(staticConfig).not.toContain('"navigationFallback"');
+    expect(viteConfig).toContain('copyFileSync("dist/index.html", "dist/demo/index.html")');
   });
 });
