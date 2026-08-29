@@ -1,0 +1,147 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - link "Backfill Timecards home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - text: Backfill
+          - text: Timecards
+      - navigation "Primary navigation" [ref=e7]:
+        - link "Demo" [ref=e8] [cursor=pointer]:
+          - /url: /demo
+        - link "Privacy" [ref=e9] [cursor=pointer]:
+          - /url: /privacy/
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - generic [ref=e12]: ●
+          - text: Local · saved here
+        - button "Open data and license settings" [ref=e13] [cursor=pointer]: ☰
+    - main [ref=e14]:
+      - region "Reconstruct your freelance workweek" [ref=e15]:
+        - generic [ref=e16]:
+          - paragraph [ref=e17]: PRIVATE WEEKLY TIMECARDS
+          - heading "Reconstruct your freelance workweek" [level=1] [ref=e18]
+          - paragraph [ref=e19]: For freelancers logging work after the fact, turn reviewed calendar events and memory into a weekly timecard ready for invoicing.
+          - generic [ref=e20]:
+            - link "Try it with sample data" [ref=e21] [cursor=pointer]:
+              - /url: /demo
+            - button "Add your own work" [ref=e22] [cursor=pointer]
+            - paragraph [ref=e23]: The sample opens a separate weekly timecard without changing your work.
+          - list "Product facts" [ref=e24]:
+            - listitem [ref=e25]: ✓Weekly timecards stay on this device.
+            - listitem [ref=e26]: ✓Works offline after the first visit.
+            - listitem [ref=e27]: ✓Saved patterns and previous-week copying cost $18 once.
+        - figure "You choose every work block." [ref=e28]:
+          - img "A collage of a cassette insert arranged as seven blank timecard tracks with pencil marks and calendar scraps" [ref=e30]
+          - generic [ref=e31]: You choose every work block.
+      - region "Jan 14–20, 2030" [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - paragraph [ref=e35]: WEEKLY BOARD
+            - heading "Jan 14–20, 2030" [level=2] [ref=e36]
+          - navigation "Choose week" [ref=e37]:
+            - button "Previous week" [ref=e38] [cursor=pointer]: ←
+            - button "This week" [disabled] [ref=e39]
+            - button "Next week" [ref=e40] [cursor=pointer]: →
+        - generic "Week summary" [ref=e41]:
+          - generic [ref=e42]:
+            - term [ref=e43]: Total recorded
+            - definition [ref=e44]: 0m
+          - generic [ref=e45]:
+            - term [ref=e46]: Billable
+            - definition [ref=e47]: 0m
+          - generic [ref=e48]:
+            - term [ref=e49]: Entries
+            - definition [ref=e50]: "0"
+          - generic [ref=e51]:
+            - term [ref=e52]: Clients
+            - definition [ref=e53]: "0"
+        - group "Timecard actions" [ref=e54]:
+          - button "＋ Add work block" [ref=e55] [cursor=pointer]
+          - button "Import calendar" [ref=e56] [cursor=pointer]
+          - button "Reuse saved blocks — $18" [ref=e57] [cursor=pointer]
+          - button "Export CSV" [disabled] [ref=e58]
+        - generic [ref=e63]:
+          - paragraph [ref=e64]: EMPTY WEEK
+          - heading "No work blocks yet" [level=3] [ref=e65]
+          - paragraph [ref=e66]: Start from one thing you remember, or bring in a calendar file and choose only the events you want.
+          - generic [ref=e67]:
+            - button "Add the first block" [ref=e68] [cursor=pointer]
+            - button "Review a calendar file" [ref=e69] [cursor=pointer]
+      - region "Review your week in three steps" [ref=e70]:
+        - paragraph [ref=e71]: HOW IT WORKS
+        - heading "Review your week in three steps" [level=2] [ref=e72]
+        - list [ref=e73]:
+          - listitem [ref=e74]:
+            - strong [ref=e75]: Review calendar events.
+            - generic [ref=e76]: Import an .ics file and choose only useful events.
+          - listitem [ref=e77]:
+            - strong [ref=e78]: Record and correct work.
+            - generic [ref=e79]: Add details, clients, and billable choices yourself.
+          - listitem [ref=e80]:
+            - strong [ref=e81]: Export the week.
+            - generic [ref=e82]: Download an invoice-ready CSV when every row looks right.
+      - region "Your week stays in this browser." [ref=e83]:
+        - paragraph [ref=e84]: ＋
+        - generic [ref=e85]:
+          - paragraph [ref=e86]: LOCAL DATA
+          - heading "Your week stays in this browser." [level=2] [ref=e87]
+        - paragraph [ref=e88]: Calendar files are read here, not uploaded. No account is required. Export, restore, or erase your archive whenever you want.
+        - button "Manage local data" [ref=e89] [cursor=pointer]
+      - region "Reuse common work with Pattern Deck" [ref=e90]:
+        - generic [ref=e91]:
+          - paragraph [ref=e92]: OPTIONAL ONE-TIME PURCHASE
+          - heading "Reuse common work with Pattern Deck" [level=2] [ref=e93]
+          - paragraph [ref=e94]: Pattern Deck costs $18 once. It saves reusable blocks and copies a previous week into matching days.
+          - paragraph [ref=e95]: The weekly board, calendar import, CSV export, backups, and privacy controls remain free.
+        - button "Review reuse tools — $18" [ref=e96] [cursor=pointer]
+    - contentinfo [ref=e97]:
+      - paragraph [ref=e98]: Private weekly timecards for freelancers.
+      - navigation "Legal and product links" [ref=e99]:
+        - link "Privacy" [ref=e100] [cursor=pointer]:
+          - /url: /privacy/
+        - link "Terms" [ref=e101] [cursor=pointer]:
+          - /url: /terms/
+        - link "Param Factory (external)" [ref=e102] [cursor=pointer]:
+          - /url: https://sociobot.in
+      - paragraph [ref=e103]: Build r6 · 2026-08-29
+    - status [ref=e104]
+    - status [ref=e105]:
+      - generic [ref=e106]: Could not verify this license. Check your connection and try again.
+  - dialog [ref=e107]:
+    - generic [ref=e108]:
+      - generic [ref=e109]:
+        - generic [ref=e110]:
+          - paragraph [ref=e111]: ONE-TIME UNLOCK
+          - heading "Make repeat weeks faster" [level=2] [ref=e112]
+        - button "Close dialog" [active] [ref=e113] [cursor=pointer]: ×
+      - paragraph [ref=e114]:
+        - strong [ref=e115]: $18
+        - text: once
+      - list [ref=e116]:
+        - listitem [ref=e117]: Clone a previous week into matching days
+        - listitem [ref=e118]: Save unlimited reusable work patterns
+        - listitem [ref=e119]: Own the utility—no recurring subscription
+      - paragraph [ref=e120]: The free workspace, calendar import, CSV/JSON export, and privacy tools remain available without a license.
+      - paragraph [ref=e121]: Could not verify this license. Check your connection and try again.
+      - link "Buy the one-time unlock" [ref=e122] [cursor=pointer]:
+        - /url: https://api.sociobot.in/api/v1/products/backfill-timecards/checkout
+      - generic [ref=e123]:
+        - generic [ref=e124]:
+          - text: Have a license? Paste it here
+          - textbox "Have a license? Paste it here" [ref=e125]
+        - button "Verify and restore" [ref=e126] [cursor=pointer]
+        - status [ref=e127]
+      - paragraph [ref=e128]:
+        - text: Checkout is hosted by Sociobot; Dodo is merchant of record. Refunds are handled there and revoke the license.
+        - link "Privacy" [ref=e129] [cursor=pointer]:
+          - /url: /privacy/
+        - text: ·
+        - link "Terms" [ref=e130] [cursor=pointer]:
+          - /url: /terms/
+```
