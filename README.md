@@ -1,6 +1,6 @@
 # Backfill Timecards
 
-Backfill Timecards is a private weekly board for freelancers who reconstruct work after the fact. It turns memory and reviewed calendar events into clear work blocks and an invoice-ready CSV.
+Backfill Timecards is a private weekly timecard for freelancers who reconstruct work after the fact. It turns memory and reviewed calendar events into clear work blocks and an invoice-ready CSV.
 
 Live product: <https://backfill-timecards.sociobot.in>
 
@@ -8,29 +8,29 @@ Try the isolated sample week: <https://backfill-timecards.sociobot.in/demo>
 
 ## What it does
 
-- Adds, edits, copies, and deletes source-labelled work blocks across a seven-day board.
+- Adds, edits, copies, and deletes work blocks marked Manual, Calendar, or Pattern.
 - Imports `.ics` calendar files locally, with event selection, optional descriptions, and an explicit billable choice that defaults off.
-- Reviews bounded daily or weekly recurring events and overnight events before import.
-- Remembers project→client mappings to speed up repeat entry.
+- Reviews daily or weekly repeating events that have an end date, plus overnight events.
+- Remembers the client for each project when you add more work.
 - Exports the selected week as invoice-ready CSV.
-- Exports, restores, and erases a complete local JSON archive.
-- Installs as a PWA and works offline after the first visit.
+- Exports, restores, and erases a complete local JSON backup.
+- Installs as a web app and works offline after the first visit.
 - Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. Checkout and license verification use Sociobot billing; no payment provider is embedded.
 
-Every visitor-facing claim has a browser test in [`.factory/claims.json`](.factory/claims.json). All claim tests start at `/demo`, where realistic sample records use tab-scoped `demo:backfill-timecards` session storage. **Reset demo** restores the sample, **Start for real** clears it before opening the normal workspace, and closing the demo tab discards it. See [`.factory/demo.md`](.factory/demo.md).
+Six claim tests start at `/demo`. The demo-isolation, normal-privacy, and billing tests start in clean normal workspaces as described in [`.factory/claims.json`](.factory/claims.json).
 
-All timecard data lives in IndexedDB on the current device. A purchased license token is kept in localStorage. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
+Demo records use temporary browser storage limited to that demo tab. **Reset demo** restores the sample. **Start for real** clears it before opening your weekly timecard. See [`.factory/demo.md`](.factory/demo.md).
+
+Outside demo mode, work blocks, client mappings, and patterns stay in this browser’s local database. A purchased license token stays in this browser’s settings storage. Normal timecard work makes only same-origin requests. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
+
+Developer note: the normal database uses IndexedDB. Demo records use sessionStorage, and license settings use localStorage.
 
 ## Develop
 
-Requirements: Node.js 20+ and npm.
-
 ```sh
-npm install
+npm ci
 npm run dev
 ```
-
-The app uses Vite and vanilla TypeScript. It has no product backend, external fonts, or third-party runtime UI dependencies.
 
 ## Test and build
 
@@ -42,7 +42,7 @@ npm run build     # reproducible static output in ./dist
 npm run preview   # preview the production build
 ```
 
-Playwright is pinned to 1.58.2. The test suite starts production preview servers automatically. The production build uses hashed CSS and JavaScript assets, and the service worker precaches the matching app shell and assets for offline reloads.
+Run `npm test`; the Playwright configuration starts its preview servers.
 
 Optional build-time variables:
 
@@ -55,7 +55,7 @@ Use `https://pilot-api.sociobot.in` as `VITE_BILLING_BASE` for registered stagin
 
 ## Deploy
 
-Deploy the contents of `dist/` as a static site, with `index.html` at its root. The build also emits a physical `/demo/index.html`, so Static Web Apps can return the designed 404 for unknown routes. The service worker is scoped to `/`; serve over HTTPS and avoid rewriting `/sw.js`, `/manifest.webmanifest`, `/privacy/`, or `/terms/` to another asset. `staticwebapp.config.json` carries the immutable asset caching, correct AVIF/manifest MIME types, and browser response headers for the Static Web Apps deployment.
+Deploy the contents of `dist/` as a static site, with `index.html` at its root. Serve `/sw.js` from the site root. Keep `/demo/`, `/privacy/`, `/terms/`, and `/404.html` as physical routes.
 
 ## Product notes
 

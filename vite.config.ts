@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 function injectServiceWorkerAssets() {
   return {
@@ -13,7 +13,16 @@ function injectServiceWorkerAssets() {
       // `/demo` is a real address, not a client-side catch-all. A physical
       // entry lets Static Web Apps return a genuine 404 for unknown routes.
       mkdirSync("dist/demo", { recursive: true });
-      copyFileSync("dist/index.html", "dist/demo/index.html");
+      const demoTitle = "Demo — Backfill Timecards";
+      const demoDescription = "Try a populated freelance timecard in a separate demo that saves nothing to your real work.";
+      const demoHtml = html
+        .replace("<title>Backfill Timecards — reconstruct your workweek</title>", `<title>${demoTitle}</title>`)
+        .replace('content="Reconstruct a freelance workweek privately, then export an invoice-ready CSV."', `content="${demoDescription}"`)
+        .replace('href="https://backfill-timecards.sociobot.in/"', 'href="https://backfill-timecards.sociobot.in/demo"')
+        .replace('content="https://backfill-timecards.sociobot.in/"', 'content="https://backfill-timecards.sociobot.in/demo"')
+        .replaceAll('content="Backfill Timecards — reconstruct your workweek"', `content="${demoTitle}"`)
+        .replaceAll('content="Reconstruct a freelance workweek privately, then export an invoice-ready CSV."', `content="${demoDescription}"`);
+      writeFileSync("dist/demo/index.html", demoHtml);
     },
   };
 }

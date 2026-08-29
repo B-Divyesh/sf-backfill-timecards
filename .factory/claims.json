@@ -15,7 +15,7 @@
   },
   {
     "id": "calendar-local",
-    "claim": "Calendar files are reviewed and imported locally, including bounded recurrences and overnight events; descriptions and billability require explicit choices.",
+    "claim": "Calendar files are reviewed and imported locally, including repeating events with an end date and overnight events; descriptions and billability require explicit choices.",
     "where": "how it works, local data section, privacy policy, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:calendar-local",
     "sandbox": "fresh /demo; import a local fixture with recurrence, private description, and overnight event; assert results, defaults, tab-only demo storage, and no off-origin requests"
@@ -29,7 +29,7 @@
   },
   {
     "id": "local-archive",
-    "claim": "Exports, erases, and restores the complete local JSON archive.",
+    "claim": "Exports, erases, and restores the complete local JSON backup.",
     "where": "local data section, settings, privacy policy, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:local-archive",
     "sandbox": "fresh /demo; export JSON; erase demo archive; restore downloaded file; assert sample returns"
@@ -57,9 +57,9 @@
   },
   {
     "id": "billing-entitlement",
-    "claim": "Pattern Deck costs $18 once through Sociobot billing; a new or restored token stays locked until verification succeeds, then a successful verdict is cached for one day.",
+    "claim": "Pattern Deck costs $18 once through Sociobot billing without an embedded payment provider; a new or restored token stays locked until verification succeeds, then a successful verdict is cached for one day.",
     "where": "paid section, unlock dialog, privacy policy, terms, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:billing-entitlement",
-    "sandbox": "fresh normal workspace with a controlled clock; abort a forged returned-token verification and assert the locked state; assert the $18 once price and Sociobot checkout URL; mock one successful restore; reload at 86,399,999 ms and assert no recheck; reload at 86,400,000 ms with a revoked response and assert Pattern Deck locks"
+    "sandbox": "fresh normal workspace with a controlled clock; abort a forged returned-token verification and assert the locked state; assert the $18 once price, Sociobot checkout URL, same-origin scripts, and absence of payment frames or card fields; mock one successful restore; reload at 86,399,999 ms and assert no recheck; reload at 86,400,000 ms with a revoked response and assert Pattern Deck locks"
   }
 ]

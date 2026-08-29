@@ -55,8 +55,8 @@ export class App {
   private patterns: Pattern[] = [];
   private currentWeek = weekStart();
   private license: LicenseState;
-  private readonly demoMode: boolean;
-  private readonly dataStore: TimecardStore;
+  private demoMode: boolean;
+  private dataStore: TimecardStore;
   private toastTimer = 0;
 
   constructor(private readonly root: HTMLElement) {
@@ -82,10 +82,7 @@ export class App {
     }
     [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
     const hasLicense = !this.demoMode && Boolean(localStorage.getItem("sb_license:backfill-timecards"));
-    const pageUrl = this.demoMode ? "https://backfill-timecards.sociobot.in/demo" : "https://backfill-timecards.sociobot.in/";
-    document.title = this.demoMode ? "Demo — Backfill Timecards" : "Backfill Timecards — reconstruct your workweek";
-    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute("href", pageUrl);
-    document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute("content", pageUrl);
+    this.updateMetadata();
     if (this.entries.length === 0 && !hasLicense) this.hydrateEmptyShell();
     else this.render();
     if (hasLicense) {
@@ -137,15 +134,83 @@ export class App {
       if (action === "patterns") this.openPatternsDialog();
       if (action === "export-csv") this.exportCsv();
       if (action === "settings") this.openSettingsDialog();
-      if (action === "try-demo") location.assign("/demo");
+      if (action === "try-demo") { event.preventDefault(); void this.enterDemo(true); }
       if (action === "reset-demo") void this.resetDemo();
       if (action === "start-real") { event.preventDefault(); void this.startForReal(target); }
     });
     window.addEventListener("online", () => { this.render(); this.showToast("Back online. Your local work was always available."); });
     window.addEventListener("offline", () => { this.render(); this.showToast("Offline. You can keep working; changes stay on this device."); });
     window.addEventListener("pageshow", () => { if (!this.demoMode && sessionStorage.getItem(DEMO_SESSION_KEY)) void this.discardDemoData(); });
+    window.addEventListener("popstate", () => { void this.syncRoute(); });
     // Demo records are tab-scoped sessionStorage, so closing or crashing the
     // tab discards them without relying on an unload-time async transaction.
+  }
+
+  private routeIsDemo(): boolean {
+    const url = new URL(location.href);
+    return url.pathname === "/demo" || url.pathname === "/demo/" || url.searchParams.get("demo") === "1";
+  }
+
+  private async enterDemo(push: boolean): Promise<void> {
+    if (push) history.pushState({ route: "demo" }, "", "/demo");
+    this.demoMode = true;
+    this.dataStore = demoStore;
+    this.license = { unlocked: true, checking: false, notice: "" };
+    sessionStorage.setItem(DEMO_SESSION_KEY, "1");
+    await clearLegacyDemoDatabase();
+    await this.dataStore.clearAll();
+    await this.dataStore.importAll(sampleBackup());
+    [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
+    this.currentWeek = weekStart();
+    this.updateMetadata();
+    this.render();
+    this.finishRouteChange();
+  }
+
+  private async enterReal(push: boolean): Promise<void> {
+    await this.discardDemoData();
+    if (push) history.pushState({ route: "home" }, "", "/");
+    this.demoMode = false;
+    this.dataStore = store;
+    this.license = initialLicenseState();
+    [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
+    this.currentWeek = weekStart();
+    this.updateMetadata();
+    this.render();
+    this.finishRouteChange();
+  }
+
+  private async syncRoute(): Promise<void> {
+    const nextDemoMode = this.routeIsDemo();
+    if (nextDemoMode === this.demoMode) return;
+    if (nextDemoMode) await this.enterDemo(false);
+    else await this.enterReal(false);
+  }
+
+  private updateMetadata(): void {
+    const pageUrl = this.demoMode ? "https://backfill-timecards.sociobot.in/demo" : "https://backfill-timecards.sociobot.in/";
+    const title = this.demoMode ? "Demo — Backfill Timecards" : "Backfill Timecards — reconstruct your workweek";
+    const description = this.demoMode
+      ? "Try a populated freelance timecard in a separate demo that saves nothing to your real work."
+      : "Reconstruct a freelance workweek privately, then export an invoice-ready CSV.";
+    document.title = title;
+    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute("href", pageUrl);
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", description);
+    document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute("content", pageUrl);
+    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute("content", title);
+    document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute("content", description);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')?.setAttribute("content", title);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')?.setAttribute("content", description);
+  }
+
+  private finishRouteChange(): void {
+    requestAnimationFrame(() => {
+      const heading = this.root.querySelector<HTMLElement>("h1");
+      heading?.focus();
+      const status = this.root.querySelector<HTMLElement>("#route-status");
+      if (status && heading) status.textContent = `${heading.textContent?.trim() || document.title} page loaded`;
+      scrollTo({ top: 0, behavior: "instant" });
+    });
   }
 
   private async resetDemo(): Promise<void> {
@@ -160,8 +225,12 @@ export class App {
 
   private async startForReal(target: HTMLElement): Promise<void> {
     if (!this.demoMode) return;
-    await this.discardDemoData();
-    location.assign(target.closest<HTMLAnchorElement>("a")?.href || "/");
+    const destination = new URL(target.closest<HTMLAnchorElement>("a")?.href || "/", location.href);
+    if (destination.origin === location.origin && destination.pathname === "/") await this.enterReal(true);
+    else {
+      await this.discardDemoData();
+      location.assign(destination.href);
+    }
   }
 
   private async discardDemoData(): Promise<void> {
@@ -183,32 +252,62 @@ export class App {
     const isCurrentWeek = this.currentWeek === weekStart();
     const offline = !navigator.onLine;
     const leaveDemo = this.demoMode ? 'data-action="start-real"' : "";
-
-    this.root.removeAttribute("aria-busy");
-    this.root.innerHTML = `
-      ${this.demoMode ? `<aside class="demo-banner" aria-label="Demo mode"><strong>Demo — sample data, nothing is saved</strong><span>It never changes your real timecard and vanishes when this tab closes.</span><div><button type="button" data-action="reset-demo">Reset demo</button><a class="button-link" href="/" data-action="start-real">Start for real</a></div></aside>` : ""}
+    const demoNav = this.demoMode ? 'aria-current="page"' : 'data-action="try-demo"';
+    const heading = this.demoMode
+      ? `<h1 id="week-heading" tabindex="-1">Sample weekly timecard · ${formatWeekRange(this.currentWeek)}</h1>`
+      : `<h2 id="week-heading" tabindex="-1">${formatWeekRange(this.currentWeek)}</h2>`;
+    const header = `
       <header class="site-header">
         <a class="brand" href="/" ${leaveDemo} aria-label="Backfill Timecards home">
           <img src="/icons/icon.svg" width="40" height="40" alt="" />
           <span>Backfill<br>Timecards</span>
         </a>
+        <nav class="site-nav" aria-label="Primary navigation"><a href="/demo" ${demoNav}>Demo</a><a href="/privacy/" ${leaveDemo}>Privacy</a></nav>
         <div class="header-actions">
           <span class="status-pill ${offline ? "is-offline" : ""}" aria-live="polite"><span aria-hidden="true">●</span> ${offline ? "Offline · saved here" : "Local · saved here"}</span>
           <button class="icon-button" type="button" data-action="settings" aria-label="Open data and license settings" title="Data and license settings">☰</button>
         </div>
-      </header>
-      <main id="main" tabindex="-1">
+      </header>`;
+    const workspace = `
+      <section class="workspace" aria-labelledby="week-heading">
+        <div class="week-bar">
+          <div><p class="eyebrow">${this.demoMode ? "POPULATED SAMPLE" : "WEEKLY BOARD"}</p>${heading}</div>
+          <nav class="week-nav" aria-label="Choose week">
+            <button type="button" class="square-button" data-action="previous-week" aria-label="Previous week">←</button>
+            <button type="button" class="text-button" data-action="this-week" ${isCurrentWeek ? "disabled" : ""}>This week</button>
+            <button type="button" class="square-button" data-action="next-week" aria-label="Next week">→</button>
+          </nav>
+        </div>
+        <dl class="summary-strip" aria-label="Week summary">
+          <div><dt>Total recorded</dt><dd>${formatDuration(totalMinutes)}</dd></div>
+          <div><dt>Billable</dt><dd>${formatDuration(billableMinutes)}</dd></div>
+          <div><dt>Entries</dt><dd>${entries.length}</dd></div>
+          <div><dt>Clients</dt><dd>${clients}</dd></div>
+        </dl>
+        <div class="toolbelt" role="group" aria-label="Timecard actions">
+          <button type="button" class="primary-button" data-action="add">＋ Add work block</button>
+          <button type="button" data-action="calendar">Import calendar</button>
+          <button type="button" data-action="patterns">Reuse saved blocks — ${this.license.unlocked ? '<span class="mini-stamp">UNLOCKED</span>' : '<span class="mini-stamp">$18</span>'}</button>
+          <button type="button" data-action="export-csv" ${entries.length ? "" : "disabled"}>Export CSV</button>
+        </div>
+        ${entries.length ? this.renderDays(entries, this.demoMode ? "h2" : "h3") : this.renderEmptyState()}
+      </section>`;
+
+    this.root.removeAttribute("aria-busy");
+    this.root.innerHTML = `
+      ${this.demoMode ? `<aside class="demo-banner" aria-label="Demo mode"><strong>Demo — sample data, nothing is saved</strong><span>It never changes your real timecard and vanishes when this tab closes.</span><div><button type="button" data-action="reset-demo">Reset demo</button><a class="button-link" href="/" data-action="start-real">Start for real</a></div></aside>` : ""}
+      ${header}
+      <main id="main" class="${this.demoMode ? "demo-main" : ""}" tabindex="-1">
+        ${this.demoMode ? workspace : `
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow">PRIVATE WEEKLY TIMECARDS</p>
-            <h1 id="hero-title">Reconstruct your <span>freelance workweek</span></h1>
-            <p class="lede">For freelancers logging work after the fact, turn calendar clues and memory into a timecard ready for invoicing.</p>
+            <h1 id="hero-title" tabindex="-1">Reconstruct your <span>freelance workweek</span></h1>
+            <p class="lede">For freelancers logging work after the fact, turn reviewed calendar events and memory into a weekly timecard ready for invoicing.</p>
             <div class="hero-actions">
-              ${this.demoMode
-                ? '<button type="button" class="primary-button" data-action="add">Add a work block</button><button type="button" data-action="reset-demo">Reset sample data</button><p>Six sample blocks and the paid Pattern Deck preview are ready to use.</p>'
-                : '<button type="button" class="primary-button" data-action="try-demo">Try it with sample data</button><button type="button" data-action="add">Add your own work</button><p>The sample opens a separate timecard without changing your work.</p>'}
+              <a class="primary-button button-link" href="/demo" data-action="try-demo">Try it with sample data</a><button type="button" data-action="add">Add your own work</button><p>The sample opens a separate weekly timecard without changing your work.</p>
             </div>
-            <ul class="hero-facts" aria-label="Product facts"><li>Timecards stay on this device.</li><li>Works offline after the first visit.</li><li>The core workspace is free. Pattern Deck costs $18 once.</li></ul>
+            <ul class="hero-facts" aria-label="Product facts"><li data-fact="privacy">Weekly timecards stay on this device.</li><li data-fact="offline">Works offline after the first visit.</li><li data-fact="price">Saved patterns and previous-week copying cost $18 once.</li></ul>
           </div>
           <figure class="hero-art">
             <picture>
@@ -219,40 +318,11 @@ export class App {
             <figcaption>You choose every work block.</figcaption>
           </figure>
         </section>
-
-        <section class="workspace" aria-labelledby="week-heading">
-          <div class="week-bar">
-            <div>
-              <p class="eyebrow">WEEKLY BOARD</p>
-              <h2 id="week-heading" tabindex="-1">${formatWeekRange(this.currentWeek)}</h2>
-            </div>
-            <nav class="week-nav" aria-label="Choose week">
-              <button type="button" class="square-button" data-action="previous-week" aria-label="Previous week">←</button>
-              <button type="button" class="text-button" data-action="this-week" ${isCurrentWeek ? "disabled" : ""}>This week</button>
-              <button type="button" class="square-button" data-action="next-week" aria-label="Next week">→</button>
-            </nav>
-          </div>
-
-          <dl class="summary-strip" aria-label="Week summary">
-            <div><dt>Total recorded</dt><dd>${formatDuration(totalMinutes)}</dd></div>
-            <div><dt>Billable</dt><dd>${formatDuration(billableMinutes)}</dd></div>
-            <div><dt>Entries</dt><dd>${entries.length}</dd></div>
-            <div><dt>Clients</dt><dd>${clients}</dd></div>
-          </dl>
-
-          <div class="toolbelt" role="group" aria-label="Timecard actions">
-            <button type="button" class="primary-button" data-action="add">＋ Add work block</button>
-            <button type="button" data-action="calendar">Import calendar</button>
-            <button type="button" data-action="patterns">Pattern deck ${this.license.unlocked ? '<span class="mini-stamp">UNLOCKED</span>' : '<span class="mini-stamp">$18</span>'}</button>
-            <button type="button" data-action="export-csv" ${entries.length ? "" : "disabled"}>Export CSV</button>
-          </div>
-
-          ${entries.length ? this.renderDays(entries) : this.renderEmptyState()}
-        </section>
+        ${workspace}
         <section class="how-it-works" aria-labelledby="how-heading">
           <p class="eyebrow">HOW IT WORKS</p>
           <h2 id="how-heading">Review your week in three steps</h2>
-          <ol><li><strong>Gather calendar clues.</strong><span>Import an .ics file and choose only useful events.</span></li><li><strong>Record and correct work.</strong><span>Add details, clients, and billable choices yourself.</span></li><li><strong>Export the week.</strong><span>Download an invoice-ready CSV when every row looks right.</span></li></ol>
+          <ol><li><strong>Review calendar events.</strong><span>Import an .ics file and choose only useful events.</span></li><li><strong>Record and correct work.</strong><span>Add details, clients, and billable choices yourself.</span></li><li><strong>Export the week.</strong><span>Download an invoice-ready CSV when every row looks right.</span></li></ol>
         </section>
         <section class="privacy-note" aria-labelledby="privacy-note-heading">
           <p class="registration" aria-hidden="true">＋</p>
@@ -262,14 +332,16 @@ export class App {
         </section>
         <section class="paid-note" aria-labelledby="paid-heading">
           <div><p class="eyebrow">OPTIONAL ONE-TIME PURCHASE</p><h2 id="paid-heading">Reuse common work with Pattern Deck</h2><p>Pattern Deck costs $18 once. It saves reusable blocks and copies a previous week into matching days.</p><p>The weekly board, calendar import, CSV export, backups, and privacy controls remain free.</p></div>
-          <button type="button" class="primary-button" data-action="patterns">${this.demoMode ? "Try Pattern Deck" : "See the $18 Pattern Deck"}</button>
+          <button type="button" class="primary-button" data-action="patterns">Review reuse tools — $18</button>
         </section>
+        `}
       </main>
       <footer>
         <p>Private weekly timecards for freelancers.</p>
-        <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Built by Param Factory</a></nav>
-        <p class="generated-note">Editorial artwork generated for this product with Azure AI Foundry.</p><p class="build-id">Build r5 · 2026-08-29</p>
+        <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Param Factory (external)</a></nav>
+        <p class="build-id">Build r6 · 2026-08-29</p>
       </footer>
+      <div id="route-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
       <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>`;
   }
 
@@ -286,7 +358,7 @@ export class App {
       </div>`;
   }
 
-  private renderDays(entries: TimeEntry[]): string {
+  private renderDays(entries: TimeEntry[], headingTag: "h2" | "h3"): string {
     return `<div class="days">${weekDates(this.currentWeek).map((date, index) => {
       const label = dateLabel(date);
       const dayEntries = entries.filter((entry) => entry.date === date);
@@ -294,7 +366,7 @@ export class App {
       return `
         <section class="day" aria-labelledby="day-${index}">
           <header class="day-header">
-            <div><h3 id="day-${index}">${label.weekday}</h3><p>${label.date}</p></div>
+            <div><${headingTag} id="day-${index}">${label.weekday}</${headingTag}><p>${label.date}</p></div>
             <span>${formatDuration(total)}</span>
             <button type="button" class="add-day" data-action="add" data-date="${date}" aria-label="Add work block on ${label.weekday}, ${label.date}">＋</button>
           </header>
@@ -315,8 +387,8 @@ export class App {
         </div>
         <div class="track-actions">
           <button type="button" data-action="edit" data-id="${entry.id}" aria-label="Edit ${escapeHtml(entry.description)}">Edit</button>
-          <button type="button" class="more-action" data-action="duplicate" data-id="${entry.id}" aria-label="Duplicate ${escapeHtml(entry.description)}">Copy</button>
-          <button type="button" class="more-action" data-action="save-pattern" data-id="${entry.id}" aria-label="Save ${escapeHtml(entry.description)} as a pattern">Pattern</button>
+          <button type="button" class="more-action" data-action="duplicate" data-id="${entry.id}" aria-label="Copy ${escapeHtml(entry.description)}">Copy</button>
+          <button type="button" class="more-action" data-action="save-pattern" data-id="${entry.id}" aria-label="Pattern: save ${escapeHtml(entry.description)}">Pattern</button>
           <button type="button" class="danger-action more-action" data-action="delete" data-id="${entry.id}" aria-label="Delete ${escapeHtml(entry.description)}">Delete</button>
         </div>
       </li>`;
@@ -416,7 +488,7 @@ export class App {
   private openCalendarDialog(): void {
     const dialog = this.makeDialog("calendar-dialog", `
       <div class="dialog-card wide-dialog">
-        <div class="dialog-heading"><div><p class="eyebrow">LOCAL CALENDAR IMPORT</p><h2>Bring in calendar clues</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
+        <div class="dialog-heading"><div><p class="eyebrow">LOCAL CALENDAR IMPORT</p><h2>Review calendar events</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
         <p>Choose an exported <strong>.ics</strong> file. It is read only in this browser and never uploaded.</p>
         <label class="file-drop"><span>Choose an .ics file</span><input id="calendar-file" type="file" accept=".ics,text/calendar" /></label>
         <div id="calendar-review" class="calendar-review" aria-live="polite"><p class="muted">Events will appear here for review before anything is added.</p></div>

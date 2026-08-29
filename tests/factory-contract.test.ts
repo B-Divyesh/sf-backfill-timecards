@@ -17,6 +17,7 @@ const terms = readFileSync(new URL("../public/terms/index.html", import.meta.url
 const notFound = readFileSync(new URL("../public/404.html", import.meta.url), "utf8");
 const staticConfig = readFileSync(new URL("../public/staticwebapp.config.json", import.meta.url), "utf8");
 const viteConfig = readFileSync(new URL("../vite.config.ts", import.meta.url), "utf8");
+const appleTouchIcon = readFileSync(new URL("../public/icons/apple-touch-icon.png", import.meta.url));
 
 describe("factory release contracts", () => {
   it("declares each claim once and maps it to exactly one tagged browser test", () => {
@@ -35,9 +36,10 @@ describe("factory release contracts", () => {
   it("ships the plain first-read message and one-click demo action in the static shell", () => {
     expect(staticShell).toContain("Reconstruct your <span>freelance workweek</span>");
     expect(staticShell).toContain("For freelancers logging work after the fact");
-    expect(staticShell).toContain('data-action="try-demo">Try it with sample data</button>');
-    expect(staticShell).toContain("Timecards stay on this device.");
+    expect(staticShell).toContain('href="/demo" data-action="try-demo">Try it with sample data</a>');
+    expect(staticShell).toContain("Weekly timecards stay on this device.");
     expect(staticShell).toContain("Works offline after the first visit.");
+    expect(staticShell).toContain("Saved patterns and previous-week copying cost $18 once.");
     expect(staticShell).not.toContain("Rebuild the week");
   });
 
@@ -48,15 +50,20 @@ describe("factory release contracts", () => {
       expect(document).toContain('property="og:title"');
       expect(document).toContain('name="twitter:card"');
       expect(document).toContain("Private weekly timecards for freelancers.");
-      expect(document).toContain("Built by Param Factory");
-      expect(document).toContain("Build r5 · 2026-08-29");
+      expect(document).toContain("Param Factory (external)");
+      expect(document).toContain("Build r6 · 2026-08-29");
+      expect(document).toContain('href="/icons/apple-touch-icon.png"');
     }
-    expect(notFound).toContain("This page is not on the timecard.");
+    expect(notFound).toContain("<h1>Page not found</h1>");
+    expect(notFound).toContain('property="og:url"');
     expect(notFound).toContain("Open Backfill Timecards");
+    expect(appleTouchIcon.readUInt32BE(16)).toBe(180);
+    expect(appleTouchIcon.readUInt32BE(20)).toBe(180);
     expect(staticConfig).toContain('"responseOverrides"');
     expect(staticConfig).toContain('"404"');
     expect(staticConfig).toContain('"rewrite": "/404.html"');
     expect(staticConfig).not.toContain('"navigationFallback"');
-    expect(viteConfig).toContain('copyFileSync("dist/index.html", "dist/demo/index.html")');
+    expect(viteConfig).toContain('writeFileSync("dist/demo/index.html", demoHtml)');
+    expect(viteConfig).toContain("Demo — Backfill Timecards");
   });
 });

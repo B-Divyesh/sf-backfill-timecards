@@ -54,7 +54,7 @@ test("hydrates the empty shell without replacing its rendered workspace", async 
   await expect(page.locator("#week-heading")).not.toHaveText("This week");
 });
 
-test("imports calendar clues as non-billable by default and exports that decision", async ({ page }) => {
+test("imports calendar events as non-billable by default and exports that decision", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Import calendar" }).first().click();
   const ics = `BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:one\r\nDTSTART:20260824T130000\r\nDTEND:20260824T140000\r\nSUMMARY:Design review\r\nDESCRIPTION:Confidential launch notes\r\nEND:VEVENT\r\nEND:VCALENDAR`;
@@ -134,7 +134,7 @@ test("keeps the offline timecard shell after visiting a legal page", async ({ pa
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
   await page.reload();
   await page.goto(`${origin}/privacy/`);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Your work stays yours");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("How Backfill Timecards stores your data");
   await context.setOffline(true);
   await page.goto(`${origin}/?offline-check=1`);
   await expect(page.getByRole("button", { name: "Add work block" }).first()).toBeVisible();
@@ -145,9 +145,9 @@ test("keeps footer and home targets at least 44px tall on a 390px viewport", asy
   if (page.viewportSize()?.width !== 390) test.skip();
   for (const link of [
     page.getByRole("link", { name: "Backfill Timecards home" }),
-    page.getByRole("link", { name: "Privacy" }),
-    page.getByRole("link", { name: "Terms" }),
-    page.getByRole("link", { name: "Built by Param Factory" }),
+    page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Privacy" }),
+    page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Terms" }),
+    page.getByRole("link", { name: "Param Factory (external)" }),
   ]) {
     expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(44);
   }
@@ -156,9 +156,23 @@ test("keeps footer and home targets at least 44px tall on a 390px viewport", asy
 test("keeps the privacy and terms pages free of serious accessibility violations", async ({ page }) => {
   for (const path of ["/privacy/", "/terms/"]) {
     await page.goto(path);
+    await expect(page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Demo" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Privacy" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Terms" })).toBeVisible();
     const results = await new AxeBuilder({ page: page as never }).analyze();
     expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
   }
+});
+
+test("serves route-specific demo metadata before JavaScript", async ({ request }) => {
+  const response = await request.get("/demo/");
+  expect(response.ok()).toBe(true);
+  const html = await response.text();
+  expect(html).toContain("<title>Demo — Backfill Timecards</title>");
+  expect(html).toContain('rel="canonical" href="https://backfill-timecards.sociobot.in/demo"');
+  expect(html).toContain('property="og:url" content="https://backfill-timecards.sociobot.in/demo"');
+  expect(html).toContain('property="og:title" content="Demo — Backfill Timecards"');
+  expect(html).toContain('name="twitter:title" content="Demo — Backfill Timecards"');
 });
 
 test("supports keyboard dialog controls and restores focus", async ({ page }) => {
@@ -191,12 +205,17 @@ test("@claim:demo-sandbox keeps sample work separate, resets it, and expires it 
   await page.getByLabel("What did you do?").fill("Real private record");
   await page.getByRole("button", { name: "Add work block" }).last().click();
 
-  await page.getByRole("button", { name: "Try it with sample data" }).click();
+  await page.getByRole("link", { name: "Try it with sample data" }).click();
   await expect(page).toHaveURL(/\/demo$/);
   await expect(page).toHaveTitle("Demo — Backfill Timecards");
   await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
   await expect(page.getByText("Plan the website sprint", { exact: true })).toBeVisible();
   await expect(page.getByText("Real private record")).toHaveCount(0);
+  const firstTrack = await page.locator(".track").first().boundingBox();
+  expect(firstTrack).not.toBeNull();
+  expect(firstTrack!.y).toBeLessThan(page.viewportSize()!.height);
+  await expect(page.locator(".summary-strip")).toBeInViewport();
+  await expect(page.locator(".toolbelt")).toBeInViewport();
 
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Delete Plan the website sprint" }).click();
@@ -214,7 +233,7 @@ test("@claim:demo-sandbox keeps sample work separate, resets it, and expires it 
   const closingContext = await browser.newContext();
   const closingPage = await closingContext.newPage();
   await closingPage.goto("http://127.0.0.1:4173/demo");
-  await closingPage.getByRole("button", { name: "Add a work block" }).click();
+  await closingPage.locator('.toolbelt [data-action="add"]').click();
   await closingPage.getByRole("combobox", { name: "Project", exact: true }).fill("Closing tab");
   await closingPage.getByLabel("What did you do?").fill("This sample must vanish");
   await closingPage.getByRole("button", { name: "Add work block" }).last().click();
@@ -231,9 +250,43 @@ test("@claim:demo-sandbox keeps sample work separate, resets it, and expires it 
   await closingContext.close();
 });
 
+test("opens the query-string demo in the same isolated sample sandbox", async ({ page }) => {
+  await page.goto("/?demo=1");
+  await expect(page).toHaveTitle("Demo — Backfill Timecards");
+  await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
+  await expect(page.locator(".track")).toHaveCount(6);
+  expect(await page.evaluate(async () => ({
+    session: sessionStorage.getItem("demo:backfill-timecards"),
+    databases: (await indexedDB.databases()).map((database) => database.name),
+  }))).toEqual({ session: expect.any(String), databases: [] });
+});
+
+test("keeps all first-screen facts visible at 1440 by 900", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  for (const fact of ["privacy", "offline", "price"]) {
+    await expect(page.locator(`[data-fact="${fact}"]`)).toBeInViewport();
+  }
+});
+
+test("moves focus and announces app route changes through click, Back, and Forward", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Try it with sample data" }).click();
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect(page.locator("#route-status")).toContainText("Sample weekly timecard");
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+  await expect(page.locator("#route-status")).toContainText("Reconstruct your freelance workweek");
+  await page.goForward();
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+});
+
 test("@claim:weekly-board edits, copies, restores, and recalls client work", async ({ page }) => {
   await page.goto("/demo");
-  await page.getByRole("button", { name: "Add a work block" }).click();
+  await page.locator('.toolbelt [data-action="add"]').click();
   await page.getByRole("combobox", { name: "Project", exact: true }).fill("Website refresh");
   await expect(page.getByRole("textbox", { name: /^Client/ })).toHaveValue("Redwood Studio");
   await page.getByLabel("What did you do?").fill("Sample client analysis");
@@ -241,7 +294,7 @@ test("@claim:weekly-board edits, copies, restores, and recalls client work", asy
   await page.getByRole("button", { name: "Edit Sample client analysis" }).click();
   await page.getByLabel("What did you do?").fill("Sample client analysis revised");
   await page.getByRole("button", { name: "Save changes" }).click();
-  await page.getByRole("button", { name: "Duplicate Sample client analysis revised" }).click();
+  await page.getByRole("button", { name: "Copy Sample client analysis revised" }).click();
   await expect(page.locator(".track-title", { hasText: "Sample client analysis revised" })).toHaveCount(2);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Delete Sample client analysis revised" }).first().click();
@@ -359,11 +412,14 @@ test("@claim:billing-entitlement proves the $18 checkout, verification gate, one
   }))).toEqual({ token: "forged-qa7", verdict: null });
   await expect(page.locator(".toolbelt")).toContainText("$18");
   await expect(page.locator(".toolbelt")).not.toContainText("UNLOCKED");
-  await page.getByRole("button", { name: /Pattern deck/ }).click();
+  await page.getByRole("button", { name: /Reuse saved blocks/ }).click();
   await expect(page.getByRole("heading", { name: "Make repeat weeks faster" })).toBeVisible();
   await expect(page.locator("#unlock-dialog .price")).toHaveText("$18 once");
   await expect(page.getByRole("link", { name: "Buy the one-time unlock" })).toHaveAttribute("href", "https://api.sociobot.in/api/v1/products/backfill-timecards/checkout");
   await expect(page.locator("#unlock-dialog .fine-print")).toContainText("Checkout is hosted by Sociobot");
+  await expect(page.locator("#unlock-dialog iframe")).toHaveCount(0);
+  await expect(page.locator('#unlock-dialog input[autocomplete="cc-number"], #unlock-dialog input[name*="card" i]')).toHaveCount(0);
+  expect(await page.locator("script[src]").evaluateAll((scripts) => scripts.every((script) => new URL((script as HTMLScriptElement).src).origin === location.origin))).toBe(true);
   await page.clock.pauseAt(verifiedAt);
   await page.getByRole("textbox", { name: "Have a license? Paste it here" }).fill("verified-qa7");
   await page.getByRole("button", { name: "Verify and restore" }).click();
@@ -383,19 +439,20 @@ test("@claim:billing-entitlement proves the $18 checkout, verification gate, one
   expect(verifyRequests).toBe(3);
   expect(restoredTokenRequests).toBe(2);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sb_license:backfill-timecards:verdict") || "{}"))).toEqual({ valid: false, checkedAt: verifiedAt + dayInMilliseconds });
-  await page.getByRole("button", { name: /Pattern deck/ }).click();
+  await page.getByRole("button", { name: /Reuse saved blocks/ }).click();
   await expect(page.locator("#unlock-dialog .inline-error")).toHaveText("License no longer active.");
 });
 
 test("@claim:pattern-deck previews saved patterns and previous-week copying", async ({ page }) => {
   await page.goto("/demo");
-  await page.getByRole("button", { name: "Save Plan the website sprint as a pattern" }).click();
+  await page.getByRole("button", { name: "Pattern: save Plan the website sprint" }).click();
   await expect(page.getByText("Saved “Plan the website sprint” to the pattern deck.")).toBeVisible();
   await page.locator(".toolbelt [data-action='patterns']").click();
   await expect(page.getByText("3 blocks from")).toBeVisible();
   await expect(page.locator("#patterns-dialog").getByText("Plan the website sprint", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Clone into this week" }).click();
   await expect(page.locator(".summary-strip div", { hasText: "Entries" }).locator("dd")).toHaveText("9");
+  await page.getByRole("link", { name: "Start for real" }).click();
   await expect(page.locator(".paid-note")).toContainText("Pattern Deck costs $18 once");
   await expect(page.locator(".paid-note")).toContainText("weekly board, calendar import, CSV export, backups, and privacy controls remain free");
 });
