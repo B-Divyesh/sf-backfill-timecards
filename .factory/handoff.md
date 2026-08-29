@@ -1,33 +1,33 @@
-# Backfill Timecards — adversarial review 2 handoff
+# Backfill Timecards — polish round 2 handoff
 
 Date: 2026-08-29 UTC
 
-Work order: `backfill-timecards-review-2`
+Work order: `backfill-timecards-polish-2`
+Repair commit: `e32f6295fea5ee7aac3bbf397bada81b2ccb66df` (`Polish claims and timecard copy`)
+Deployment: `3fd893ba-c1ab-451e-8b45-e719f7fd7459` to <https://backfill-timecards.sociobot.in>
 
-Reviewed candidate: `b9c9991e86ad13bcf6591d0d239cd5be089236b1`
+## Done
 
-## Result: FAIL
+- Resolved every F-1-1 through F-1-33 and F-2-1 through F-2-12. The complete finding-to-change map is in `.factory/polish-2.md`.
+- Strengthened the three incomplete claim tests: weekly `UNTIL` recurrence and event selection; complete JSON backup contents and restoration; locked free-tier use of manual entry, import, CSV export, and local-data controls.
+- Rewrote the remaining product and README copy: result-naming week navigation/actions, work-block terminology, local-data/JSON-backup terminology, and the tested web-app metadata statement.
+- Updated the verb-first 84-character catalog description.
 
-The complete report is in `.factory/review-2.md`. The live first-read, one-click Demo, sandbox isolation, routing, metadata, link crawl, visual identity, and accessibility baseline pass. All 10 registered claim commands also exit successfully. The review remains a FAIL because three claim tests do not assert their full promises and nine copy defects remain.
+## Exact verification
 
-## Verification performed
+Fresh clone: `/tmp/backfill-polish2-clean.sAFGHv` at `e32f6295fea5ee7aac3bbf397bada81b2ccb66df`.
 
-- Fresh 390×844 and 1440×900 live browser contexts for the first screen and Demo.
-- Live normal record → Demo isolation → delete → Reset demo → Start for real flow.
-- Same-origin request logging and storage namespace inspection.
-- Every exact command in `.factory/claims.json`, separately, from `/tmp/backfill-review2-clean.9VeoE2/repo`.
-- Clean `npm test`, `npm run typecheck`, `npm run lint`, and `npm run build`.
-- Live route crawl for root, Demo, Privacy, Terms, and a 404; metadata, h1/main, header/footer, overflow, console, and link status checks.
-- Axe serious/critical checks on all five routes and `verify-url.sh` on live root and Demo.
-- Click, Back, and Forward focus/announcement checks.
-- Byte comparison between the clean production build and deployed root, Demo, JS, CSS, Privacy, Terms, and 404 files.
-- Full review of `.factory/review-1.md`, `.factory/polish-1.md`, and the prior handoff; all F-1-1 through F-1-33 fixes were independently confirmed.
+- `npm ci` passed with 0 vulnerabilities.
+- Each registered command in `.factory/claims.json` passed independently: `demo-sandbox`, `demo-exit-cleanup`, `weekly-board`, `calendar-local`, `csv-export`, `local-archive`, `offline-reload`, `pattern-deck`, `privacy-local`, and `billing-entitlement`.
+- Full source-suite gates passed: `npm test` (57 passed, 1 intentional mobile skip), `npm run typecheck`, `npm run lint`, and `npm run build`.
+- Build output is `dist/`; initial JS is 14.61 kB gzip and CSS is 5.00 kB gzip.
+- Live `verify-url.sh` passed for root and Demo: valid title/lang, one h1, main landmark, image alt text, labelled controls, and no console/page errors. Evidence: `.factory/evidence/polish-2-live/root/` and `.factory/evidence/polish-2-live/demo/`.
+- Cold live Playwright/Axe crawl passed on `/`, `/demo`, `/privacy/`, `/terms/`, and a real 404. Root, Demo, Privacy, and Terms had no console/page errors and no serious or critical Axe violations; the 404 intentionally reports its HTTP 404 in the browser console and had no Axe violation.
+- Cold `?demo=1` check passed: title `Demo — Backfill Timecards`, banner, Reset demo, Start for real, six rows, first mobile row at 751.22px in a 390×844 viewport.
+- Live Demo first-row and copy checks passed: result-naming Save pattern and Show next week controls are present.
+- Live deployment identity passed: `dist/assets/index-BDwaH195.js` and the fetched production asset have SHA-256 `d51e7e755bf4755fe7973b71d9a0c987c629b242b71f03baf529e6141381f8c0`. Raw `/demo` has its Demo title, canonical URL, and Open Graph title before JavaScript.
+- Lighthouse (live): root 100 performance / 100 accessibility / 100 best practices / 100 SEO; Demo 99 / 100 / 100 / 100. JSON reports are in `.factory/evidence/polish-2-live/`.
 
-## Required next steps
+## Known gaps / next steps
 
-1. Repair F-2-1 through F-2-3 by adding observable assertions for weekly `UNTIL` recurrence, complete backup contents/restoration, and locked free-tier behavior.
-2. Resolve F-2-4 by testing installation or narrowing the README wording.
-3. Resolve F-2-5 through F-2-12 with the exact rewrites in the review.
-4. Regenerate `.factory/copy-audit.md`, rerun every claim command and the full suite, deploy, then repeat the cold live review.
-
-No product code was modified during this review. Existing unrelated `graphify-out/` changes were left untouched.
+None. The remaining dirty `graphify-out/` files were pre-existing unrelated work and were deliberately not changed or committed.

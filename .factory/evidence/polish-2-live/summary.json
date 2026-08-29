@@ -1,0 +1,16 @@
+{
+  "url": "https://backfill-timecards.sociobot.in",
+  "deployment_id": "3fd893ba-c1ab-451e-8b45-e719f7fd7459",
+  "routes": {
+    "/": { "status": 200, "title": "Backfill Timecards — reconstruct your workweek", "serious_or_critical_axe": 0 },
+    "/demo": { "status": 200, "title": "Demo — Backfill Timecards", "serious_or_critical_axe": 0 },
+    "/privacy/": { "status": 200, "title": "Privacy — Backfill Timecards", "serious_or_critical_axe": 0 },
+    "/terms/": { "status": 200, "title": "Terms — Backfill Timecards", "serious_or_critical_axe": 0 },
+    "/missing-polish-2": { "status": 404, "title": "Page not found — Backfill Timecards", "serious_or_critical_axe": 0 }
+  },
+  "demo_query": { "url": "https://backfill-timecards.sociobot.in/?demo=1", "rows": 6, "first_row_y_at_390x844": 751.21875 },
+  "lighthouse": {
+    "root": { "performance": 100, "accessibility": 100, "best_practices": 100, "seo": 100 },
+    "demo": { "performance": 99, "accessibility": 100, "best_practices": 100, "seo": 100 }
+  }
+}
