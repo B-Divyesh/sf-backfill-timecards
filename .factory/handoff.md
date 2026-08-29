@@ -4,7 +4,7 @@ Date: 2026-08-29 UTC
 
 Work order: `backfill-timecards-polish-2-retry1`
 Repair commit: `c98a7b1e2aa362efc096e3aec865fa2c82c0de21` (`test: isolate offline browser contexts`)
-Deployment: pushed to `origin/main` at `b30cd0afaf8d9d674f417d3dedcdef8bd7608e9f`; static live site cold-checked at <https://backfill-timecards.sociobot.in>.
+Deployment: application repair pushed to `origin/main` at `c98a7b1e2aa362efc096e3aec865fa2c82c0de21`; live-evidence revision `273f176` was also pushed. The static live site was cold-checked at <https://backfill-timecards.sociobot.in>.
 
 ## Done
 
