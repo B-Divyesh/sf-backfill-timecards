@@ -261,17 +261,6 @@
   ],
   "surprises": [
     {
-      "source": "parseIcs()",
-      "target": "isoDate()",
-      "source_files": [
-        "src/ics.ts",
-        "src/dates.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
-    },
-    {
       "source": "App",
       "target": "TimecardStore",
       "source_files": [
@@ -283,10 +272,21 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "entriesToCsv()",
-      "target": "entryMinutes()",
+      "source": "parseIcs()",
+      "target": "isoDate()",
       "source_files": [
-        "src/csv.ts",
+        "src/ics.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "dateLabel()",
+      "target": "fromIso()",
+      "source_files": [
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -305,8 +305,8 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "sampleBackup()",
+      "target": "weekStart()",
       "source_files": [
         "src/app.ts",
         "src/dates.ts"
