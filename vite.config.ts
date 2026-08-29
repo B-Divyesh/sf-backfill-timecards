@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import { readFileSync, writeFileSync } from "node:fs";
-import { viteSingleFile } from "vite-plugin-singlefile";
 
 function injectServiceWorkerAssets() {
   return {
@@ -16,7 +15,9 @@ function injectServiceWorkerAssets() {
 }
 
 export default defineConfig({
-  plugins: [viteSingleFile(), injectServiceWorkerAssets()],
+  // Keep the first HTML response small. Vite emits immutable, hashed CSS and
+  // JS which the service worker injects into its precache list below.
+  plugins: [injectServiceWorkerAssets()],
   build: {
     target: "es2022",
     outDir: "dist",

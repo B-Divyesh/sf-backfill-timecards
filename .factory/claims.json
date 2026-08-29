@@ -1,10 +1,10 @@
 [
   {
     "id": "demo-sandbox",
-    "claim": "The one-click sample week uses separate demo storage, can be reset, and never changes the user's real archive.",
+    "claim": "The one-click sample week is isolated from the real archive, can be reset, and its records vanish when its tab closes.",
     "where": "first screen, demo banner, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:demo-sandbox",
-    "sandbox": "fresh browser context; create one real block; enter /demo; mutate and reset sample; return to the untouched real block; assert demo store is empty on exit"
+    "sandbox": "fresh browser context; create one real block; enter /demo; mutate and reset sample; return to the untouched real block; close a second populated demo tab and assert no demo session storage or IndexedDB remains"
   },
   {
     "id": "weekly-board",
@@ -16,36 +16,50 @@
   {
     "id": "calendar-local",
     "claim": "Calendar files are reviewed and imported locally, including bounded recurrences and overnight events; descriptions and billability require explicit choices.",
-    "where": "how it works, local data section, README",
+    "where": "how it works, local data section, privacy policy, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:calendar-local",
-    "sandbox": "fresh /demo; import a local fixture with recurrence, private description, and overnight event; assert results, defaults, demo-only IndexedDB, and no off-origin requests"
+    "sandbox": "fresh /demo; import a local fixture with recurrence, private description, and overnight event; assert results, defaults, tab-only demo storage, and no off-origin requests"
   },
   {
     "id": "csv-export",
     "claim": "Exports the selected week as an invoice-ready CSV with one row per visible work block.",
-    "where": "workspace, how it works, README",
+    "where": "workspace, how it works, privacy policy, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:csv-export",
     "sandbox": "fresh /demo sample week; download CSV; assert filename, complete header, row count, and sample fields"
   },
   {
     "id": "local-archive",
     "claim": "Exports, erases, and restores the complete local JSON archive.",
-    "where": "local data section, settings, README",
+    "where": "local data section, settings, privacy policy, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:local-archive",
     "sandbox": "fresh /demo; export JSON; erase demo archive; restore downloaded file; assert sample returns"
   },
   {
     "id": "offline-reload",
-    "claim": "Works offline after the first visit.",
+    "claim": "Works offline after the first visit and supplies standard PWA installation metadata.",
     "where": "first-screen facts, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:offline-reload",
-    "sandbox": "fresh /demo on isolated service-worker origin; wait for control; go offline; reload; assert sample board and offline status"
+    "sandbox": "fresh /demo on isolated service-worker origin; assert manifest name, standalone display, icons, and link; wait for control; go offline; reload; assert sample board and offline status"
   },
   {
     "id": "pattern-deck",
-    "claim": "The optional $18 one-time Pattern Deck saves reusable blocks and copies the previous week; core tools remain free.",
-    "where": "first-screen facts, paid section, README",
+    "claim": "The optional Pattern Deck saves reusable blocks and copies the previous week; core timecard tools stay free.",
+    "where": "first-screen facts, paid section, terms, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:pattern-deck",
-    "sandbox": "fresh /demo with paid preview enabled; save a pattern; clone three prior blocks; assert current count and price/free-tier copy"
+    "sandbox": "fresh /demo with paid preview enabled; save a pattern; clone three prior blocks; assert current count and free-tier copy"
+  },
+  {
+    "id": "privacy-local",
+    "claim": "Normal timecard work uses browser storage without an account or third-party runtime, analytics, advertising, font, or script requests.",
+    "where": "privacy policy, local data section, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:privacy-local",
+    "sandbox": "fresh normal workspace; add a record; log every request; assert only same-origin requests, the real IndexedDB archive, no demo storage, no license, and no account controls"
+  },
+  {
+    "id": "billing-entitlement",
+    "claim": "Pattern Deck costs $18 once through Sociobot billing; a new or restored token stays locked until verification succeeds, then a successful verdict is cached for one day.",
+    "where": "paid section, unlock dialog, privacy policy, terms, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:billing-entitlement",
+    "sandbox": "fresh normal workspace; abort a forged returned-token verification and assert the purchase dialog and no positive verdict; mock one successful restore, assert unlock and Sociobot checkout URL; reload and assert no second verification request"
   }
 ]

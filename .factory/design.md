@@ -53,3 +53,4 @@ Prompt sheet: “Top-down editorial still life, late-1980s cassette insert trans
 
 - Generated with the factory Azure image model (`factory-image`) on 2026-08-28. Original product asset; no third-party source material. Prompt stored beside the source image in `assets/src/hero-cassette.json`.
 - Icons are original hand-authored SVG, created for this repository on 2026-08-28.
+- The 1200×630 Open Graph image `public/assets/social-card.jpg` is a reviewed centre crop of that same original generated hero asset, created locally on 2026-08-29. It contains no added text, brands, people, or third-party material.

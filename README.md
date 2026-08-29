@@ -17,7 +17,7 @@ Try the isolated sample week: <https://backfill-timecards.sociobot.in/demo>
 - Installs as a PWA and works offline after the first visit.
 - Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. Checkout and license verification use Sociobot billing; no payment provider is embedded.
 
-Every visitor-facing claim has a browser test in [`.factory/claims.json`](.factory/claims.json). All claim tests start at `/demo`, where realistic sample records use the separate `demo:backfill-timecards` IndexedDB database. **Reset demo** restores the sample, and **Start for real** clears it before opening the normal workspace. See [`.factory/demo.md`](.factory/demo.md).
+Every visitor-facing claim has a browser test in [`.factory/claims.json`](.factory/claims.json). All claim tests start at `/demo`, where realistic sample records use tab-scoped `demo:backfill-timecards` session storage. **Reset demo** restores the sample, **Start for real** clears it before opening the normal workspace, and closing the demo tab discards it. See [`.factory/demo.md`](.factory/demo.md).
 
 All timecard data lives in IndexedDB on the current device. A purchased license token is kept in localStorage. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
 
@@ -30,7 +30,7 @@ npm install
 npm run dev
 ```
 
-The app uses Vite and vanilla TypeScript. No backend, external fonts, or runtime UI dependencies are required.
+The app uses Vite and vanilla TypeScript. It has no product backend, external fonts, or third-party runtime UI dependencies.
 
 ## Test and build
 
@@ -42,7 +42,7 @@ npm run build     # reproducible static output in ./dist
 npm run preview   # preview the production build
 ```
 
-Playwright is pinned to 1.58.2. The test suite starts production preview servers automatically. The production `index.html` contains the small CSS/JS shell so a cached navigation cannot be stranded without its matching hashed asset.
+Playwright is pinned to 1.58.2. The test suite starts production preview servers automatically. The production build uses hashed CSS and JavaScript assets, and the service worker precaches the matching app shell and assets for offline reloads.
 
 Optional build-time variables:
 

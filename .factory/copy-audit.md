@@ -32,6 +32,8 @@ Audited: 2026-08-29 UTC. Word counts treat contractions and hyphenated terms as 
 | It saves reusable blocks and copies a previous week into matching days. | 11 | Paid result |
 | The weekly board, calendar import, CSV export, backups, and privacy controls remain free. | 12 | Free-tier detail |
 | Private weekly timecards for freelancers. | 5 | Footer description |
+| Built by Param Factory | 4 | Footer attribution |
+| Build r5 · 2026-08-29 | 3 | Footer build identity |
 | Editorial artwork generated for this product with Azure AI Foundry. | 10 | Artwork disclosure |
 
 ## Terminology

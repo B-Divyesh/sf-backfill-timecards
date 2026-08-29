@@ -1,7 +1,15 @@
 import type { AppBackup, Pattern, ProjectMapping, TimeEntry } from "./types";
 
 const DB_NAME = "backfill-timecards";
-export const DEMO_DB_NAME = "demo:backfill-timecards";
+/**
+ * Demo data intentionally lives in sessionStorage rather than IndexedDB.
+ * Unlike an IndexedDB transaction kicked off during `pagehide`, browser-owned
+ * session storage is discarded with the tab even when it is terminated before
+ * JavaScript can finish. It is a separate, tab-scoped namespace and is never
+ * consulted by the real archive.
+ */
+export const DEMO_STORAGE_KEY = "demo:backfill-timecards";
+const LEGACY_DEMO_DB_NAME = "demo:backfill-timecards";
 const DB_VERSION = 1;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
@@ -83,6 +91,18 @@ function openDb(dbName: string): Promise<IDBDatabase> {
   });
 }
 
+/** Remove stale demo records left by releases that used IndexedDB. */
+export function clearLegacyDemoDatabase(): Promise<void> {
+  return new Promise((resolve) => {
+    const request = indexedDB.deleteDatabase(LEGACY_DEMO_DB_NAME);
+    request.onsuccess = () => resolve();
+    request.onerror = () => resolve();
+    // Another old tab can hold the database open. The delete remains pending
+    // until it closes; the current demo still uses no IndexedDB either way.
+    request.onblocked = () => resolve();
+  });
+}
+
 async function all<T>(dbName: string, storeName: string): Promise<T[]> {
   const db = await openDb(dbName);
   return new Promise((resolve, reject) => {
@@ -130,6 +150,71 @@ async function remove(dbName: string, storeName: string, key: IDBValidKey): Prom
 
 export type TimecardStore = ReturnType<typeof createStore>;
 
+function emptyBackup(): AppBackup {
+  return { version: 1, exportedAt: new Date(0).toISOString(), entries: [], mappings: [], patterns: [] };
+}
+
+function readDemoBackup(): AppBackup {
+  const raw = sessionStorage.getItem(DEMO_STORAGE_KEY);
+  if (!raw) return emptyBackup();
+  try {
+    const backup = JSON.parse(raw) as unknown;
+    validateBackup(backup);
+    return backup;
+  } catch {
+    // A malformed, interrupted demo write must not become a persistent sample.
+    sessionStorage.removeItem(DEMO_STORAGE_KEY);
+    return emptyBackup();
+  }
+}
+
+function writeDemoBackup(backup: AppBackup): void {
+  validateBackup(backup);
+  sessionStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(backup));
+}
+
+function createDemoStore() {
+  return {
+    entries: async () => readDemoBackup().entries,
+    mappings: async () => readDemoBackup().mappings,
+    patterns: async () => readDemoBackup().patterns,
+    async saveEntry(value: TimeEntry): Promise<void> {
+      const backup = readDemoBackup();
+      backup.entries = backup.entries.filter((entry) => entry.id !== value.id).concat(value);
+      writeDemoBackup(backup);
+    },
+    async saveMapping(value: ProjectMapping): Promise<void> {
+      const backup = readDemoBackup();
+      backup.mappings = backup.mappings.filter((mapping) => mapping.project !== value.project).concat(value);
+      writeDemoBackup(backup);
+    },
+    async savePattern(value: Pattern): Promise<void> {
+      const backup = readDemoBackup();
+      backup.patterns = backup.patterns.filter((pattern) => pattern.id !== value.id).concat(value);
+      writeDemoBackup(backup);
+    },
+    async deleteEntry(id: string): Promise<void> {
+      const backup = readDemoBackup();
+      backup.entries = backup.entries.filter((entry) => entry.id !== id);
+      writeDemoBackup(backup);
+    },
+    async deletePattern(id: string): Promise<void> {
+      const backup = readDemoBackup();
+      backup.patterns = backup.patterns.filter((pattern) => pattern.id !== id);
+      writeDemoBackup(backup);
+    },
+    async exportAll(): Promise<AppBackup> {
+      return { ...readDemoBackup(), exportedAt: new Date().toISOString() };
+    },
+    async importAll(backup: AppBackup): Promise<void> {
+      writeDemoBackup(backup);
+    },
+    async clearAll(): Promise<void> {
+      sessionStorage.removeItem(DEMO_STORAGE_KEY);
+    },
+  };
+}
+
 export function createStore(dbName: string) {
   return {
   // Filter data written by an older broken build. The settings screen remains
@@ -168,4 +253,4 @@ export function createStore(dbName: string) {
 }
 
 export const store = createStore(DB_NAME);
-export const demoStore = createStore(DEMO_DB_NAME);
+export const demoStore: TimecardStore = createDemoStore();

@@ -1,6 +1,6 @@
 import { downloadText, entriesToCsv } from "./csv";
 import { addDays, entryMinutes, formatDuration, formatWeekRange, fromIso, weekDates, weekStart } from "./dates";
-import { demoStore, store, type TimecardStore } from "./db";
+import { clearLegacyDemoDatabase, demoStore, store, type TimecardStore } from "./db";
 import { parseIcs } from "./ics";
 import { checkoutUrl, initialLicenseState, saveLicense, verifyLicense, type LicenseState } from "./license";
 import type { AppBackup, CalendarEvent, Pattern, ProjectMapping, TimeEntry } from "./types";
@@ -74,6 +74,7 @@ export class App {
     this.bindGlobalEvents();
     this.registerServiceWorker();
     if (this.demoMode) {
+      await clearLegacyDemoDatabase();
       await this.dataStore.clearAll();
       await this.dataStore.importAll(sampleBackup());
     } else if (sessionStorage.getItem(DEMO_SESSION_KEY)) {
@@ -81,7 +82,10 @@ export class App {
     }
     [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
     const hasLicense = !this.demoMode && Boolean(localStorage.getItem("sb_license:backfill-timecards"));
+    const pageUrl = this.demoMode ? "https://backfill-timecards.sociobot.in/demo" : "https://backfill-timecards.sociobot.in/";
     document.title = this.demoMode ? "Demo — Backfill Timecards" : "Backfill Timecards — reconstruct your workweek";
+    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute("href", pageUrl);
+    document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute("content", pageUrl);
     if (this.entries.length === 0 && !hasLicense) this.hydrateEmptyShell();
     else this.render();
     if (hasLicense) {
@@ -140,7 +144,8 @@ export class App {
     window.addEventListener("online", () => { this.render(); this.showToast("Back online. Your local work was always available."); });
     window.addEventListener("offline", () => { this.render(); this.showToast("Offline. You can keep working; changes stay on this device."); });
     window.addEventListener("pageshow", () => { if (!this.demoMode && sessionStorage.getItem(DEMO_SESSION_KEY)) void this.discardDemoData(); });
-    window.addEventListener("pagehide", () => { if (this.demoMode) void this.dataStore.clearAll(); });
+    // Demo records are tab-scoped sessionStorage, so closing or crashing the
+    // tab discards them without relying on an unload-time async transaction.
   }
 
   private async resetDemo(): Promise<void> {
@@ -181,7 +186,7 @@ export class App {
 
     this.root.removeAttribute("aria-busy");
     this.root.innerHTML = `
-      ${this.demoMode ? `<aside class="demo-banner" aria-label="Demo mode"><strong>Demo — sample data, nothing is saved</strong><span>Use the sample without changing your real timecard.</span><div><button type="button" data-action="reset-demo">Reset demo</button><a class="button-link" href="/" data-action="start-real">Start for real</a></div></aside>` : ""}
+      ${this.demoMode ? `<aside class="demo-banner" aria-label="Demo mode"><strong>Demo — sample data, nothing is saved</strong><span>It never changes your real timecard and vanishes when this tab closes.</span><div><button type="button" data-action="reset-demo">Reset demo</button><a class="button-link" href="/" data-action="start-real">Start for real</a></div></aside>` : ""}
       <header class="site-header">
         <a class="brand" href="/" ${leaveDemo} aria-label="Backfill Timecards home">
           <img src="/icons/icon.svg" width="40" height="40" alt="" />
@@ -262,8 +267,8 @@ export class App {
       </main>
       <footer>
         <p>Private weekly timecards for freelancers.</p>
-        <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Param Factory</a></nav>
-        <p class="generated-note">Editorial artwork generated for this product with Azure AI Foundry.</p>
+        <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Built by Param Factory</a></nav>
+        <p class="generated-note">Editorial artwork generated for this product with Azure AI Foundry.</p><p class="build-id">Build r5 · 2026-08-29</p>
       </footer>
       <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>`;
   }

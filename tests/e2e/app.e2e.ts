@@ -147,7 +147,7 @@ test("keeps footer and home targets at least 44px tall on a 390px viewport", asy
     page.getByRole("link", { name: "Backfill Timecards home" }),
     page.getByRole("link", { name: "Privacy" }),
     page.getByRole("link", { name: "Terms" }),
-    page.getByRole("link", { name: "Param Factory" }),
+    page.getByRole("link", { name: "Built by Param Factory" }),
   ]) {
     expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(44);
   }
@@ -184,7 +184,7 @@ test("keeps normal local timecard use on this origin", async ({ page }) => {
   expect(externalRequests).toEqual([]);
 });
 
-test("@claim:demo-sandbox keeps sample work separate and resets it", async ({ page }) => {
+test("@claim:demo-sandbox keeps sample work separate, resets it, and expires it with its tab", async ({ page, browser }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Add work block" }).first().click();
   await page.getByRole("combobox", { name: "Project", exact: true }).fill("Private project");
@@ -207,16 +207,28 @@ test("@claim:demo-sandbox keeps sample work separate and resets it", async ({ pa
   await page.getByRole("link", { name: "Start for real" }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByText("Real private record", { exact: true })).toBeVisible();
-  const demoCount = await page.evaluate(async () => new Promise<number>((resolve, reject) => {
-    const request = indexedDB.open("demo:backfill-timecards", 1);
-    request.onsuccess = () => {
-      const count = request.result.transaction("entries").objectStore("entries").count();
-      count.onsuccess = () => { request.result.close(); resolve(count.result); };
-      count.onerror = () => reject(count.error);
-    };
-    request.onerror = () => reject(request.error);
+  expect(await page.evaluate(() => sessionStorage.getItem("demo:backfill-timecards"))).toBeNull();
+
+  // Session storage is owned by a top-level browsing context, so this models
+  // an abrupt tab close without relying on asynchronous pagehide cleanup.
+  const closingContext = await browser.newContext();
+  const closingPage = await closingContext.newPage();
+  await closingPage.goto("http://127.0.0.1:4173/demo");
+  await closingPage.getByRole("button", { name: "Add a work block" }).click();
+  await closingPage.getByRole("combobox", { name: "Project", exact: true }).fill("Closing tab");
+  await closingPage.getByLabel("What did you do?").fill("This sample must vanish");
+  await closingPage.getByRole("button", { name: "Add work block" }).last().click();
+  await expect(closingPage.getByText("This sample must vanish")).toBeVisible();
+  await closingPage.close();
+  const inspectPage = await closingContext.newPage();
+  await inspectPage.goto("http://127.0.0.1:4173/");
+  const postCloseStorage = await inspectPage.evaluate(async () => ({
+    session: sessionStorage.getItem("demo:backfill-timecards"),
+    databases: (await indexedDB.databases()).map((database) => database.name),
   }));
-  expect(demoCount).toBe(0);
+  expect(postCloseStorage.session).toBeNull();
+  expect(postCloseStorage.databases).not.toContain("demo:backfill-timecards");
+  await closingContext.close();
 });
 
 test("@claim:weekly-board edits, copies, restores, and recalls client work", async ({ page }) => {
@@ -255,7 +267,8 @@ test("@claim:calendar-local imports reviewed recurring and overnight events with
   await expect(page.locator(".track", { hasText: "Overnight release" }).locator(".track-time")).toContainText("2h");
   await expect(page.getByText("Private planning notes")).toHaveCount(0);
   expect(externalRequests).toEqual([]);
-  expect(await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name))).toEqual(["demo:backfill-timecards"]);
+  expect(await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name))).toEqual([]);
+  expect(await page.evaluate(() => sessionStorage.getItem("demo:backfill-timecards"))).not.toBeNull();
 });
 
 test("@claim:csv-export downloads one invoice row per visible sample block", async ({ page }) => {
@@ -285,8 +298,12 @@ test("@claim:local-archive exports, erases, and restores the demo archive", asyn
   await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
 });
 
-test("@claim:offline-reload keeps the sample week usable without a network", async ({ page, context }) => {
+test("@claim:offline-reload keeps the sample week usable without a network and exposes install metadata", async ({ page, context }) => {
   await page.goto("http://127.0.0.1:4174/demo");
+  expect(await page.evaluate(async () => {
+    const manifest = await (await fetch("/manifest.webmanifest")).json() as { name: string; display: string; icons: unknown[] };
+    return { name: manifest.name, display: manifest.display, icons: manifest.icons.length, linked: Boolean(document.querySelector('link[rel="manifest"]')) };
+  })).toEqual({ name: "Backfill Timecards", display: "standalone", icons: 3, linked: true });
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
   await page.reload();
   await context.setOffline(true);
@@ -294,6 +311,56 @@ test("@claim:offline-reload keeps the sample week usable without a network", asy
   await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
   await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
   await expect(page.getByText(/Offline · saved here/)).toBeVisible();
+});
+
+test("@claim:privacy-local keeps normal work local with no account or third-party runtime requests", async ({ page }) => {
+  const externalRequests: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).origin !== "http://127.0.0.1:4173") externalRequests.push(request.url());
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Add work block" }).first().click();
+  await page.getByRole("combobox", { name: "Project", exact: true }).fill("Local archive");
+  await page.getByLabel("What did you do?").fill("Keep this record local");
+  await page.getByRole("button", { name: "Add work block" }).last().click();
+  expect(externalRequests).toEqual([]);
+  expect(await page.evaluate(async () => ({
+    databases: (await indexedDB.databases()).map((database) => database.name),
+    demoSession: sessionStorage.getItem("demo:backfill-timecards"),
+    license: localStorage.getItem("sb_license:backfill-timecards"),
+    accountControls: document.querySelectorAll('input[type="email"], input[autocomplete="username"], input[autocomplete="current-password"], [data-account]').length,
+  }))).toEqual({ databases: ["backfill-timecards"], demoSession: null, license: null, accountControls: 0 });
+});
+
+test("@claim:billing-entitlement verifies a returned license before unlocking and caches only a successful verdict", async ({ page }) => {
+  const verifyEndpoint = "https://api.sociobot.in/api/v1/products/backfill-timecards/verify";
+  let verifyRequests = 0;
+  await page.route("https://api.sociobot.in/**", async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname !== "/api/v1/products/backfill-timecards/verify") return route.abort();
+    verifyRequests += 1;
+    if (url.searchParams.get("license") === "forged-qa7") return route.abort();
+    return route.fulfill({ contentType: "application/json", body: JSON.stringify({ valid: true, reason: "ok" }) });
+  });
+  await page.goto("/?license=forged-qa7");
+  await expect(page).toHaveURL(/\/$/);
+  await expect.poll(() => page.evaluate(() => ({
+    token: localStorage.getItem("sb_license:backfill-timecards"),
+    verdict: localStorage.getItem("sb_license:backfill-timecards:verdict"),
+  }))).toEqual({ token: "forged-qa7", verdict: null });
+  await page.getByRole("button", { name: /Pattern deck/ }).click();
+  await expect(page.getByRole("heading", { name: "Make repeat weeks faster" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Buy the one-time unlock" })).toHaveAttribute("href", "https://api.sociobot.in/api/v1/products/backfill-timecards/checkout");
+  await page.getByRole("textbox", { name: "Have a license? Paste it here" }).fill("verified-qa7");
+  await page.getByRole("button", { name: "Verify and restore" }).click();
+  await expect(page.locator(".toolbelt")).toContainText("UNLOCKED");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sb_license:backfill-timecards:verdict") || "{}"))).toMatchObject({ valid: true });
+  const verifiedRequestCount = verifyRequests;
+  await page.reload();
+  await expect(page.locator(".toolbelt")).toContainText("UNLOCKED");
+  expect(verifyRequests).toBe(verifiedRequestCount);
+  expect(verifyRequests).toBe(2);
+  expect(verifyEndpoint).toContain("api.sociobot.in");
 });
 
 test("@claim:pattern-deck previews saved patterns and previous-week copying", async ({ page }) => {
