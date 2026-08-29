@@ -1,0 +1,27 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "firstTrack": {
+    "x": 12,
+    "y": 751.21875,
+    "width": 366,
+    "height": 182.5
+  },
+  "summary": {
+    "x": 12,
+    "y": 346.15625,
+    "width": 366,
+    "height": 123.0625
+  },
+  "tools": {
+    "x": 12,
+    "y": 481.21875,
+    "width": 366,
+    "height": 172
+  },
+  "banner": true,
+  "reset": true,
+  "trackCount": 6
+}

@@ -1,0 +1,96 @@
+{
+  "coldRoot": true,
+  "facts": {
+    "privacy": {
+      "x": 96,
+      "y": 682.984375,
+      "width": 667.921875,
+      "height": 21
+    },
+    "offline": {
+      "x": 96,
+      "y": 710.984375,
+      "width": 667.921875,
+      "height": 21
+    },
+    "price": {
+      "x": 96,
+      "y": 738.984375,
+      "width": 667.921875,
+      "height": 21
+    }
+  },
+  "firstTrack": {
+    "x": 214,
+    "y": 457.484375,
+    "width": 1170,
+    "height": 110
+  },
+  "routeFocus": {
+    "click": true,
+    "back": true,
+    "forward": true
+  },
+  "demoReset": true,
+  "queryDemoOffline": true,
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Backfill Timecards — reconstruct your workweek",
+      "h1": [
+        "Reconstruct your freelance workweek"
+      ],
+      "axeViolations": 0,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "title": "Demo — Backfill Timecards",
+      "h1": [
+        "Sample weekly timecard · Aug 24–30, 2026"
+      ],
+      "axeViolations": 0,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    {
+      "path": "/privacy/",
+      "status": 200,
+      "title": "Privacy — Backfill Timecards",
+      "h1": [
+        "How Backfill Timecards stores your data"
+      ],
+      "axeViolations": 0,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    {
+      "path": "/terms/",
+      "status": 200,
+      "title": "Terms — Backfill Timecards",
+      "h1": [
+        "Terms for using Backfill Timecards"
+      ],
+      "axeViolations": 0,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    },
+    {
+      "path": "/missing-polish-1",
+      "status": 404,
+      "title": "Page not found — Backfill Timecards",
+      "h1": [
+        "Page not found"
+      ],
+      "axeViolations": 0,
+      "privacyLinks": 2,
+      "termsLinks": 1
+    }
+  ],
+  "rawDemoMetadata": true,
+  "externalRequests": [],
+  "consoleErrors": []
+}
