@@ -6,6 +6,8 @@ Work order: `backfill-timecards-repair-7`
 
 Base verified candidate: `930c57724d791e4b6d55f726fba89d13635cb0ba`
 
+Repair commit: `847a2cca9f5a505bc6c2dbac93b86450ff75c51c`
+
 Artifact: static, offline-first PWA; `dist/` remains the deploy root.
 
 ## Result
@@ -23,6 +25,7 @@ The PWA revision is `r7`: service-worker cache namespace `backfill-v1.0.8` and m
 Clean-install baseline:
 
 - `npm ci` — PASS; 68 packages added; 0 vulnerabilities.
+- Detached clean worktree at the repair commit — PASS for the same `npm ci`, full test, typecheck, lint, and build gate; it remained clean after the run.
 - `npm run typecheck` — PASS.
 - `npm run lint` — PASS.
 - `npm run test:unit` — PASS; 12 tests.
