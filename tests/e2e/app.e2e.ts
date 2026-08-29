@@ -1,6 +1,34 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
+
+/**
+ * Service workers and offline mode are origin/context state. Keep those
+ * tests out of Playwright's regular page fixture and always unwind their
+ * state, even when an assertion fails. This prevents a controlled-offline
+ * test from poisoning a later test when Chromium is resource constrained.
+ */
+async function withIsolatedContext<T>(
+  browser: Browser,
+  run: (page: Page, context: BrowserContext) => Promise<T>,
+): Promise<T> {
+  const context = await browser.newContext();
+  try {
+    const page = await context.newPage();
+    return await run(page, context);
+  } finally {
+    await context.setOffline(false).catch(() => undefined);
+    await context.clearCookies().catch(() => undefined);
+    await context.close().catch(() => undefined);
+  }
+}
+
+test.afterEach(async ({ context }) => {
+  // The normal fixture is already a fresh context for every test. Resetting
+  // this flag makes its teardown explicit for tests that temporarily go
+  // offline and keeps a failure from carrying network emulation forward.
+  await context.setOffline(false).catch(() => undefined);
+});
 
 test("adds, persists, maps, and exports work blocks", async ({ page }) => {
   const errors: string[] = [];
@@ -128,16 +156,18 @@ test("rejects a malformed backup without replacing existing local work", async (
   await expect(page.getByText("Valid local work")).toBeVisible();
 });
 
-test("keeps the offline timecard shell after visiting a legal page", async ({ page, context }) => {
+test("keeps the offline timecard shell after visiting a legal page", async ({ browser }) => {
   const origin = "http://127.0.0.1:4174";
-  await page.goto(`${origin}/`);
-  await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
-  await page.reload();
-  await page.goto(`${origin}/privacy/`);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("How Backfill Timecards stores your data");
-  await context.setOffline(true);
-  await page.goto(`${origin}/?offline-check=1`);
-  await expect(page.getByRole("button", { name: "Add work block" }).first()).toBeVisible();
+  await withIsolatedContext(browser, async (page, context) => {
+    await page.goto(`${origin}/`);
+    await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
+    await page.reload();
+    await page.goto(`${origin}/privacy/`);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("How Backfill Timecards stores your data");
+    await context.setOffline(true);
+    await page.goto(`${origin}/?offline-check=1`);
+    await expect(page.getByRole("button", { name: "Add work block" }).first()).toBeVisible();
+  });
 });
 
 test("keeps header and footer targets at least 44px square on a 390px viewport", async ({ page }) => {
@@ -233,24 +263,23 @@ test("@claim:demo-sandbox keeps sample work separate, resets it, and expires it 
 
   // Session storage is owned by a top-level browsing context, so this models
   // an abrupt tab close without relying on asynchronous pagehide cleanup.
-  const closingContext = await browser.newContext();
-  const closingPage = await closingContext.newPage();
-  await closingPage.goto("http://127.0.0.1:4173/demo");
-  await closingPage.locator('.toolbelt [data-action="add"]').click();
-  await closingPage.getByRole("combobox", { name: "Project", exact: true }).fill("Closing tab");
-  await closingPage.getByLabel("What did you do?").fill("This sample must vanish");
-  await closingPage.getByRole("button", { name: "Add work block" }).last().click();
-  await expect(closingPage.getByText("This sample must vanish")).toBeVisible();
-  await closingPage.close();
-  const inspectPage = await closingContext.newPage();
-  await inspectPage.goto("http://127.0.0.1:4173/");
-  const postCloseStorage = await inspectPage.evaluate(async () => ({
-    session: sessionStorage.getItem("demo:backfill-timecards"),
-    databases: (await indexedDB.databases()).map((database) => database.name),
-  }));
-  expect(postCloseStorage.session).toBeNull();
-  expect(postCloseStorage.databases).not.toContain("demo:backfill-timecards");
-  await closingContext.close();
+  await withIsolatedContext(browser, async (closingPage, closingContext) => {
+    await closingPage.goto("http://127.0.0.1:4173/demo");
+    await closingPage.locator('.toolbelt [data-action="add"]').click();
+    await closingPage.getByRole("combobox", { name: "Project", exact: true }).fill("Closing tab");
+    await closingPage.getByLabel("What did you do?").fill("This sample must vanish");
+    await closingPage.getByRole("button", { name: "Add work block" }).last().click();
+    await expect(closingPage.getByText("This sample must vanish")).toBeVisible();
+    await closingPage.close();
+    const inspectPage = await closingContext.newPage();
+    await inspectPage.goto("http://127.0.0.1:4173/");
+    const postCloseStorage = await inspectPage.evaluate(async () => ({
+      session: sessionStorage.getItem("demo:backfill-timecards"),
+      databases: (await indexedDB.databases()).map((database) => database.name),
+    }));
+    expect(postCloseStorage.session).toBeNull();
+    expect(postCloseStorage.databases).not.toContain("demo:backfill-timecards");
+  });
 });
 
 test("@claim:demo-exit-cleanup clears sample data before every documented demo exit", async ({ page }) => {
@@ -411,19 +440,21 @@ test("@claim:local-archive exports, erases, and restores every work block, mappi
   await expect(page.getByRole("button", { name: "Add to this week" })).toBeVisible();
 });
 
-test("@claim:offline-reload keeps the sample week usable without a network and exposes install metadata", async ({ page, context }) => {
-  await page.goto("http://127.0.0.1:4174/demo");
-  expect(await page.evaluate(async () => {
-    const manifest = await (await fetch("/manifest.webmanifest")).json() as { name: string; display: string; icons: unknown[] };
-    return { name: manifest.name, display: manifest.display, icons: manifest.icons.length, linked: Boolean(document.querySelector('link[rel="manifest"]')) };
-  })).toEqual({ name: "Backfill Timecards", display: "standalone", icons: 3, linked: true });
-  await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
-  await page.reload();
-  await context.setOffline(true);
-  await page.reload();
-  await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
-  await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
-  await expect(page.getByText(/Offline · saved here/)).toBeVisible();
+test("@claim:offline-reload keeps the sample week usable without a network and exposes install metadata", async ({ browser }) => {
+  await withIsolatedContext(browser, async (page, context) => {
+    await page.goto("http://127.0.0.1:4174/demo");
+    expect(await page.evaluate(async () => {
+      const manifest = await (await fetch("/manifest.webmanifest")).json() as { name: string; display: string; icons: unknown[] };
+      return { name: manifest.name, display: manifest.display, icons: manifest.icons.length, linked: Boolean(document.querySelector('link[rel="manifest"]')) };
+    })).toEqual({ name: "Backfill Timecards", display: "standalone", icons: 3, linked: true });
+    await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
+    await page.reload();
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
+    await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
+    await expect(page.getByText(/Offline · saved here/)).toBeVisible();
+  });
 });
 
 test("@claim:privacy-local keeps normal work local with no account or third-party runtime requests", async ({ page }) => {
@@ -554,15 +585,17 @@ test("keeps the populated demo accessible and responsive", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("has no serious accessibility violations and remains usable offline", async ({ page, context }) => {
+test("has no serious accessibility violations and remains usable offline", async ({ browser }) => {
   // A separate origin gives the install test a clean service-worker scope.
-  await page.goto("http://127.0.0.1:4174/");
-  await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
-  await page.reload();
-  const results = await new AxeBuilder({ page: page as never }).analyze();
-  expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
-  await context.setOffline(true);
-  await page.reload();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Reconstruct your freelance workweek");
-  await expect(page.getByText(/Offline · saved here/)).toBeVisible();
+  await withIsolatedContext(browser, async (page, context) => {
+    await page.goto("http://127.0.0.1:4174/");
+    await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
+    await page.reload();
+    const results = await new AxeBuilder({ page: page as never }).analyze();
+    expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Reconstruct your freelance workweek");
+    await expect(page.getByText(/Offline · saved here/)).toBeVisible();
+  });
 });

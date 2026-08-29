@@ -21,12 +21,14 @@ export default defineConfig({
     {
       command: "npm run build && npm run preview -- --port 4173",
       url: "http://127.0.0.1:4173",
-      reuseExistingServer: true,
+      // Let Playwright own this process so it shuts the preview down after a
+      // run instead of retaining a service-worker origin between retries.
+      reuseExistingServer: false,
     },
     {
       command: "npm run preview -- --port 4174",
       url: "http://127.0.0.1:4174",
-      reuseExistingServer: true,
+      reuseExistingServer: false,
     },
   ],
 });

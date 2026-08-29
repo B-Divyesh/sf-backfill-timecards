@@ -54,10 +54,11 @@ For visitor UI findings, the live check is `https://backfill-timecards.sociobot.
 | F-2-10 | Pattern dialog h2 is “Reuse saved work blocks.” | `@claim:local-archive`; `/demo`. |
 | F-2-11 | Settings action now says “Review reuse tools — $18.” | `@claim:pattern-deck`. |
 | F-2-12 | Saved pattern action now says “Add to this week.” | `@claim:local-archive`; `/demo`. |
+| Controller-1 | Offline and service-worker browser tests now create their own contexts, always restore online mode, clear cookies, and close in `finally`; Playwright owns and shuts both preview servers after each run. | Full `npm test`: 58 browser tests passed; `test-results/.last-run.json` reports `passed`; no preview/browser processes remained after the run. |
 
 ## Verification
 
 - Clean clone: every command in `.factory/claims.json` was run separately, plus `npm test`, `npm run typecheck`, `npm run lint`, and `npm run build`.
-- Browser suite: 57 passed and 1 desktop-only viewport assertion was intentionally skipped in the mobile project.
+- Browser suite: 58 tests passed with every offline/service-worker context explicitly torn down; Playwright-owned preview servers exit at suite completion.
 - Build: `dist/` exists; initial JavaScript is 14.61 kB gzip and CSS is 5.00 kB gzip.
 - Live evidence and cold recheck are recorded in `.factory/handoff.md`.
