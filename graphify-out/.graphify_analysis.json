@@ -385,10 +385,10 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
       "source_files": [
-        "src/app.ts",
+        "src/csv.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -396,10 +396,10 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "entriesToCsv()",
-      "target": "entryMinutes()",
+      "source": "dateLabel()",
+      "target": "fromIso()",
       "source_files": [
-        "src/csv.ts",
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
