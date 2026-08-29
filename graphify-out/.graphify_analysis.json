@@ -7,6 +7,7 @@
       "src_app_datelabel",
       "src_app_samplebackup",
       "src_csv",
+      "src_csv_downloadtext",
       "src_csv_entriestocsv",
       "src_csv_quote",
       "src_dates",
@@ -20,6 +21,7 @@
       "src_dates_minutesbetween",
       "src_dates_weekdates",
       "src_dates_weekstart",
+      "src_db_clearlegacydemodatabase",
       "src_db_demostore",
       "src_db_store",
       "src_db_timecardstore",
@@ -59,10 +61,34 @@
       "src_app_app_weekentries",
       "src_app_escapehtml",
       "src_app_uid",
-      "src_csv_downloadtext",
       "src_license_verifylicense"
     ],
     "2": [
+      "src_db",
+      "src_db_all",
+      "src_db_createdemostore",
+      "src_db_createstore",
+      "src_db_demo_storage_key",
+      "src_db_emptybackup",
+      "src_db_hasvalidtimerange",
+      "src_db_isisodate",
+      "src_db_ismapping",
+      "src_db_isnonemptystring",
+      "src_db_ispattern",
+      "src_db_isrecord",
+      "src_db_istime",
+      "src_db_istimeentry",
+      "src_db_istimestamp",
+      "src_db_opendb",
+      "src_db_put",
+      "src_db_readdemobackup",
+      "src_db_remove",
+      "src_db_replaceall",
+      "src_db_timeminutes",
+      "src_db_validatebackup",
+      "src_db_writedemobackup"
+    ],
+    "3": [
       "ref_dom",
       "ref_dom_iterable",
       "ref_es2022",
@@ -85,27 +111,6 @@
       "tsconfig_compileroptions_types",
       "tsconfig_compileroptions_usedefineforclassfields",
       "tsconfig_include"
-    ],
-    "3": [
-      "src_db",
-      "src_db_all",
-      "src_db_createstore",
-      "src_db_demo_db_name",
-      "src_db_hasvalidtimerange",
-      "src_db_isisodate",
-      "src_db_ismapping",
-      "src_db_isnonemptystring",
-      "src_db_ispattern",
-      "src_db_isrecord",
-      "src_db_istime",
-      "src_db_istimeentry",
-      "src_db_istimestamp",
-      "src_db_opendb",
-      "src_db_put",
-      "src_db_remove",
-      "src_db_replaceall",
-      "src_db_timeminutes",
-      "src_db_validatebackup"
     ],
     "4": [
       "axe_core_playwright",
@@ -155,6 +160,18 @@
       "src_main_root"
     ],
     "7": [
+      "tests_factory_contract_test",
+      "tests_factory_contract_test_browsertests",
+      "tests_factory_contract_test_claimrecord",
+      "tests_factory_contract_test_claims",
+      "tests_factory_contract_test_notfound",
+      "tests_factory_contract_test_privacy",
+      "tests_factory_contract_test_staticconfig",
+      "tests_factory_contract_test_staticshell",
+      "tests_factory_contract_test_terms",
+      "tests_factory_contract_test_viteconfig"
+    ],
+    "8": [
       "src_ics",
       "src_ics_addcalendardays",
       "src_ics_formattime",
@@ -164,13 +181,6 @@
       "src_ics_recurrencestarts",
       "src_ics_unescapetext",
       "src_ics_unfold"
-    ],
-    "8": [
-      "tests_factory_contract_test",
-      "tests_factory_contract_test_browsertests",
-      "tests_factory_contract_test_claimrecord",
-      "tests_factory_contract_test_claims",
-      "tests_factory_contract_test_staticshell"
     ],
     "9": [
       "public_sw",
@@ -192,15 +202,15 @@
     ]
   },
   "cohesion": {
-    "0": 0.1724137931034483,
-    "1": 0.24603174603174602,
-    "2": 0.09090909090909091,
-    "3": 0.26900584795321636,
+    "0": 0.15725806451612903,
+    "1": 0.25925925925925924,
+    "2": 0.2134387351778656,
+    "3": 0.09090909090909091,
     "4": 0.13333333333333333,
     "5": 0.14285714285714285,
     "6": 0.18181818181818182,
-    "7": 0.4722222222222222,
-    "8": 0.4,
+    "7": 0.2,
+    "8": 0.4722222222222222,
     "9": 0.6666666666666666,
     "10": 1.0,
     "11": 1.0,
@@ -211,7 +221,7 @@
     {
       "id": "src_app_app",
       "label": "App",
-      "degree": 29
+      "degree": 30
     },
     {
       "id": "tsconfig_compileroptions",
@@ -261,17 +271,6 @@
   ],
   "surprises": [
     {
-      "source": "App",
-      "target": "TimecardStore",
-      "source_files": [
-        "src/app.ts",
-        "src/db.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
-    },
-    {
       "source": "parseIcs()",
       "target": "isoDate()",
       "source_files": [
@@ -283,10 +282,32 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "App",
+      "target": "TimecardStore",
       "source_files": [
         "src/app.ts",
+        "src/db.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "App",
+      "target": "LicenseState",
+      "source_files": [
+        "src/app.ts",
+        "src/license.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
+      "source_files": [
+        "src/csv.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -296,17 +317,6 @@
     {
       "source": "sampleBackup()",
       "target": "addDays()",
-      "source_files": [
-        "src/app.ts",
-        "src/dates.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "cross-file semantic connection"
-    },
-    {
-      "source": "sampleBackup()",
-      "target": "weekStart()",
       "source_files": [
         "src/app.ts",
         "src/dates.ts"
