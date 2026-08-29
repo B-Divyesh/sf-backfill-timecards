@@ -6,7 +6,6 @@
       "src_app_app_renderdays",
       "src_app_app_renderentry",
       "src_app_datelabel",
-      "src_app_samplebackup",
       "src_csv",
       "src_csv_downloadtext",
       "src_csv_entriestocsv",
@@ -21,9 +20,18 @@
       "src_dates_isodate",
       "src_dates_minutesbetween",
       "src_dates_weekdates",
-      "src_dates_weekstart",
-      "src_db_clearlegacydemodatabase",
+      "src_db_demostore",
       "src_db_store",
+      "src_db_timecardstore",
+      "src_ics",
+      "src_ics_addcalendardays",
+      "src_ics_formattime",
+      "src_ics_parseics",
+      "src_ics_parseicsdate",
+      "src_ics_parsepositiveinteger",
+      "src_ics_recurrencestarts",
+      "src_ics_unescapetext",
+      "src_ics_unfold",
       "src_license",
       "src_license_cachedverdict",
       "src_license_capturereturnedlicense",
@@ -31,6 +39,7 @@
       "src_license_initiallicensestate",
       "src_license_licensestate",
       "src_license_savelicense",
+      "src_license_verifylicense",
       "src_main",
       "src_main_app",
       "src_main_launchurl",
@@ -85,6 +94,43 @@
       "factory_qa_artifacts_live_index_ye"
     ],
     "2": [
+      "src_app_app",
+      "src_app_app_bindglobalevents",
+      "src_app_app_changeweek",
+      "src_app_app_deleteentry",
+      "src_app_app_discarddemodata",
+      "src_app_app_duplicateentry",
+      "src_app_app_enterdemo",
+      "src_app_app_enterreal",
+      "src_app_app_exportcsv",
+      "src_app_app_finishroutechange",
+      "src_app_app_hydrateemptyshell",
+      "src_app_app_makedialog",
+      "src_app_app_opencalendardialog",
+      "src_app_app_openentrydialog",
+      "src_app_app_openpatternsdialog",
+      "src_app_app_opensettingsdialog",
+      "src_app_app_openunlockdialog",
+      "src_app_app_registerserviceworker",
+      "src_app_app_render",
+      "src_app_app_rendercalendarreview",
+      "src_app_app_renderemptystate",
+      "src_app_app_resetdemo",
+      "src_app_app_routeisdemo",
+      "src_app_app_saveentryaspattern",
+      "src_app_app_showtoast",
+      "src_app_app_start",
+      "src_app_app_startforreal",
+      "src_app_app_syncroute",
+      "src_app_app_updatemetadata",
+      "src_app_app_weekentries",
+      "src_app_escapehtml",
+      "src_app_samplebackup",
+      "src_app_uid",
+      "src_dates_weekstart",
+      "src_db_clearlegacydemodatabase"
+    ],
+    "3": [
       "factory_qa_artifacts_live_index_i",
       "factory_qa_artifacts_live_index_ie",
       "factory_qa_artifacts_live_index_je",
@@ -119,7 +165,7 @@
       "factory_qa_artifacts_live_index_y",
       "factory_qa_artifacts_live_index_z"
     ],
-    "3": [
+    "4": [
       "axe_core_playwright",
       "package",
       "package_devdependencies",
@@ -150,42 +196,12 @@
       "vite_plugin_singlefile",
       "vitest"
     ],
-    "4": [
-      "src_app_app",
-      "src_app_app_bindglobalevents",
-      "src_app_app_changeweek",
-      "src_app_app_deleteentry",
-      "src_app_app_discarddemodata",
-      "src_app_app_duplicateentry",
-      "src_app_app_exportcsv",
-      "src_app_app_hydrateemptyshell",
-      "src_app_app_makedialog",
-      "src_app_app_opencalendardialog",
-      "src_app_app_openentrydialog",
-      "src_app_app_openpatternsdialog",
-      "src_app_app_opensettingsdialog",
-      "src_app_app_openunlockdialog",
-      "src_app_app_registerserviceworker",
-      "src_app_app_render",
-      "src_app_app_rendercalendarreview",
-      "src_app_app_renderemptystate",
-      "src_app_app_resetdemo",
-      "src_app_app_saveentryaspattern",
-      "src_app_app_showtoast",
-      "src_app_app_start",
-      "src_app_app_startforreal",
-      "src_app_app_weekentries",
-      "src_app_escapehtml",
-      "src_app_uid",
-      "src_license_verifylicense"
-    ],
     "5": [
       "src_db",
       "src_db_all",
       "src_db_createdemostore",
       "src_db_createstore",
       "src_db_demo_storage_key",
-      "src_db_demostore",
       "src_db_emptybackup",
       "src_db_hasvalidtimerange",
       "src_db_isisodate",
@@ -201,7 +217,6 @@
       "src_db_readdemobackup",
       "src_db_remove",
       "src_db_replaceall",
-      "src_db_timecardstore",
       "src_db_timeminutes",
       "src_db_validatebackup",
       "src_db_writedemobackup"
@@ -232,6 +247,7 @@
     ],
     "7": [
       "tests_factory_contract_test",
+      "tests_factory_contract_test_appletouchicon",
       "tests_factory_contract_test_browsertests",
       "tests_factory_contract_test_claimrecord",
       "tests_factory_contract_test_claims",
@@ -243,80 +259,73 @@
       "tests_factory_contract_test_viteconfig"
     ],
     "8": [
-      "src_ics",
-      "src_ics_addcalendardays",
-      "src_ics_formattime",
-      "src_ics_parseics",
-      "src_ics_parseicsdate",
-      "src_ics_parsepositiveinteger",
-      "src_ics_recurrencestarts",
-      "src_ics_unescapetext",
-      "src_ics_unfold"
-    ],
-    "9": [
       "factory_qa_artifacts_live_qa",
       "factory_qa_artifacts_live_qa_allerrors",
       "factory_qa_artifacts_live_qa_results",
       "factory_qa_artifacts_live_qa_watch"
     ],
-    "10": [
+    "9": [
       "factory_qa_artifacts_live_sw",
       "factory_qa_artifacts_live_sw_extra_precache",
       "factory_qa_artifacts_live_sw_precache"
     ],
-    "11": [
+    "10": [
       "factory_qa_artifacts_sw_update_qa",
       "factory_qa_artifacts_sw_update_qa_server",
       "factory_qa_artifacts_sw_update_qa_types"
     ],
-    "12": [
+    "11": [
       "public_sw",
       "public_sw_extra_precache",
       "public_sw_precache"
     ],
-    "13": [
+    "12": [
       "vite_config",
       "vite_config_injectserviceworkerassets"
     ],
-    "14": [
+    "13": [
       "playwright_config"
     ],
-    "15": [
+    "14": [
       "tests_e2e_app_e2e"
     ],
-    "16": [
+    "15": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.1091753774680604,
+    "0": 0.09019607843137255,
     "1": 0.09672830725462304,
-    "2": 0.19318181818181818,
-    "3": 0.06896551724137931,
-    "4": 0.25925925925925924,
-    "5": 0.18666666666666668,
+    "2": 0.20168067226890757,
+    "3": 0.19318181818181818,
+    "4": 0.06896551724137931,
+    "5": 0.2134387351778656,
     "6": 0.09090909090909091,
-    "7": 0.2,
-    "8": 0.4722222222222222,
-    "9": 0.5,
+    "7": 0.18181818181818182,
+    "8": 0.5,
+    "9": 0.6666666666666666,
     "10": 0.6666666666666666,
     "11": 0.6666666666666666,
-    "12": 0.6666666666666666,
+    "12": 1.0,
     "13": 1.0,
     "14": 1.0,
-    "15": 1.0,
-    "16": 1.0
+    "15": 1.0
   },
   "gods": [
     {
       "id": "src_app_app",
       "label": "App",
-      "degree": 30
+      "degree": 34
     },
     {
       "id": "factory_qa_artifacts_live_index_pe",
       "label": "pe()",
       "degree": 27
+    },
+    {
+      "id": "src_dates_weekstart",
+      "label": "weekStart()",
+      "degree": 12
     },
     {
       "id": "factory_qa_artifacts_live_index_e",
@@ -339,11 +348,6 @@
       "degree": 11
     },
     {
-      "id": "src_dates_weekstart",
-      "label": "weekStart()",
-      "degree": 10
-    },
-    {
       "id": "src_dates_entryminutes",
       "label": "entryMinutes()",
       "degree": 9
@@ -361,37 +365,26 @@
   ],
   "surprises": [
     {
-      "source": "App",
-      "target": "LicenseState",
+      "source": "sampleBackup()",
+      "target": "addDays()",
       "source_files": [
         "src/app.ts",
-        "src/license.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "App",
-      "target": "TimecardStore",
-      "source_files": [
-        "src/app.ts",
-        "src/db.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "parseIcs()",
-      "target": "isoDate()",
-      "source_files": [
-        "src/ics.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "bridges separate communities"
+    },
+    {
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
+      "source_files": [
+        "src/csv.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
     },
     {
       "source": "dateLabel()",
@@ -405,8 +398,19 @@
       "why": "cross-file semantic connection"
     },
     {
+      "source": "parseIcs()",
+      "target": "isoDate()",
+      "source_files": [
+        "src/ics.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
       "source": "sampleBackup()",
-      "target": "addDays()",
+      "target": "weekStart()",
       "source_files": [
         "src/app.ts",
         "src/dates.ts"
