@@ -5,6 +5,8 @@ Work order: `backfill-timecards-polish-2`
 
 This repair read `.factory/review-1.md`, `.factory/polish-1.md`, and `.factory/review-2.md` in full. All findings are acceptance work. The evidence named below is from the committed build and the post-deploy check recorded in the handoff.
 
+For visitor UI findings, the live check is `https://backfill-timecards.sociobot.in/` or `https://backfill-timecards.sociobot.in/demo`, with screenshots at `.factory/evidence/polish-2-live/root/screenshot-desktop.png`, `.factory/evidence/polish-2-live/root/screenshot-mobile.png`, `.factory/evidence/polish-2-live/demo/screenshot-desktop.png`, and `.factory/evidence/polish-2-live/demo/screenshot-mobile.png`. Legal and 404 checks use the live route crawl summarized in `.factory/evidence/polish-2-live/summary.json`. Repository-document rows correctly have no screenshot; their evidence is the named source contract or claim test.
+
 | Finding | Change made | Evidence |
 | --- | --- | --- |
 | F-1-1 | Demo opens directly on its populated weekly board. | `@claim:demo-sandbox`; `/demo` mobile screenshot. |
