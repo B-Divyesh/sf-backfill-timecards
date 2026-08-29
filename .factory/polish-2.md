@@ -1,11 +1,11 @@
 # Backfill Timecards — polish round 2
 
 Date: 2026-08-29 UTC
-Work order: `backfill-timecards-polish-2`
+Work order: `backfill-timecards-polish-2-retry2`
 
 This repair read `.factory/review-1.md`, `.factory/polish-1.md`, and `.factory/review-2.md` in full. All findings are acceptance work. The evidence named below is from the committed build and the post-deploy check recorded in the handoff.
 
-For visitor UI findings, the live check is `https://backfill-timecards.sociobot.in/` or `https://backfill-timecards.sociobot.in/demo`, with screenshots at `.factory/evidence/polish-2-live/root/screenshot-desktop.png`, `.factory/evidence/polish-2-live/root/screenshot-mobile.png`, `.factory/evidence/polish-2-live/demo/screenshot-desktop.png`, and `.factory/evidence/polish-2-live/demo/screenshot-mobile.png`. Legal and 404 checks use the live route crawl summarized in `.factory/evidence/polish-2-live/summary.json`. Repository-document rows correctly have no screenshot; their evidence is the named source contract or claim test.
+For visitor UI findings, the final cold live check is `https://backfill-timecards.sociobot.in/` or `https://backfill-timecards.sociobot.in/demo`. Its fresh-context route report is `.factory/evidence/polish-2-round2-live/summary.json`; screenshots are in the same directory. The report includes `/`, `/demo`, `/?demo=1`, `/privacy/`, `/terms/`, and a real 404. Repository-document rows correctly have no screenshot; their evidence is the named source contract or claim test.
 
 | Finding | Change made | Evidence |
 | --- | --- | --- |
@@ -54,11 +54,11 @@ For visitor UI findings, the live check is `https://backfill-timecards.sociobot.
 | F-2-10 | Pattern dialog h2 is “Reuse saved work blocks.” | `@claim:local-archive`; `/demo`. |
 | F-2-11 | Settings action now says “Review reuse tools — $18.” | `@claim:pattern-deck`. |
 | F-2-12 | Saved pattern action now says “Add to this week.” | `@claim:local-archive`; `/demo`. |
-| Controller-1 | Offline and service-worker browser tests now create their own contexts, always restore online mode, clear cookies, and close in `finally`; Playwright owns and shuts both preview servers after each run. | Full clean-clone `npm test`: 58 browser tests passed; `test-results/.last-run.json` reports `passed`; no preview/browser processes remained. Cold live URLs `/`, `/demo`, `/?demo=1`, `/privacy/`, `/terms/`, and `/polish-retry-missing`: `.factory/evidence/polish-2-retry-live/summary.json` and route screenshots. |
+| Controller-latest | Test 9 creates its own `browser.newContext()`, calls `context.setOffline(true)` only inside it, restores online mode, closes its page and context in `finally`, and never closes the shared browser. Test 11 then creates another isolated context for Privacy/Terms Axe checks. The 390px target check now sets its viewport instead of skipping. Playwright owns both preview servers. | Targeted Chromium sequence (`keeps the offline timecard shell|keeps header and footer targets|creates the next isolated context`): 3 passed. Clean clone `npm test`: 12 unit + 58 browser tests passed with no skips; `test-results/.last-run.json` is `passed`; no Playwright, Chromium, or Vite process remained. Cold live route/Axe evidence: `.factory/evidence/polish-2-round2-live/summary.json`; live URLs listed above. |
 
 ## Verification
 
 - Clean clone: every command in `.factory/claims.json` was run separately, plus `npm test`, `npm run typecheck`, `npm run lint`, and `npm run build`.
-- Browser suite: 58 tests passed with every offline/service-worker context explicitly torn down; Playwright-owned preview servers exit at suite completion.
+- Browser suite: 58 tests passed with no skips. Every offline/service-worker context explicitly tears down its page and context; Playwright-owned preview servers exit at suite completion.
 - Build: `dist/` exists; initial JavaScript is 14.61 kB gzip and CSS is 5.00 kB gzip.
 - Live evidence and cold recheck are recorded in `.factory/handoff.md`.

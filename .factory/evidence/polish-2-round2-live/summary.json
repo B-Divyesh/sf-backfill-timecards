@@ -1,0 +1,117 @@
+{
+  "checkedAt": "2026-08-29T22:33:49.557Z",
+  "origin": "https://backfill-timecards.sociobot.in",
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "basics": {
+        "title": "Backfill Timecards — reconstruct your workweek",
+        "lang": "en",
+        "h1s": [
+          "Reconstruct your freelance workweek"
+        ],
+        "main": 1,
+        "missingAlt": 0,
+        "tracks": 0,
+        "banner": null,
+        "firstTrackTop": null
+      },
+      "errors": [],
+      "seriousAxeViolations": 0
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "basics": {
+        "title": "Demo — Backfill Timecards",
+        "lang": "en",
+        "h1s": [
+          "Sample weekly timecard · Aug 24–30, 2026"
+        ],
+        "main": 1,
+        "missingAlt": 0,
+        "tracks": 6,
+        "banner": "Demo — sample data, nothing is savedIt never changes your real timecard and vanishes when this tab closes.Reset demoStart for real",
+        "firstTrackTop": 751.21875
+      },
+      "errors": [],
+      "seriousAxeViolations": 0
+    },
+    {
+      "path": "/?demo=1",
+      "status": 200,
+      "basics": {
+        "title": "Demo — Backfill Timecards",
+        "lang": "en",
+        "h1s": [
+          "Sample weekly timecard · Aug 24–30, 2026"
+        ],
+        "main": 1,
+        "missingAlt": 0,
+        "tracks": 6,
+        "banner": "Demo — sample data, nothing is savedIt never changes your real timecard and vanishes when this tab closes.Reset demoStart for real",
+        "firstTrackTop": 751.21875
+      },
+      "errors": [],
+      "seriousAxeViolations": 0
+    },
+    {
+      "path": "/privacy/",
+      "status": 200,
+      "basics": {
+        "title": "Privacy — Backfill Timecards",
+        "lang": "en",
+        "h1s": [
+          "How Backfill Timecards stores your data"
+        ],
+        "main": 1,
+        "missingAlt": 0,
+        "tracks": 0,
+        "banner": null,
+        "firstTrackTop": null
+      },
+      "errors": [],
+      "seriousAxeViolations": 0
+    },
+    {
+      "path": "/terms/",
+      "status": 200,
+      "basics": {
+        "title": "Terms — Backfill Timecards",
+        "lang": "en",
+        "h1s": [
+          "Terms for using Backfill Timecards"
+        ],
+        "main": 1,
+        "missingAlt": 0,
+        "tracks": 0,
+        "banner": null,
+        "firstTrackTop": null
+      },
+      "errors": [],
+      "seriousAxeViolations": 0
+    },
+    {
+      "path": "/polish-2-round2-missing",
+      "status": 404,
+      "basics": {
+        "title": "Page not found — Backfill Timecards",
+        "lang": "en",
+        "h1s": [
+          "Page not found"
+        ],
+        "main": 1,
+        "missingAlt": 0,
+        "tracks": 0,
+        "banner": null,
+        "firstTrackTop": null
+      },
+      "errors": [],
+      "seriousAxeViolations": 0
+    }
+  ],
+  "raw": {
+    "demoMetadata": "passed"
+  }
+}
