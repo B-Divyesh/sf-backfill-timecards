@@ -1,59 +1,16 @@
 {
   "communities": {
     "0": [
-      "factory_qa_artifacts_live_index",
-      "factory_qa_artifacts_live_index_a",
-      "factory_qa_artifacts_live_index_ae",
-      "factory_qa_artifacts_live_index_ce",
-      "factory_qa_artifacts_live_index_d",
-      "factory_qa_artifacts_live_index_de",
-      "factory_qa_artifacts_live_index_e",
-      "factory_qa_artifacts_live_index_ee",
-      "factory_qa_artifacts_live_index_f",
-      "factory_qa_artifacts_live_index_g",
-      "factory_qa_artifacts_live_index_ge",
-      "factory_qa_artifacts_live_index_h",
-      "factory_qa_artifacts_live_index_he",
-      "factory_qa_artifacts_live_index_k",
-      "factory_qa_artifacts_live_index_ke",
-      "factory_qa_artifacts_live_index_le",
-      "factory_qa_artifacts_live_index_m",
-      "factory_qa_artifacts_live_index_me",
-      "factory_qa_artifacts_live_index_n",
-      "factory_qa_artifacts_live_index_ne",
-      "factory_qa_artifacts_live_index_o",
-      "factory_qa_artifacts_live_index_oe",
-      "factory_qa_artifacts_live_index_pe_constructor",
-      "factory_qa_artifacts_live_index_q",
-      "factory_qa_artifacts_live_index_re",
-      "factory_qa_artifacts_live_index_s",
-      "factory_qa_artifacts_live_index_se",
-      "factory_qa_artifacts_live_index_t",
-      "factory_qa_artifacts_live_index_te",
-      "factory_qa_artifacts_live_index_u",
-      "factory_qa_artifacts_live_index_ue",
-      "factory_qa_artifacts_live_index_v",
-      "factory_qa_artifacts_live_index_ve",
-      "factory_qa_artifacts_live_index_w",
-      "factory_qa_artifacts_live_index_we",
-      "factory_qa_artifacts_live_index_x",
-      "factory_qa_artifacts_live_index_xe",
-      "factory_qa_artifacts_live_index_ye"
-    ],
-    "1": [
       "src_app",
-      "src_app_app_renderdays",
-      "src_app_app_renderentry",
+      "src_app_app_constructor",
       "src_app_datelabel",
       "src_csv",
-      "src_csv_downloadtext",
       "src_csv_entriestocsv",
       "src_csv_quote",
       "src_dates",
       "src_dates_adddays",
       "src_dates_dateonly",
       "src_dates_entryminutes",
-      "src_dates_formatduration",
       "src_dates_formatweekrange",
       "src_dates_fromiso",
       "src_dates_isodate",
@@ -61,6 +18,7 @@
       "src_dates_weekdates",
       "src_db_demostore",
       "src_db_store",
+      "src_db_timecardstore",
       "src_ics",
       "src_ics_addcalendardays",
       "src_ics_formattime",
@@ -70,6 +28,17 @@
       "src_ics_recurrencestarts",
       "src_ics_unescapetext",
       "src_ics_unfold",
+      "src_license",
+      "src_license_cachedverdict",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_initiallicensestate",
+      "src_license_licensestate",
+      "src_license_savelicense",
+      "src_main",
+      "src_main_app",
+      "src_main_launchurl",
+      "src_main_root",
       "src_types",
       "src_types_appbackup",
       "src_types_calendarevent",
@@ -79,7 +48,7 @@
       "src_types_timeentry",
       "tests_core_test"
     ],
-    "2": [
+    "1": [
       "src_app_app",
       "src_app_app_bindglobalevents",
       "src_app_app_changeweek",
@@ -100,7 +69,9 @@
       "src_app_app_registerserviceworker",
       "src_app_app_render",
       "src_app_app_rendercalendarreview",
+      "src_app_app_renderdays",
       "src_app_app_renderemptystate",
+      "src_app_app_renderentry",
       "src_app_app_resetdemo",
       "src_app_app_routeisdemo",
       "src_app_app_saveentryaspattern",
@@ -113,15 +84,19 @@
       "src_app_escapehtml",
       "src_app_samplebackup",
       "src_app_uid",
+      "src_csv_downloadtext",
+      "src_dates_formatduration",
       "src_dates_weekstart",
       "src_db_clearlegacydemodatabase",
       "src_license_verifylicense"
     ],
-    "3": [
+    "2": [
+      "factory_qa_artifacts_live_index_a",
       "factory_qa_artifacts_live_index_i",
       "factory_qa_artifacts_live_index_ie",
       "factory_qa_artifacts_live_index_je",
       "factory_qa_artifacts_live_index_l",
+      "factory_qa_artifacts_live_index_n",
       "factory_qa_artifacts_live_index_p",
       "factory_qa_artifacts_live_index_pe",
       "factory_qa_artifacts_live_index_pe_bindglobalevents",
@@ -149,8 +124,46 @@
       "factory_qa_artifacts_live_index_pe_start",
       "factory_qa_artifacts_live_index_pe_startforreal",
       "factory_qa_artifacts_live_index_pe_weekentries",
+      "factory_qa_artifacts_live_index_x",
       "factory_qa_artifacts_live_index_y",
       "factory_qa_artifacts_live_index_z"
+    ],
+    "3": [
+      "factory_qa_artifacts_live_index",
+      "factory_qa_artifacts_live_index_ae",
+      "factory_qa_artifacts_live_index_ce",
+      "factory_qa_artifacts_live_index_d",
+      "factory_qa_artifacts_live_index_de",
+      "factory_qa_artifacts_live_index_e",
+      "factory_qa_artifacts_live_index_ee",
+      "factory_qa_artifacts_live_index_f",
+      "factory_qa_artifacts_live_index_g",
+      "factory_qa_artifacts_live_index_ge",
+      "factory_qa_artifacts_live_index_h",
+      "factory_qa_artifacts_live_index_he",
+      "factory_qa_artifacts_live_index_k",
+      "factory_qa_artifacts_live_index_ke",
+      "factory_qa_artifacts_live_index_le",
+      "factory_qa_artifacts_live_index_m",
+      "factory_qa_artifacts_live_index_me",
+      "factory_qa_artifacts_live_index_ne",
+      "factory_qa_artifacts_live_index_o",
+      "factory_qa_artifacts_live_index_oe",
+      "factory_qa_artifacts_live_index_pe_constructor",
+      "factory_qa_artifacts_live_index_q",
+      "factory_qa_artifacts_live_index_re",
+      "factory_qa_artifacts_live_index_s",
+      "factory_qa_artifacts_live_index_se",
+      "factory_qa_artifacts_live_index_t",
+      "factory_qa_artifacts_live_index_te",
+      "factory_qa_artifacts_live_index_u",
+      "factory_qa_artifacts_live_index_ue",
+      "factory_qa_artifacts_live_index_v",
+      "factory_qa_artifacts_live_index_ve",
+      "factory_qa_artifacts_live_index_w",
+      "factory_qa_artifacts_live_index_we",
+      "factory_qa_artifacts_live_index_xe",
+      "factory_qa_artifacts_live_index_ye"
     ],
     "4": [
       "axe_core_playwright",
@@ -204,7 +217,6 @@
       "src_db_readdemobackup",
       "src_db_remove",
       "src_db_replaceall",
-      "src_db_timecardstore",
       "src_db_timeminutes",
       "src_db_validatebackup",
       "src_db_writedemobackup"
@@ -249,39 +261,29 @@
       "tests_factory_contract_test_viteconfig"
     ],
     "8": [
-      "src_app_app_constructor",
-      "src_license",
-      "src_license_cachedverdict",
-      "src_license_capturereturnedlicense",
-      "src_license_checkouturl",
-      "src_license_initiallicensestate",
-      "src_license_licensestate",
-      "src_license_savelicense",
-      "src_main",
-      "src_main_app",
-      "src_main_launchurl",
-      "src_main_root"
-    ],
-    "9": [
       "factory_qa_artifacts_live_qa",
       "factory_qa_artifacts_live_qa_allerrors",
       "factory_qa_artifacts_live_qa_results",
       "factory_qa_artifacts_live_qa_watch"
     ],
-    "10": [
+    "9": [
       "factory_qa_artifacts_live_sw",
       "factory_qa_artifacts_live_sw_extra_precache",
       "factory_qa_artifacts_live_sw_precache"
     ],
-    "11": [
+    "10": [
       "factory_qa_artifacts_sw_update_qa",
       "factory_qa_artifacts_sw_update_qa_server",
       "factory_qa_artifacts_sw_update_qa_types"
     ],
-    "12": [
+    "11": [
       "public_sw",
       "public_sw_extra_precache",
       "public_sw_precache"
+    ],
+    "12": [
+      "tests_e2e_app_e2e",
+      "tests_e2e_app_e2e_withisolatedcontext"
     ],
     "13": [
       "vite_config",
@@ -291,34 +293,30 @@
       "playwright_config"
     ],
     "15": [
-      "tests_e2e_app_e2e"
-    ],
-    "16": [
       "tests_e2e_app_e2e_storage_removeitem"
     ],
-    "17": [
+    "16": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.09672830725462304,
-    "1": 0.14114114114114115,
-    "2": 0.19523809523809524,
-    "3": 0.19318181818181818,
+    "0": 0.09758454106280193,
+    "1": 0.17051282051282052,
+    "2": 0.1761904761904762,
+    "3": 0.10084033613445378,
     "4": 0.06896551724137931,
-    "5": 0.19927536231884058,
+    "5": 0.2134387351778656,
     "6": 0.09090909090909091,
     "7": 0.15384615384615385,
-    "8": 0.18181818181818182,
-    "9": 0.5,
+    "8": 0.5,
+    "9": 0.6666666666666666,
     "10": 0.6666666666666666,
     "11": 0.6666666666666666,
-    "12": 0.6666666666666666,
+    "12": 1.0,
     "13": 1.0,
     "14": 1.0,
     "15": 1.0,
-    "16": 1.0,
-    "17": 1.0
+    "16": 1.0
   },
   "gods": [
     {
@@ -385,10 +383,10 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "entriesToCsv()",
-      "target": "entryMinutes()",
+      "source": "dateLabel()",
+      "target": "fromIso()",
       "source_files": [
-        "src/csv.ts",
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -396,10 +394,10 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
       "source_files": [
-        "src/app.ts",
+        "src/csv.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
