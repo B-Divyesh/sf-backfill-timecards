@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#F2E8D5" />
+    <meta name="description" content="Try a populated freelance timecard in a separate demo that saves nothing to your real work." />
+    <meta name="color-scheme" content="light" />
+    <link rel="canonical" href="https://backfill-timecards.sociobot.in/demo" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://backfill-timecards.sociobot.in/demo" />
+    <meta property="og:title" content="Demo — Backfill Timecards" />
+    <meta property="og:description" content="Try a populated freelance timecard in a separate demo that saves nothing to your real work." />
+    <meta property="og:image" content="https://backfill-timecards.sociobot.in/assets/social-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Demo — Backfill Timecards" />
+    <meta name="twitter:description" content="Try a populated freelance timecard in a separate demo that saves nothing to your real work." />
+    <meta name="twitter:image" content="https://backfill-timecards.sociobot.in/assets/social-card.jpg" />
+    <title>Demo — Backfill Timecards</title>
+    <script type="module" crossorigin src="/assets/index-BDwaH195.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-F37a4tX5.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <!--
+      This is a real, inert empty-board shell rather than a tiny loading
+      message. It reserves the same geometry as the first interactive render,
+      so IndexedDB hydration cannot push the page down after FCP on a phone.
+      App.start() replaces it only after the local archive is available.
+    -->
+    <div id="app" aria-busy="true">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Backfill Timecards home">
+          <img src="/icons/icon.svg" width="40" height="40" alt="" />
+          <span>Backfill<br />Timecards</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary navigation"><a href="/demo" data-action="try-demo">Demo</a><a href="/privacy/">Privacy</a></nav>
+        <div class="header-actions">
+          <span class="status-pill" aria-live="polite"><span aria-hidden="true">●</span> Local · saved here</span>
+          <button class="icon-button" type="button" data-action="settings" aria-label="Open data and license settings" title="Data and license settings">☰</button>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow">PRIVATE WEEKLY TIMECARDS</p>
+            <h1 id="hero-title">Reconstruct your <span>freelance workweek</span></h1>
+            <p class="lede">For freelancers logging work after the fact, turn reviewed calendar events and memory into a weekly timecard ready for invoicing.</p>
+            <div class="hero-actions">
+              <a class="primary-button button-link" href="/demo" data-action="try-demo">Try it with sample data</a>
+              <button type="button" data-action="add">Add your own work</button>
+              <p>The sample opens a separate weekly timecard without changing your work.</p>
+            </div>
+            <ul class="hero-facts" aria-label="Product facts"><li data-fact="privacy">Weekly timecards stay on this device.</li><li data-fact="offline">Works offline after the first visit.</li><li data-fact="price">Saved patterns and previous-week copying cost $18 once.</li></ul>
+          </div>
+          <figure class="hero-art">
+            <picture>
+              <source type="image/avif" srcset="/assets/hero-cassette-640.avif 640w, /assets/hero-cassette-1024.avif 1024w" sizes="(max-width: 820px) 92vw, 38vw" />
+              <source type="image/webp" srcset="/assets/hero-cassette-640.webp 640w, /assets/hero-cassette-1024.webp 1024w" sizes="(max-width: 820px) 92vw, 38vw" />
+              <img src="/assets/hero-cassette-640.webp" width="640" height="427" fetchpriority="high" decoding="async" alt="A collage of a cassette insert arranged as seven blank timecard tracks with pencil marks and calendar scraps" />
+            </picture>
+            <figcaption>You choose every work block.</figcaption>
+          </figure>
+        </section>
+        <section class="workspace" aria-labelledby="week-heading">
+          <div class="week-bar">
+            <div><p class="eyebrow">WEEKLY BOARD</p><h2 id="week-heading" tabindex="-1">This week</h2></div>
+            <nav class="week-nav" aria-label="Choose week">
+              <button type="button" class="square-button" data-action="previous-week" aria-label="Show previous week">←</button>
+              <button type="button" class="text-button" data-action="this-week" disabled>Show current week</button>
+              <button type="button" class="square-button" data-action="next-week" aria-label="Show next week">→</button>
+            </nav>
+          </div>
+          <dl class="summary-strip" aria-label="Week summary">
+            <div><dt>Total recorded</dt><dd>0m</dd></div><div><dt>Billable</dt><dd>0m</dd></div><div><dt>Entries</dt><dd>0</dd></div><div><dt>Clients</dt><dd>0</dd></div>
+          </dl>
+          <div class="toolbelt" role="group" aria-label="Timecard actions">
+            <button type="button" class="primary-button" data-action="add">＋ Add work block</button><button type="button" data-action="calendar">Import calendar</button><button type="button" data-action="patterns">Reuse saved blocks — <span class="mini-stamp">$18</span></button><button type="button" data-action="export-csv" disabled>Export CSV</button>
+          </div>
+          <div class="empty-state">
+            <div class="empty-tape" aria-hidden="true"><span></span><span></span></div>
+            <div><p class="eyebrow">EMPTY WEEK</p><h3>No work blocks yet</h3><p>Start from one thing you remember, or bring in a calendar file and choose only the events you want.</p><div class="empty-actions"><button type="button" class="primary-button" data-action="add">Add the first block</button><button type="button" data-action="calendar">Review a calendar file</button></div></div>
+          </div>
+        </section>
+        <section class="how-it-works" aria-labelledby="how-heading">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2 id="how-heading">Review your week in three steps</h2>
+          <ol><li><strong>Review calendar events.</strong><span>Import an .ics file and choose only useful events.</span></li><li><strong>Record and correct work.</strong><span>Add details, clients, and billable choices yourself.</span></li><li><strong>Export the week.</strong><span>Download an invoice-ready CSV when every row looks right.</span></li></ol>
+        </section>
+        <section class="privacy-note" aria-labelledby="privacy-note-heading">
+          <p class="registration" aria-hidden="true">＋</p><div><p class="eyebrow">LOCAL DATA</p><h2 id="privacy-note-heading">Your week stays in this browser.</h2></div><p>Calendar files are read here, not uploaded. No account is required. Export a JSON backup, restore one, or erase your local data.</p><button type="button" data-action="settings">Manage local data</button>
+        </section>
+        <section class="paid-note" aria-labelledby="paid-heading">
+          <div><p class="eyebrow">OPTIONAL ONE-TIME PURCHASE</p><h2 id="paid-heading">Reuse common work with Pattern Deck</h2><p>Pattern Deck costs $18 once. It saves reusable blocks and copies a previous week into matching days.</p><p>The weekly board, calendar import, CSV export, backups, and privacy controls remain free.</p></div>
+          <button type="button" class="primary-button" data-action="patterns">Review reuse tools — $18</button>
+        </section>
+      </main>
+      <footer>
+        <p>Private weekly timecards for freelancers.</p><nav aria-label="Legal and product links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://sociobot.in">Param Factory (external)</a></nav><p class="build-id">Build r7 · 2026-08-29</p>
+      </footer>
+      <div id="route-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    </div>
+    <noscript><p class="noscript">Backfill Timecards needs JavaScript to save your timecard locally in this browser.</p></noscript>
+  </body>
+</html>
