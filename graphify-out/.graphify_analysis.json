@@ -323,13 +323,13 @@
       "degree": 27
     },
     {
-      "id": "src_dates_weekstart",
-      "label": "weekStart()",
+      "id": "factory_qa_artifacts_live_index_e",
+      "label": "E()",
       "degree": 12
     },
     {
-      "id": "factory_qa_artifacts_live_index_e",
-      "label": "E()",
+      "id": "src_dates_weekstart",
+      "label": "weekStart()",
       "degree": 12
     },
     {
@@ -376,10 +376,10 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "entriesToCsv()",
-      "target": "entryMinutes()",
+      "source": "dateLabel()",
+      "target": "fromIso()",
       "source_files": [
-        "src/csv.ts",
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -387,10 +387,10 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
       "source_files": [
-        "src/app.ts",
+        "src/csv.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
