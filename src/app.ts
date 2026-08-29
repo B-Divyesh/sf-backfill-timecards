@@ -273,9 +273,9 @@ export class App {
         <div class="week-bar">
           <div><p class="eyebrow">${this.demoMode ? "POPULATED SAMPLE" : "WEEKLY BOARD"}</p>${heading}</div>
           <nav class="week-nav" aria-label="Choose week">
-            <button type="button" class="square-button" data-action="previous-week" aria-label="Previous week">←</button>
-            <button type="button" class="text-button" data-action="this-week" ${isCurrentWeek ? "disabled" : ""}>This week</button>
-            <button type="button" class="square-button" data-action="next-week" aria-label="Next week">→</button>
+            <button type="button" class="square-button" data-action="previous-week" aria-label="Show previous week">←</button>
+            <button type="button" class="text-button" data-action="this-week" ${isCurrentWeek ? "disabled" : ""}>Show current week</button>
+            <button type="button" class="square-button" data-action="next-week" aria-label="Show next week">→</button>
           </nav>
         </div>
         <dl class="summary-strip" aria-label="Week summary">
@@ -327,7 +327,7 @@ export class App {
         <section class="privacy-note" aria-labelledby="privacy-note-heading">
           <p class="registration" aria-hidden="true">＋</p>
           <div><p class="eyebrow">LOCAL DATA</p><h2 id="privacy-note-heading">Your week stays in this browser.</h2></div>
-          <p>Calendar files are read here, not uploaded. No account is required. Export, restore, or erase your archive whenever you want.</p>
+          <p>Calendar files are read here, not uploaded. No account is required. Export a JSON backup, restore one, or erase your local data.</p>
           <button type="button" data-action="settings">Manage local data</button>
         </section>
         <section class="paid-note" aria-labelledby="paid-heading">
@@ -370,7 +370,7 @@ export class App {
             <span>${formatDuration(total)}</span>
             <button type="button" class="add-day" data-action="add" data-date="${date}" aria-label="Add work block on ${label.weekday}, ${label.date}">＋</button>
           </header>
-          ${dayEntries.length ? `<ol class="track-list">${dayEntries.map((entry) => this.renderEntry(entry)).join("")}</ol>` : '<p class="rest-day">No tracks</p>'}
+          ${dayEntries.length ? `<ol class="track-list">${dayEntries.map((entry) => this.renderEntry(entry)).join("")}</ol>` : '<p class="rest-day">No work blocks</p>'}
         </section>`;
     }).join("")}</div>`;
   }
@@ -388,7 +388,7 @@ export class App {
         <div class="track-actions">
           <button type="button" data-action="edit" data-id="${entry.id}" aria-label="Edit ${escapeHtml(entry.description)}">Edit</button>
           <button type="button" class="more-action" data-action="duplicate" data-id="${entry.id}" aria-label="Copy ${escapeHtml(entry.description)}">Copy</button>
-          <button type="button" class="more-action" data-action="save-pattern" data-id="${entry.id}" aria-label="Pattern: save ${escapeHtml(entry.description)}">Pattern</button>
+          <button type="button" class="more-action" data-action="save-pattern" data-id="${entry.id}" aria-label="Save ${escapeHtml(entry.description)} as a pattern">Save pattern</button>
           <button type="button" class="danger-action more-action" data-action="delete" data-id="${entry.id}" aria-label="Delete ${escapeHtml(entry.description)}">Delete</button>
         </div>
       </li>`;
@@ -424,7 +424,7 @@ export class App {
     const defaultDate = suggestedDate || (weekDates(this.currentWeek).includes(new Date().toLocaleDateString("en-CA")) ? new Date().toLocaleDateString("en-CA") : this.currentWeek);
     const dialog = this.makeDialog("entry-dialog", `
       <form method="dialog" class="dialog-card entry-form">
-        <div class="dialog-heading"><div><p class="eyebrow">${editing ? "CORRECT TRACK" : "NEW TRACK"}</p><h2>${editing ? "Edit work block" : "Add work block"}</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
+        <div class="dialog-heading"><div><p class="eyebrow">WORK BLOCK DETAILS</p><h2>${editing ? "Edit work block" : "Add work block"}</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
         <div class="form-grid">
           <label class="field">Date<input name="date" type="date" required value="${entry?.date || defaultDate}" /></label>
           <div class="time-fields"><label class="field">Start<input name="start" type="time" required value="${entry?.start || "09:00"}" /></label><label class="field">End<input name="end" type="time" required value="${entry?.end || "10:00"}" /></label></div>
@@ -574,10 +574,10 @@ export class App {
     const previousEntries = this.entries.filter((entry) => entry.date >= previousStart && entry.date < previousEnd);
     const dialog = this.makeDialog("patterns-dialog", `
       <div class="dialog-card wide-dialog">
-        <div class="dialog-heading"><div><p class="eyebrow">PATTERN DECK · UNLOCKED</p><h2>Reuse, then correct</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
+        <div class="dialog-heading"><div><p class="eyebrow">PATTERN DECK · UNLOCKED</p><h2>Reuse saved work blocks</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
         <p>Patterns copy known structure only. Dates and details remain yours to review.</p>
         <section class="pattern-section"><div><h3>Previous week</h3><p>${previousEntries.length ? `${previousEntries.length} blocks from ${formatWeekRange(previousStart)}` : `No blocks in ${formatWeekRange(previousStart)}`}</p></div><button id="clone-week" type="button" class="primary-button" ${previousEntries.length ? "" : "disabled"}>Clone into this week</button></section>
-        <section><h3>Saved patterns</h3>${this.patterns.length ? `<ul class="pattern-list">${this.patterns.map((pattern) => `<li><div><strong>${escapeHtml(pattern.title)}</strong><span>${escapeHtml(pattern.start)}–${escapeHtml(pattern.end)} · ${escapeHtml(pattern.client || pattern.project)}</span></div><button type="button" data-use-pattern="${pattern.id}">Add</button><button type="button" class="danger-action" data-delete-pattern="${pattern.id}" aria-label="Delete ${escapeHtml(pattern.title)} pattern">Delete</button></li>`).join("")}</ul>` : '<p class="muted">No saved patterns yet. Use “Pattern” on any work block to save one.</p>'}</section>
+        <section><h3>Saved patterns</h3>${this.patterns.length ? `<ul class="pattern-list">${this.patterns.map((pattern) => `<li><div><strong>${escapeHtml(pattern.title)}</strong><span>${escapeHtml(pattern.start)}–${escapeHtml(pattern.end)} · ${escapeHtml(pattern.client || pattern.project)}</span></div><button type="button" data-use-pattern="${pattern.id}">Add to this week</button><button type="button" class="danger-action" data-delete-pattern="${pattern.id}" aria-label="Delete ${escapeHtml(pattern.title)} pattern">Delete</button></li>`).join("")}</ul>` : '<p class="muted">No saved patterns yet. Use “Save pattern” on any work block to save one.</p>'}</section>
       </div>`);
     dialog.querySelector("#clone-week")?.addEventListener("click", async () => {
       const now = Date.now();
@@ -640,12 +640,12 @@ export class App {
   private openSettingsDialog(): void {
     const dialog = this.makeDialog("settings-dialog", `
       <div class="dialog-card wide-dialog">
-        <div class="dialog-heading"><div><p class="eyebrow">DATA + OWNERSHIP</p><h2>Your local archive</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
+        <div class="dialog-heading"><div><p class="eyebrow">DATA + OWNERSHIP</p><h2>Your local data</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
         <p>All ${this.entries.length} work block${this.entries.length === 1 ? " is" : "s are"} stored in this browser. There is no cloud account.</p>
         <div class="settings-actions"><button id="backup-data" type="button">Export JSON backup</button><label class="button-file">Import JSON backup<input id="restore-data" type="file" accept="application/json,.json" /></label><button id="erase-data" type="button" class="danger-button">Erase all local data</button></div>
         <p id="settings-status" role="status" aria-live="polite"></p>
         <hr />
-        <div class="license-row"><div><h3>Pattern Deck</h3><p>${this.demoMode ? "The paid features are available only for this demo." : this.license.unlocked ? "One-time license active on this device." : "Free workspace · one-time Pattern Deck purchase available."}</p></div><button id="manage-license" type="button" ${this.demoMode ? "disabled" : ""}>${this.demoMode ? "Demo preview active" : this.license.unlocked ? "Recheck license" : "See $18 Pattern Deck"}</button></div>
+        <div class="license-row"><div><h3>Pattern Deck</h3><p>${this.demoMode ? "The paid features are available only for this demo." : this.license.unlocked ? "One-time license active on this device." : "Free workspace · one-time Pattern Deck purchase available."}</p></div><button id="manage-license" type="button" ${this.demoMode ? "disabled" : ""}>${this.demoMode ? "Demo preview active" : this.license.unlocked ? "Recheck license" : "Review reuse tools — $18"}</button></div>
       </div>`);
     const status = dialog.querySelector<HTMLElement>("#settings-status")!;
     dialog.querySelector("#backup-data")!.addEventListener("click", async () => {

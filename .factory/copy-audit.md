@@ -26,9 +26,9 @@ This table includes headings, visible labels, buttons, links, values, and access
 | You choose every work block. | 5 | Image caption |
 | Weekly board | 2 | Section label |
 | Aug 24–30, 2026 | 3 | Week heading example |
-| Previous week | 2 | Accessible button name |
-| This week | 2 | Button |
-| Next week | 2 | Accessible button name |
+| Show previous week | 3 | Accessible button name |
+| Show current week | 3 | Button |
+| Show next week | 3 | Accessible button name |
 | Total recorded | 2 | Summary label |
 | 0m | 1 | Summary value |
 | Billable | 1 | Summary label |
@@ -55,7 +55,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | Your week stays in this browser. | 6 | H2 |
 | Calendar files are read here, not uploaded. | 7 | Privacy detail |
 | No account is required. | 4 | Privacy detail |
-| Export, restore, or erase your archive whenever you want. | 9 | Ownership detail |
+| Export a JSON backup, restore one, or erase your local data. | 12 | Ownership detail |
 | Manage local data | 3 | Button |
 | Optional one-time purchase | 3 | Section label |
 | Reuse common work with Pattern Deck | 6 | H2 |
@@ -74,7 +74,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | --- | ---: |
 | Backfill Timecards | 2 |
 | Backfill Timecards is a private weekly timecard for freelancers who reconstruct work after the fact. | 15 |
-| It turns memory and reviewed calendar events into clear work blocks and an invoice-ready CSV. | 15 |
+| It turns memory and reviewed calendar events into work blocks and an invoice-ready CSV. | 14 |
 | Live product: backfill-timecards.sociobot.in | 3 |
 | Try the isolated sample week: backfill-timecards.sociobot.in/demo | 7 |
 | What it does | 3 |
@@ -84,7 +84,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | Remembers the client for each project when you add more work. | 11 |
 | Exports the selected week as invoice-ready CSV. | 7 |
 | Exports, restores, and erases a complete local JSON backup. | 9 |
-| Installs as a web app and works offline after the first visit. | 12 |
+| Includes web-app installation metadata and works offline after the first visit. | 10 |
 | Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. | 14 |
 | Checkout and license verification use Sociobot billing; no payment provider is embedded. | 12 |
 | Seven claim tests start at /demo. | 6 |

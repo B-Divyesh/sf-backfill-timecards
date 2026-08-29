@@ -25,7 +25,7 @@
     "claim": "Calendar files are reviewed and imported locally, including repeating events with an end date and overnight events; descriptions and billability require explicit choices.",
     "where": "how it works, local data section, privacy policy, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:calendar-local",
-    "sandbox": "fresh /demo; import a local fixture with recurrence, private description, and overnight event; assert results, defaults, tab-only demo storage, and no off-origin requests"
+    "sandbox": "fresh /demo; import a local fixture with FREQ=WEEKLY and UNTIL, a private description, and an overnight event; deselect one reviewed occurrence; assert exact dates, selected-only import, defaults, tab-only demo storage, and no off-origin requests"
   },
   {
     "id": "csv-export",
@@ -53,7 +53,7 @@
     "claim": "The optional Pattern Deck saves reusable blocks and copies the previous week; core timecard tools stay free.",
     "where": "first-screen facts, paid section, terms, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:pattern-deck",
-    "sandbox": "fresh /demo with paid preview enabled; save a pattern; clone three prior blocks; assert current count and free-tier copy"
+    "sandbox": "fresh /demo with paid preview enabled; save a pattern; clone three prior blocks; then enter a locked normal workspace and add a block, import a calendar event, export CSV, and open JSON backup/erase controls without a license"
   },
   {
     "id": "privacy-local",

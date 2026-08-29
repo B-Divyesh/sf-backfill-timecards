@@ -341,22 +341,30 @@ test("@claim:weekly-board edits, copies, restores, and recalls client work", asy
   await expect(page.locator(".track-title", { hasText: "Sample client analysis revised" })).toHaveCount(2);
 });
 
-test("@claim:calendar-local imports reviewed recurring and overnight events without uploading them", async ({ page }) => {
+test("@claim:calendar-local imports selected weekly recurring and overnight events without uploading them", async ({ page }) => {
   const externalRequests: string[] = [];
   page.on("request", (request) => {
     if (new URL(request.url()).origin !== "http://127.0.0.1:4173") externalRequests.push(request.url());
   });
   await page.goto("/demo");
   await page.getByRole("button", { name: "Import calendar" }).click();
-  const ics = "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:review\r\nDTSTART:20260824T100000\r\nDTEND:20260824T110000\r\nRRULE:FREQ=DAILY;COUNT=2\r\nSUMMARY:Client review\r\nDESCRIPTION:Private planning notes\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:overnight-claim\r\nDTSTART:20260826T230000\r\nDTEND:20260827T010000\r\nSUMMARY:Overnight release\r\nEND:VEVENT\r\nEND:VCALENDAR";
+  const ics = "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:review\r\nDTSTART:20260824T100000\r\nDTEND:20260824T110000\r\nRRULE:FREQ=WEEKLY;UNTIL=20260907T100000\r\nSUMMARY:Client review\r\nDESCRIPTION:Private planning notes\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:overnight-claim\r\nDTSTART:20260826T230000\r\nDTEND:20260827T010000\r\nSUMMARY:Overnight release\r\nEND:VEVENT\r\nEND:VCALENDAR";
   await page.locator("#calendar-file").setInputFiles({ name: "claim-week.ics", mimeType: "text/calendar", buffer: Buffer.from(ics) });
-  await expect(page.getByText("3 timed events found. Select only work you want to record.")).toBeVisible();
+  await expect(page.getByText("4 timed events found. Select only work you want to record.")).toBeVisible();
+  await expect(page.getByText("2026-08-24 · 10:00–11:00")).toBeVisible();
+  await expect(page.getByText("2026-08-31 · 10:00–11:00")).toBeVisible();
+  await expect(page.getByText("2026-09-07 · 10:00–11:00")).toBeVisible();
   await expect(page.getByText(/23:00–01:00 \(next day\)/)).toBeVisible();
+  await page.getByRole("checkbox", { name: /Client review.*2026-08-31/ }).uncheck();
   await page.getByLabel("Project for selected events").fill("Release support");
   await page.getByRole("button", { name: "Add selected events" }).click();
-  await expect(page.locator(".track-title", { hasText: "Client review" })).toHaveCount(2);
+  await expect(page.locator(".track-title", { hasText: "Client review" })).toHaveCount(1);
   await expect(page.locator(".track", { hasText: "Overnight release" }).locator(".track-time")).toContainText("2h");
   await expect(page.getByText("Private planning notes")).toHaveCount(0);
+  await page.getByRole("button", { name: "Show next week" }).click();
+  await expect(page.locator(".track-title", { hasText: "Client review" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Show next week" }).click();
+  await expect(page.locator(".track-title", { hasText: "Client review" })).toHaveCount(1);
   expect(externalRequests).toEqual([]);
   expect(await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name))).toEqual([]);
   expect(await page.evaluate(() => sessionStorage.getItem("demo:backfill-timecards"))).not.toBeNull();
@@ -374,12 +382,19 @@ test("@claim:csv-export downloads one invoice row per visible sample block", asy
   expect(csv).toContain('"Redwood Studio","Website refresh","Plan the website sprint"');
 });
 
-test("@claim:local-archive exports, erases, and restores the demo archive", async ({ page }) => {
+test("@claim:local-archive exports, erases, and restores every work block, mapping, and pattern", async ({ page }) => {
   await page.goto("/demo");
   await page.getByRole("button", { name: "Open data and license settings" }).click();
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export JSON backup" }).click();
   const backup = await readFile(await (await download).path());
+  const parsed = JSON.parse(backup.toString()) as { entries: unknown[]; mappings: Array<{ project: string; client: string }>; patterns: Array<{ title: string }> };
+  expect(parsed.entries).toHaveLength(9);
+  expect(parsed.mappings).toEqual(expect.arrayContaining([
+    { project: "Website refresh", client: "Redwood Studio", updatedAt: expect.any(Number) },
+    { project: "Book launch", client: "Northstar Press", updatedAt: expect.any(Number) },
+  ]));
+  expect(parsed.patterns).toEqual([expect.objectContaining({ title: "Weekly planning", project: "Website refresh", client: "Redwood Studio" })]);
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Erase all local data" }).click();
   await expect(page.getByRole("heading", { name: "No work blocks yet" })).toBeVisible();
@@ -387,6 +402,13 @@ test("@claim:local-archive exports, erases, and restores the demo archive", asyn
   page.once("dialog", (dialog) => dialog.accept());
   await page.locator("#restore-data").setInputFiles({ name: "demo-backup.json", mimeType: "application/json", buffer: backup });
   await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
+  await page.getByRole("button", { name: "Add work block" }).first().click();
+  await page.getByRole("combobox", { name: "Project", exact: true }).fill("Website refresh");
+  await expect(page.getByRole("textbox", { name: /^Client/ })).toHaveValue("Redwood Studio");
+  await page.getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: /Reuse saved blocks/ }).click();
+  await expect(page.getByRole("heading", { name: "Reuse saved work blocks" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Add to this week" })).toBeVisible();
 });
 
 test("@claim:offline-reload keeps the sample week usable without a network and exposes install metadata", async ({ page, context }) => {
@@ -483,9 +505,9 @@ test("@claim:billing-entitlement proves the $18 checkout, verification gate, one
   await expect(page.locator("#unlock-dialog .inline-error")).toHaveText("License no longer active.");
 });
 
-test("@claim:pattern-deck previews saved patterns and previous-week copying", async ({ page }) => {
+test("@claim:pattern-deck previews saved patterns and previous-week copying while core tools stay free", async ({ page }) => {
   await page.goto("/demo");
-  await page.getByRole("button", { name: "Pattern: save Plan the website sprint" }).click();
+  await page.getByRole("button", { name: "Save Plan the website sprint as a pattern" }).click();
   await expect(page.getByText("Saved “Plan the website sprint” to the pattern deck.")).toBeVisible();
   await page.locator(".toolbelt [data-action='patterns']").click();
   await expect(page.getByText("3 blocks from")).toBeVisible();
@@ -493,8 +515,23 @@ test("@claim:pattern-deck previews saved patterns and previous-week copying", as
   await page.getByRole("button", { name: "Clone into this week" }).click();
   await expect(page.locator(".summary-strip div", { hasText: "Entries" }).locator("dd")).toHaveText("9");
   await page.getByRole("link", { name: "Start for real" }).click();
-  await expect(page.locator(".paid-note")).toContainText("Pattern Deck costs $18 once");
-  await expect(page.locator(".paid-note")).toContainText("weekly board, calendar import, CSV export, backups, and privacy controls remain free");
+  await page.getByRole("button", { name: "Add work block" }).first().click();
+  await page.getByRole("combobox", { name: "Project", exact: true }).fill("Free project");
+  await page.getByLabel("What did you do?").fill("Free manual work");
+  await page.getByRole("button", { name: "Add work block" }).last().click();
+  await page.getByRole("button", { name: "Import calendar" }).click();
+  const freeIcs = "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:free-calendar\r\nDTSTART:20260824T130000\r\nDTEND:20260824T140000\r\nSUMMARY:Free calendar work\r\nEND:VEVENT\r\nEND:VCALENDAR";
+  await page.locator("#calendar-file").setInputFiles({ name: "free.ics", mimeType: "text/calendar", buffer: Buffer.from(freeIcs) });
+  await page.getByLabel("Project for selected events").fill("Free project");
+  await page.getByRole("button", { name: "Add selected events" }).click();
+  await expect(page.locator(".track-title", { hasText: "Free calendar work" })).toBeVisible();
+  const csvDownload = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export CSV" }).click();
+  await expect(csvDownload).resolves.toBeTruthy();
+  await page.getByRole("button", { name: "Open data and license settings" }).click();
+  await expect(page.getByRole("button", { name: "Export JSON backup" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Erase all local data" })).toBeVisible();
+  await expect(page.locator("#manage-license")).toHaveText("Review reuse tools — $18");
 });
 
 test("keeps the populated demo accessible and responsive", async ({ page }) => {

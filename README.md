@@ -1,6 +1,6 @@
 # Backfill Timecards
 
-Backfill Timecards is a private weekly timecard for freelancers who reconstruct work after the fact. It turns memory and reviewed calendar events into clear work blocks and an invoice-ready CSV.
+Backfill Timecards is a private weekly timecard for freelancers who reconstruct work after the fact. It turns memory and reviewed calendar events into work blocks and an invoice-ready CSV.
 
 Live product: <https://backfill-timecards.sociobot.in>
 
@@ -14,7 +14,7 @@ Try the isolated sample week: <https://backfill-timecards.sociobot.in/demo>
 - Remembers the client for each project when you add more work.
 - Exports the selected week as invoice-ready CSV.
 - Exports, restores, and erases a complete local JSON backup.
-- Installs as a web app and works offline after the first visit.
+- Includes web-app installation metadata and works offline after the first visit.
 - Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. Checkout and license verification use Sociobot billing; no payment provider is embedded.
 
 Seven claim tests start at `/demo`. The demo-isolation, normal-privacy, and billing tests start in clean normal workspaces as described in [`.factory/claims.json`](.factory/claims.json).
