@@ -1,40 +1,6 @@
 {
   "communities": {
     "0": [
-      "src_app",
-      "src_app_app_renderdays",
-      "src_app_app_renderentry",
-      "src_app_datelabel",
-      "src_app_samplebackup",
-      "src_csv",
-      "src_csv_downloadtext",
-      "src_csv_entriestocsv",
-      "src_csv_quote",
-      "src_dates",
-      "src_dates_adddays",
-      "src_dates_dateonly",
-      "src_dates_entryminutes",
-      "src_dates_formatduration",
-      "src_dates_formatweekrange",
-      "src_dates_fromiso",
-      "src_dates_isodate",
-      "src_dates_minutesbetween",
-      "src_dates_weekdates",
-      "src_dates_weekstart",
-      "src_db_clearlegacydemodatabase",
-      "src_db_demostore",
-      "src_db_store",
-      "src_db_timecardstore",
-      "src_types",
-      "src_types_appbackup",
-      "src_types_calendarevent",
-      "src_types_entrysource",
-      "src_types_pattern",
-      "src_types_projectmapping",
-      "src_types_timeentry",
-      "tests_core_test"
-    ],
-    "1": [
       "src_app_app",
       "src_app_app_bindglobalevents",
       "src_app_app_changeweek",
@@ -52,18 +18,169 @@
       "src_app_app_registerserviceworker",
       "src_app_app_render",
       "src_app_app_rendercalendarreview",
+      "src_app_app_renderdays",
       "src_app_app_renderemptystate",
+      "src_app_app_renderentry",
       "src_app_app_resetdemo",
       "src_app_app_saveentryaspattern",
       "src_app_app_showtoast",
       "src_app_app_start",
       "src_app_app_startforreal",
       "src_app_app_weekentries",
+      "src_app_datelabel",
       "src_app_escapehtml",
+      "src_app_samplebackup",
       "src_app_uid",
+      "src_csv_downloadtext",
+      "src_dates",
+      "src_dates_adddays",
+      "src_dates_dateonly",
+      "src_dates_entryminutes",
+      "src_dates_formatduration",
+      "src_dates_formatweekrange",
+      "src_dates_fromiso",
+      "src_dates_minutesbetween",
+      "src_dates_weekdates",
+      "src_dates_weekstart",
       "src_license_verifylicense"
     ],
+    "1": [
+      "factory_qa_artifacts_live_index",
+      "factory_qa_artifacts_live_index_a",
+      "factory_qa_artifacts_live_index_ae",
+      "factory_qa_artifacts_live_index_ce",
+      "factory_qa_artifacts_live_index_d",
+      "factory_qa_artifacts_live_index_de",
+      "factory_qa_artifacts_live_index_e",
+      "factory_qa_artifacts_live_index_ee",
+      "factory_qa_artifacts_live_index_f",
+      "factory_qa_artifacts_live_index_g",
+      "factory_qa_artifacts_live_index_ge",
+      "factory_qa_artifacts_live_index_h",
+      "factory_qa_artifacts_live_index_he",
+      "factory_qa_artifacts_live_index_k",
+      "factory_qa_artifacts_live_index_ke",
+      "factory_qa_artifacts_live_index_le",
+      "factory_qa_artifacts_live_index_m",
+      "factory_qa_artifacts_live_index_me",
+      "factory_qa_artifacts_live_index_n",
+      "factory_qa_artifacts_live_index_ne",
+      "factory_qa_artifacts_live_index_o",
+      "factory_qa_artifacts_live_index_oe",
+      "factory_qa_artifacts_live_index_pe_constructor",
+      "factory_qa_artifacts_live_index_q",
+      "factory_qa_artifacts_live_index_re",
+      "factory_qa_artifacts_live_index_s",
+      "factory_qa_artifacts_live_index_se",
+      "factory_qa_artifacts_live_index_t",
+      "factory_qa_artifacts_live_index_te",
+      "factory_qa_artifacts_live_index_u",
+      "factory_qa_artifacts_live_index_ue",
+      "factory_qa_artifacts_live_index_v",
+      "factory_qa_artifacts_live_index_ve",
+      "factory_qa_artifacts_live_index_w",
+      "factory_qa_artifacts_live_index_we",
+      "factory_qa_artifacts_live_index_x",
+      "factory_qa_artifacts_live_index_xe",
+      "factory_qa_artifacts_live_index_ye"
+    ],
     "2": [
+      "factory_qa_artifacts_live_index_i",
+      "factory_qa_artifacts_live_index_ie",
+      "factory_qa_artifacts_live_index_je",
+      "factory_qa_artifacts_live_index_l",
+      "factory_qa_artifacts_live_index_p",
+      "factory_qa_artifacts_live_index_pe",
+      "factory_qa_artifacts_live_index_pe_bindglobalevents",
+      "factory_qa_artifacts_live_index_pe_changeweek",
+      "factory_qa_artifacts_live_index_pe_deleteentry",
+      "factory_qa_artifacts_live_index_pe_discarddemodata",
+      "factory_qa_artifacts_live_index_pe_duplicateentry",
+      "factory_qa_artifacts_live_index_pe_exportcsv",
+      "factory_qa_artifacts_live_index_pe_hydrateemptyshell",
+      "factory_qa_artifacts_live_index_pe_makedialog",
+      "factory_qa_artifacts_live_index_pe_opencalendardialog",
+      "factory_qa_artifacts_live_index_pe_openentrydialog",
+      "factory_qa_artifacts_live_index_pe_openpatternsdialog",
+      "factory_qa_artifacts_live_index_pe_opensettingsdialog",
+      "factory_qa_artifacts_live_index_pe_openunlockdialog",
+      "factory_qa_artifacts_live_index_pe_registerserviceworker",
+      "factory_qa_artifacts_live_index_pe_render",
+      "factory_qa_artifacts_live_index_pe_rendercalendarreview",
+      "factory_qa_artifacts_live_index_pe_renderdays",
+      "factory_qa_artifacts_live_index_pe_renderemptystate",
+      "factory_qa_artifacts_live_index_pe_renderentry",
+      "factory_qa_artifacts_live_index_pe_resetdemo",
+      "factory_qa_artifacts_live_index_pe_saveentryaspattern",
+      "factory_qa_artifacts_live_index_pe_showtoast",
+      "factory_qa_artifacts_live_index_pe_start",
+      "factory_qa_artifacts_live_index_pe_startforreal",
+      "factory_qa_artifacts_live_index_pe_weekentries",
+      "factory_qa_artifacts_live_index_y",
+      "factory_qa_artifacts_live_index_z"
+    ],
+    "3": [
+      "axe_core_playwright",
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_axe_core_playwright",
+      "package_devdependencies_playwright_test",
+      "package_devdependencies_types_node",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vite_plugin_singlefile",
+      "package_devdependencies_vitest",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_lint",
+      "package_scripts_preview",
+      "package_scripts_test",
+      "package_scripts_test_e2e",
+      "package_scripts_test_unit",
+      "package_scripts_typecheck",
+      "package_type",
+      "package_version",
+      "playwright_test",
+      "types_node",
+      "typescript",
+      "vite",
+      "vite_plugin_singlefile",
+      "vitest"
+    ],
+    "4": [
+      "src_app",
+      "src_app_app_constructor",
+      "src_csv",
+      "src_csv_entriestocsv",
+      "src_csv_quote",
+      "src_db_clearlegacydemodatabase",
+      "src_db_demostore",
+      "src_db_store",
+      "src_db_timecardstore",
+      "src_license",
+      "src_license_cachedverdict",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_initiallicensestate",
+      "src_license_licensestate",
+      "src_license_savelicense",
+      "src_main",
+      "src_main_app",
+      "src_main_launchurl",
+      "src_main_root",
+      "src_types",
+      "src_types_appbackup",
+      "src_types_calendarevent",
+      "src_types_entrysource",
+      "src_types_pattern",
+      "src_types_projectmapping",
+      "src_types_timeentry",
+      "tests_core_test"
+    ],
+    "5": [
       "src_db",
       "src_db_all",
       "src_db_createdemostore",
@@ -88,7 +205,7 @@
       "src_db_validatebackup",
       "src_db_writedemobackup"
     ],
-    "3": [
+    "6": [
       "ref_dom",
       "ref_dom_iterable",
       "ref_es2022",
@@ -112,54 +229,19 @@
       "tsconfig_compileroptions_usedefineforclassfields",
       "tsconfig_include"
     ],
-    "4": [
-      "axe_core_playwright",
-      "package_devdependencies",
-      "package_devdependencies_axe_core_playwright",
-      "package_devdependencies_playwright_test",
-      "package_devdependencies_types_node",
-      "package_devdependencies_typescript",
-      "package_devdependencies_vite",
-      "package_devdependencies_vite_plugin_singlefile",
-      "package_devdependencies_vitest",
-      "playwright_test",
-      "types_node",
-      "typescript",
-      "vite",
-      "vite_plugin_singlefile",
-      "vitest"
-    ],
-    "5": [
-      "package",
-      "package_name",
-      "package_private",
-      "package_scripts",
-      "package_scripts_build",
-      "package_scripts_dev",
-      "package_scripts_lint",
-      "package_scripts_preview",
-      "package_scripts_test",
-      "package_scripts_test_e2e",
-      "package_scripts_test_unit",
-      "package_scripts_typecheck",
-      "package_type",
-      "package_version"
-    ],
-    "6": [
-      "src_app_app_constructor",
-      "src_license",
-      "src_license_cachedverdict",
-      "src_license_capturereturnedlicense",
-      "src_license_checkouturl",
-      "src_license_initiallicensestate",
-      "src_license_licensestate",
-      "src_license_savelicense",
-      "src_main",
-      "src_main_app",
-      "src_main_launchurl",
-      "src_main_root"
-    ],
     "7": [
+      "src_dates_isodate",
+      "src_ics",
+      "src_ics_addcalendardays",
+      "src_ics_formattime",
+      "src_ics_parseics",
+      "src_ics_parseicsdate",
+      "src_ics_parsepositiveinteger",
+      "src_ics_recurrencestarts",
+      "src_ics_unescapetext",
+      "src_ics_unfold"
+    ],
+    "8": [
       "tests_factory_contract_test",
       "tests_factory_contract_test_browsertests",
       "tests_factory_contract_test_claimrecord",
@@ -171,51 +253,60 @@
       "tests_factory_contract_test_terms",
       "tests_factory_contract_test_viteconfig"
     ],
-    "8": [
-      "src_ics",
-      "src_ics_addcalendardays",
-      "src_ics_formattime",
-      "src_ics_parseics",
-      "src_ics_parseicsdate",
-      "src_ics_parsepositiveinteger",
-      "src_ics_recurrencestarts",
-      "src_ics_unescapetext",
-      "src_ics_unfold"
-    ],
     "9": [
+      "factory_qa_artifacts_live_qa",
+      "factory_qa_artifacts_live_qa_allerrors",
+      "factory_qa_artifacts_live_qa_results",
+      "factory_qa_artifacts_live_qa_watch",
+      "promises"
+    ],
+    "10": [
+      "factory_qa_artifacts_live_sw",
+      "factory_qa_artifacts_live_sw_extra_precache",
+      "factory_qa_artifacts_live_sw_precache"
+    ],
+    "11": [
+      "factory_qa_artifacts_sw_update_qa",
+      "factory_qa_artifacts_sw_update_qa_server",
+      "factory_qa_artifacts_sw_update_qa_types"
+    ],
+    "12": [
       "public_sw",
       "public_sw_extra_precache",
       "public_sw_precache"
     ],
-    "10": [
+    "13": [
       "vite_config",
       "vite_config_injectserviceworkerassets"
     ],
-    "11": [
+    "14": [
       "playwright_config"
     ],
-    "12": [
+    "15": [
       "tests_e2e_app_e2e"
     ],
-    "13": [
+    "16": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.15725806451612903,
-    "1": 0.25925925925925924,
-    "2": 0.2134387351778656,
-    "3": 0.09090909090909091,
-    "4": 0.13333333333333333,
-    "5": 0.14285714285714285,
-    "6": 0.18181818181818182,
-    "7": 0.2,
-    "8": 0.4722222222222222,
-    "9": 0.6666666666666666,
-    "10": 1.0,
-    "11": 1.0,
-    "12": 1.0,
-    "13": 1.0
+    "0": 0.16144018583042974,
+    "1": 0.09672830725462304,
+    "2": 0.19318181818181818,
+    "3": 0.06896551724137931,
+    "4": 0.11904761904761904,
+    "5": 0.2134387351778656,
+    "6": 0.09090909090909091,
+    "7": 0.4222222222222222,
+    "8": 0.2,
+    "9": 0.4,
+    "10": 0.6666666666666666,
+    "11": 0.6666666666666666,
+    "12": 0.6666666666666666,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0
   },
   "gods": [
     {
@@ -224,8 +315,18 @@
       "degree": 30
     },
     {
+      "id": "factory_qa_artifacts_live_index_pe",
+      "label": "pe()",
+      "degree": 27
+    },
+    {
       "id": "tsconfig_compileroptions",
       "label": "compilerOptions",
+      "degree": 12
+    },
+    {
+      "id": "factory_qa_artifacts_live_index_e",
+      "label": "E()",
       "degree": 12
     },
     {
@@ -254,33 +355,12 @@
       "degree": 9
     },
     {
-      "id": "src_dates_formatweekrange",
-      "label": "formatWeekRange()",
-      "degree": 8
-    },
-    {
-      "id": "src_app_escapehtml",
-      "label": "escapeHtml()",
-      "degree": 8
-    },
-    {
-      "id": "src_db_istimeentry",
-      "label": "isTimeEntry()",
-      "degree": 8
+      "id": "factory_qa_artifacts_live_index_y",
+      "label": "y()",
+      "degree": 9
     }
   ],
   "surprises": [
-    {
-      "source": "parseIcs()",
-      "target": "isoDate()",
-      "source_files": [
-        "src/ics.ts",
-        "src/dates.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
-    },
     {
       "source": "App",
       "target": "TimecardStore",
@@ -308,6 +388,17 @@
       "target": "entryMinutes()",
       "source_files": [
         "src/csv.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "dateLabel()",
+      "target": "fromIso()",
+      "source_files": [
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
