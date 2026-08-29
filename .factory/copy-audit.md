@@ -95,7 +95,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | See .factory/demo.md. | 3 |
 | Outside demo mode, work blocks, client mappings, and patterns stay in this browser’s local database. | 15 |
 | A purchased license token stays in this browser’s settings storage. | 10 |
-| Normal timecard work makes only same-origin requests. | 7 |
+| Normal timecard work sends requests only to this site. | 9 |
 | See /privacy and /terms. | 4 |
 | Developer note: the normal database uses IndexedDB. | 7 |
 | Demo records use sessionStorage, and license settings use localStorage. | 9 |
@@ -117,6 +117,19 @@ This table includes headings, visible labels, buttons, links, values, and access
 | Demo sandbox: .factory/demo.md | 4 |
 | License | 1 |
 | MIT — see LICENSE. | 3 |
+
+## Paid and legal copy reviewed in round 3
+
+The changed dialog and legal wording remains under 22 words per sentence, uses the same billing name everywhere, and makes no untested quantity, merchant-role, or backend-architecture promise.
+
+| Copy | Words | Location |
+| --- | ---: | --- |
+| Unlock saved patterns and week copying | 6 | Pattern Deck dialog heading |
+| Clone a previous week into matching days | 7 | Pattern Deck dialog feature |
+| Save reusable work patterns | 4 | Pattern Deck dialog feature |
+| Checkout is hosted by Sociobot. | 5 | Pattern Deck dialog, Privacy, Terms |
+| Send payment and refund questions there. | 6 | Pattern Deck dialog, Privacy, Terms |
+| You can use the app without an account. | 8 | Privacy policy |
 
 ## Terminology
 

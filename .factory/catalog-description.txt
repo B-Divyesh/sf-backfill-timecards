@@ -1,1 +1,1 @@
-Reconstruct freelance workweeks from calendar events and export invoice-ready CSV.
+Reconstruct freelance workweeks from reviewed calendar events and export invoice-ready CSV.

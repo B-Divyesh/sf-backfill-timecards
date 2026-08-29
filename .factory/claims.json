@@ -51,7 +51,7 @@
   {
     "id": "pattern-deck",
     "claim": "The optional Pattern Deck saves reusable blocks and copies the previous week; core timecard tools stay free.",
-    "where": "first-screen facts, paid section, terms, README",
+    "where": "first-screen facts, toolbar, paid section, unlock dialog, terms, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:pattern-deck",
     "sandbox": "fresh /demo with paid preview enabled; save a pattern; clone three prior blocks; then enter a locked normal workspace and add a block, import a calendar event, export CSV, and open JSON backup/erase controls without a license"
   },

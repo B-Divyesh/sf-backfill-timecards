@@ -51,6 +51,21 @@ describe("factory release contracts", () => {
     expect(readme).not.toContain("reproducible static output");
   });
 
+  it("keeps paid, privacy, and README promises observable and in plain words", () => {
+    expect(appSource).toContain("Unlock saved patterns and week copying");
+    expect(appSource).toContain("Save reusable work patterns");
+    expect(appSource).not.toContain("Save unlimited reusable work patterns");
+    expect(appSource).toContain("Checkout is hosted by Sociobot. Send payment and refund questions there.");
+    expect(privacy).toContain("You can use the app without an account.");
+    expect(privacy).not.toContain("account database");
+    for (const document of [privacy, terms]) {
+      expect(document).toContain("Checkout is hosted by Sociobot. Send payment and refund questions there.");
+      expect(document).not.toMatch(/merchant[- ]of[- ]record|Dodo/i);
+    }
+    expect(readme).toContain("Normal timecard work sends requests only to this site.");
+    expect(readme).not.toContain("same-origin requests");
+  });
+
   it("ships the required canonical, social, footer identity, and 404 deployment contract", () => {
     for (const document of [staticShell, privacy, terms]) {
       expect(document).toContain('rel="canonical"');

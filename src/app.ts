@@ -615,14 +615,14 @@ export class App {
   private openUnlockDialog(): void {
     const dialog = this.makeDialog("unlock-dialog", `
       <div class="dialog-card unlock-card">
-        <div class="dialog-heading"><div><p class="eyebrow">ONE-TIME UNLOCK</p><h2>Make repeat weeks faster</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
+        <div class="dialog-heading"><div><p class="eyebrow">ONE-TIME UNLOCK</p><h2>Unlock saved patterns and week copying</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
         <p class="price"><strong>$18</strong> once</p>
-        <ul class="feature-list"><li>Clone a previous week into matching days</li><li>Save unlimited reusable work patterns</li><li>Own the utility—no recurring subscription</li></ul>
+        <ul class="feature-list"><li>Clone a previous week into matching days</li><li>Save reusable work patterns</li><li>Own the utility—no recurring subscription</li></ul>
         <p>The free workspace, calendar import, CSV/JSON export, and privacy tools remain available without a license.</p>
         ${this.license.notice ? `<p class="inline-error">${escapeHtml(this.license.notice)}</p>` : ""}
         <a class="primary-button button-link" href="${checkoutUrl}">Buy the one-time unlock</a>
         <form id="restore-form" class="restore-form"><label class="field">Have a license? Paste it here<input name="license" required autocomplete="off" /></label><button type="submit">Verify and restore</button><p class="form-error" role="status" aria-live="polite"></p></form>
-        <p class="fine-print">Checkout is hosted by Sociobot; Dodo is merchant of record. Direct refund questions there. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+        <p class="fine-print">Checkout is hosted by Sociobot. Send payment and refund questions there. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
       </div>`);
     dialog.querySelector<HTMLFormElement>("#restore-form")!.addEventListener("submit", async (event) => {
       event.preventDefault();

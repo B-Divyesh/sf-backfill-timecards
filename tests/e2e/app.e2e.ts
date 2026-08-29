@@ -461,7 +461,12 @@ test("@claim:offline-reload keeps the sample week usable without a network and e
   });
 });
 
-test("@claim:privacy-local keeps normal work local with no account or third-party runtime requests", async ({ page }) => {
+test("@claim:privacy-local keeps normal work local with no account or third-party runtime requests", async ({ page, request }) => {
+  const privacyResponse = await request.get("/privacy/");
+  expect(privacyResponse.ok()).toBe(true);
+  const privacyPolicy = await privacyResponse.text();
+  expect(privacyPolicy).toContain("You can use the app without an account.");
+  expect(privacyPolicy).not.toContain("account database");
   const externalRequests: string[] = [];
   page.on("request", (request) => {
     if (new URL(request.url()).origin !== "http://127.0.0.1:4173") externalRequests.push(request.url());
@@ -480,7 +485,7 @@ test("@claim:privacy-local keeps normal work local with no account or third-part
   }))).toEqual({ databases: ["backfill-timecards"], demoSession: null, license: null, accountControls: 0 });
 });
 
-test("@claim:billing-entitlement proves the $18 checkout, verification gate, one-day cache, and revocation", async ({ page }) => {
+test("@claim:billing-entitlement proves the $18 checkout, verification gate, one-day cache, and revocation", async ({ page, request }) => {
   const dayInMilliseconds = 86_400_000;
   const verifiedAt = new Date("2030-01-15T12:00:00.000Z").getTime();
   let verifyRequests = 0;
@@ -511,13 +516,22 @@ test("@claim:billing-entitlement proves the $18 checkout, verification gate, one
   await expect(page.locator(".toolbelt")).toContainText("$18");
   await expect(page.locator(".toolbelt")).not.toContainText("UNLOCKED");
   await page.getByRole("button", { name: /Reuse saved blocks/ }).click();
-  await expect(page.getByRole("heading", { name: "Make repeat weeks faster" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Unlock saved patterns and week copying" })).toBeVisible();
   await expect(page.locator("#unlock-dialog .price")).toHaveText("$18 once");
+  await expect(page.locator("#unlock-dialog .feature-list")).toContainText("Save reusable work patterns");
+  await expect(page.locator("#unlock-dialog .feature-list")).not.toContainText("unlimited");
   await expect(page.getByRole("link", { name: "Buy the one-time unlock" })).toHaveAttribute("href", "https://api.sociobot.in/api/v1/products/backfill-timecards/checkout");
-  await expect(page.locator("#unlock-dialog .fine-print")).toContainText("Checkout is hosted by Sociobot");
+  await expect(page.locator("#unlock-dialog .fine-print")).toContainText("Checkout is hosted by Sociobot. Send payment and refund questions there.");
   await expect(page.locator("#unlock-dialog iframe")).toHaveCount(0);
   await expect(page.locator('#unlock-dialog input[autocomplete="cc-number"], #unlock-dialog input[name*="card" i]')).toHaveCount(0);
   expect(await page.locator("script[src]").evaluateAll((scripts) => scripts.every((script) => new URL((script as HTMLScriptElement).src).origin === location.origin))).toBe(true);
+  for (const path of ["/privacy/", "/terms/"]) {
+    const response = await request.get(path);
+    expect(response.ok()).toBe(true);
+    const document = await response.text();
+    expect(document).toContain("Checkout is hosted by Sociobot. Send payment and refund questions there.");
+    expect(document).not.toMatch(/merchant[- ]of[- ]record|Dodo/i);
+  }
   await page.getByRole("textbox", { name: "Have a license? Paste it here" }).fill("verified-qa7");
   await page.getByRole("button", { name: "Verify and restore" }).click();
   await expect(page.locator(".toolbelt")).toContainText("UNLOCKED");

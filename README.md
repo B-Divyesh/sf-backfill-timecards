@@ -21,7 +21,7 @@ Seven claim tests start at `/demo`. The demo-isolation, normal-privacy, and bill
 
 Demo records use temporary browser storage limited to that demo tab. **Reset demo** restores the sample. **Start for real** clears it before opening your weekly timecard. See [`.factory/demo.md`](.factory/demo.md).
 
-Outside demo mode, work blocks, client mappings, and patterns stay in this browser’s local database. A purchased license token stays in this browser’s settings storage. Normal timecard work makes only same-origin requests. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
+Outside demo mode, work blocks, client mappings, and patterns stay in this browser’s local database. A purchased license token stays in this browser’s settings storage. Normal timecard work sends requests only to this site. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
 
 Developer note: the normal database uses IndexedDB. Demo records use sessionStorage, and license settings use localStorage.
 
