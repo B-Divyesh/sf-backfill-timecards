@@ -1,27 +1,25 @@
-# Backfill Timecards — polish round 3 handoff
+# Backfill Timecards — verification 13 handoff
 
 Date: 2026-08-29 UTC
-Work order: `backfill-timecards-polish-3`
-Product repair: `c9726f0` — `fix: clear review three claims and copy`
-Deployment: `8daf8183-2f04-493a-bb47-8177f2e7d3e7`
-Live URL: <https://backfill-timecards.sociobot.in>
+Work order: `backfill-timecards-verify-13`
+Candidate: `59bad5d5ba62c4ecd0ae185b516f8a010c9058f2`
+Live: <https://backfill-timecards.sociobot.in>
 
-## Outcome
+## Outcome: PASS
 
-PASS. All five round-3 findings and every finding from review rounds 1–2 are resolved, re-tested, deployed, and cold-checked on the live site. The product remains a Vite/TypeScript local-first PWA with IndexedDB normal storage, tab-scoped Demo storage, a service worker, and the cassette-era reconstruction visual system.
+Independent QA passed. The live HTML, app JS, CSS, and service worker exactly match the candidate build. The product gives freelancers a one-click isolated sample week, local calendar review/import, manual work blocks and project-to-client recall, CSV/JSON ownership controls, and an offline PWA path without automatic billable-time inference.
 
-## What changed
+## Verified
 
-- Removed the unsupported unlimited-pattern promise.
-- Replaced the unverifiable account-database sentence with the observable no-account statement.
-- Removed Dodo and merchant-of-record assertions from the unlock dialog, Privacy, and Terms. The three locations now consistently say: “Checkout is hosted by Sociobot. Send payment and refund questions there.”
-- Renamed the paid-dialog heading to “Unlock saved patterns and week copying.”
-- Replaced README’s technical “same-origin” wording with “Normal timecard work sends requests only to this site.”
-- Strengthened the existing tagged privacy and billing browser claims to assert the legal-page wording, the descriptive paid heading, no unlimited claim, and the absence of merchant-role language.
-- Kept the reviewed Demo URL (`/demo`) and query entry (`?demo=1`) isolated, resettable, bannered, offline-capable, and visibly populated in the first screen.
-- Updated `.factory/claims.json`, `.factory/copy-audit.md`, `.factory/catalog-description.txt`, and the complete finding map in `.factory/polish-3.md`.
+- All 10 declared claim tests passed when run individually from a clean install.
+- `npm test` passed: 13 unit/contract + 58 Chromium desktop/mobile tests.
+- Typecheck, lint, and production build passed. Production JS is 14.59 kB gzip and CSS 5.00 kB gzip.
+- Live first-read, normal and demo end-to-end workflows, invalid-backup recovery, recurring/overnight calendar boundaries, privacy request logging, response headers, caching, keyboard/focus, 390 px mobile, service-worker update check, controlled offline reload, and live axe serious/critical scans passed.
+- Billing verification rate limit observed: 30 invalid requests accepted, request 31 returned `429 Retry-After: 3`.
 
-## How to run
+## Evidence and how to repeat
+
+See `.factory/verification-13.md` for exact results and artifact SHA-256 values. The URL-verifier snapshot and screenshots are in `.factory/evidence-verify-13/`.
 
 ```sh
 npm ci
@@ -29,26 +27,11 @@ npm test
 npm run typecheck
 npm run lint
 npm run build
-npm run preview
+/opt/fleet/lib/verify-url.sh https://backfill-timecards.sociobot.in .factory/evidence-verify-13
 ```
 
-The demo is available at `/demo` or `/?demo=1`. It uses the tab-scoped `demo:backfill-timecards` session-storage namespace and never reads or writes the normal `backfill-timecards` IndexedDB archive.
+Use `/demo` (or `/?demo=1`) for the isolated sample. Normal work persists in the browser’s IndexedDB; demo data is tab-scoped session storage under `demo:backfill-timecards`.
 
-## Exact verification evidence
+## Known gaps / next steps
 
-Clean clone: `/tmp/backfill-polish3-clean.14p56r/repo` at `c9726f0`.
-
-- `npm ci`: passed.
-- Every exact `.factory/claims.json` command was run separately and passed: `demo-sandbox`, `demo-exit-cleanup`, `weekly-board`, `calendar-local`, `csv-export`, `local-archive`, `offline-reload`, `pattern-deck`, `privacy-local`, and `billing-entitlement`.
-- `npm test`: passed — 13 unit/contract tests and 58 Chromium desktop/mobile browser tests, no skips or failures.
-- `npm run typecheck`: passed.
-- `npm run lint`: passed.
-- `npm run build`: passed; `dist/` contains root `index.html`, real `demo/index.html`, legal routes, 404, manifest, and service worker. The initial JavaScript is 14.59 kB gzip; CSS is 5.00 kB gzip.
-- `/opt/fleet/lib/verify-url.sh` passed with no console/page errors for `/`, `/demo`, `?demo=1`, `/privacy/`, and `/terms/`. See `.factory/evidence/polish-3-live/{root,demo,query-demo,privacy,terms}/verify.json`.
-- `.factory/evidence/polish-3-live/live-check.mjs` cold-checked root, Demo, query Demo, Privacy, Terms, 404, paid-dialog copy, Back focus, and controlled offline Demo reload. It found zero Axe serious/critical violations and wrote `.factory/evidence/polish-3-live/live-check.json` plus screenshots.
-- Live root, Demo HTML, JavaScript, and CSS SHA-256 values match the deployed `dist/` output.
-- The custom-domain deployment completed as Azure Static Web Apps deployment `8daf8183-2f04-493a-bb47-8177f2e7d3e7`.
-
-## Known gaps and next steps
-
-No product gaps remain. The only dirty paths left outside this repair are the pre-existing, unrelated `graphify-out/` analysis artifacts; they were preserved and not committed. Future content changes should update `.factory/claims.json`, the corresponding tagged observable test, and `.factory/copy-audit.md` in the same change.
+No release blockers or product defects found. The repository had unrelated pre-existing `graphify-out/` modifications; verification did not alter or include them.
