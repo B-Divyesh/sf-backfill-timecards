@@ -1,0 +1,68 @@
+{
+  "base": "https://backfill-timecards.sociobot.in",
+  "checkedAt": "2026-08-29T22:06:21.973Z",
+  "findings": [
+    {
+      "name": "root",
+      "status": 200,
+      "title": "Backfill Timecards — reconstruct your workweek",
+      "h1": "RECONSTRUCT YOUR FREELANCE WORKWEEK",
+      "lang": "en",
+      "main": 1,
+      "serious": [],
+      "errors": []
+    },
+    {
+      "name": "demo",
+      "status": 200,
+      "title": "Demo — Backfill Timecards",
+      "h1": "Sample weekly timecard · Aug 24–30, 2026",
+      "lang": "en",
+      "main": 1,
+      "serious": [],
+      "errors": [],
+      "banner": 1,
+      "reset": 1,
+      "start": 1,
+      "rows": 6
+    },
+    {
+      "name": "privacy",
+      "status": 200,
+      "title": "Privacy — Backfill Timecards",
+      "h1": "HOW BACKFILL TIMECARDS STORES YOUR DATA",
+      "lang": "en",
+      "main": 1,
+      "serious": [],
+      "errors": []
+    },
+    {
+      "name": "terms",
+      "status": 200,
+      "title": "Terms — Backfill Timecards",
+      "h1": "TERMS FOR USING BACKFILL TIMECARDS",
+      "lang": "en",
+      "main": 1,
+      "serious": [],
+      "errors": []
+    },
+    {
+      "name": "not-found",
+      "status": 404,
+      "title": "Page not found — Backfill Timecards",
+      "h1": "PAGE NOT FOUND",
+      "lang": "en",
+      "main": 1,
+      "serious": [],
+      "errors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
+    },
+    {
+      "name": "query-demo",
+      "title": "Demo — Backfill Timecards",
+      "rows": 6,
+      "banner": 1
+    }
+  ]
+}

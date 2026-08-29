@@ -54,7 +54,7 @@ For visitor UI findings, the live check is `https://backfill-timecards.sociobot.
 | F-2-10 | Pattern dialog h2 is “Reuse saved work blocks.” | `@claim:local-archive`; `/demo`. |
 | F-2-11 | Settings action now says “Review reuse tools — $18.” | `@claim:pattern-deck`. |
 | F-2-12 | Saved pattern action now says “Add to this week.” | `@claim:local-archive`; `/demo`. |
-| Controller-1 | Offline and service-worker browser tests now create their own contexts, always restore online mode, clear cookies, and close in `finally`; Playwright owns and shuts both preview servers after each run. | Full `npm test`: 58 browser tests passed; `test-results/.last-run.json` reports `passed`; no preview/browser processes remained after the run. |
+| Controller-1 | Offline and service-worker browser tests now create their own contexts, always restore online mode, clear cookies, and close in `finally`; Playwright owns and shuts both preview servers after each run. | Full clean-clone `npm test`: 58 browser tests passed; `test-results/.last-run.json` reports `passed`; no preview/browser processes remained. Cold live URLs `/`, `/demo`, `/?demo=1`, `/privacy/`, `/terms/`, and `/polish-retry-missing`: `.factory/evidence/polish-2-retry-live/summary.json` and route screenshots. |
 
 ## Verification
 

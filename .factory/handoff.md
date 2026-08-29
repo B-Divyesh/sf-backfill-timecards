@@ -4,7 +4,7 @@ Date: 2026-08-29 UTC
 
 Work order: `backfill-timecards-polish-2-retry1`
 Repair commit: `c98a7b1e2aa362efc096e3aec865fa2c82c0de21` (`test: isolate offline browser contexts`)
-Deployment: pending push of this repair commit to the static work order.
+Deployment: pushed to `origin/main` at `b30cd0afaf8d9d674f417d3dedcdef8bd7608e9f`; static live site cold-checked at <https://backfill-timecards.sociobot.in>.
 
 ## Done
 
@@ -23,6 +23,7 @@ Fresh clone: `/tmp/backfill-timecards-clean.m69KFv` at `c98a7b1e2aa362efc096e3ae
 - Full clean-clone gates passed: `npm test` (12 unit tests and 58 Playwright tests), `npm run typecheck`, `npm run lint`, and `npm run build`. `test-results/.last-run.json` reports `{"status":"passed","failedTests":[]}`.
 - Build output is `dist/`; initial JS is 14.61 kB gzip and CSS is 5.00 kB gzip.
 - After the full browser run, process inspection found no remaining Playwright, Chromium, or Vite preview process.
+- Cold live check passed after the push. Fresh 390×844 contexts verified `/`, `/demo`, `/privacy/`, `/terms/`, an HTTP 404, and `/?demo=1`; every normal route had the required title, `lang="en"`, exactly one main landmark, expected h1, no console/page errors, and no serious/critical Axe issue. The 404 had the expected browser HTTP-404 console entry only. `/demo` and `?demo=1` each showed the isolated banner, reset/start actions, and six sample rows. Evidence: `.factory/evidence/polish-2-retry-live/summary.json` and the matching route screenshots.
 - Live `verify-url.sh` passed for root and Demo: valid title/lang, one h1, main landmark, image alt text, labelled controls, and no console/page errors. Evidence: `.factory/evidence/polish-2-live/root/` and `.factory/evidence/polish-2-live/demo/`.
 - Cold live Playwright/Axe crawl passed on `/`, `/demo`, `/privacy/`, `/terms/`, and a real 404. Root, Demo, Privacy, and Terms had no console/page errors and no serious or critical Axe violations; the 404 intentionally reports its HTTP 404 in the browser console and had no Axe violation.
 - Cold `?demo=1` check passed: title `Demo — Backfill Timecards`, banner, Reset demo, Start for real, six rows, first mobile row at 751.22px in a 390×844 viewport.
@@ -32,4 +33,4 @@ Fresh clone: `/tmp/backfill-timecards-clean.m69KFv` at `c98a7b1e2aa362efc096e3ae
 
 ## Known gaps / next steps
 
-Push/deploy and cold-live verification are the final work-order steps. The remaining dirty `graphify-out/` files were pre-existing unrelated work and were deliberately not changed or committed.
+None. The remaining dirty `graphify-out/` files were pre-existing unrelated work and were deliberately not changed or committed.
