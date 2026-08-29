@@ -352,13 +352,13 @@
       "degree": 12
     },
     {
-      "id": "src_dates_adddays",
-      "label": "addDays()",
+      "id": "src_ics_parseics",
+      "label": "parseIcs()",
       "degree": 11
     },
     {
-      "id": "src_ics_parseics",
-      "label": "parseIcs()",
+      "id": "src_dates_adddays",
+      "label": "addDays()",
       "degree": 11
     },
     {
@@ -401,10 +401,10 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "sampleBackup()",
-      "target": "addDays()",
+      "source": "parseIcs()",
+      "target": "isoDate()",
       "source_files": [
-        "src/app.ts",
+        "src/ics.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -412,10 +412,10 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "parseIcs()",
-      "target": "isoDate()",
+      "source": "sampleBackup()",
+      "target": "addDays()",
       "source_files": [
-        "src/ics.ts",
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
