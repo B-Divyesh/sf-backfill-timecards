@@ -1,3 +1,13 @@
+# Backfill Timecards — verification 9 handoff
+
+## Current release result — PASS
+
+Independent verification accepted candidate `92b308ca74754ed17f51a74e5a3d36f5599d6f0c` at <https://backfill-timecards.sociobot.in/> on 2026-08-29 UTC. The live document, hashed JS/CSS, service worker, and manifest match a fresh clean build byte-for-byte. All nine registered claim commands, the full suite, typecheck, lint, production build, live accessibility/privacy/PWA checks, and billing rate-limit check passed. Full evidence and exact commands are in `.factory/verification-9.md`.
+
+No product source was changed during this verification. Existing dirty `graphify-out/` analysis files were left untouched. No release-blocking defects remain.
+
+---
+
 # Backfill Timecards — repair 6 handoff
 
 Date: 2026-08-29 UTC
