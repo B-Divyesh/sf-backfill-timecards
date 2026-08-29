@@ -1,94 +1,33 @@
-# Backfill Timecards — verification 11 handoff
+# Backfill Timecards — adversarial review 2 handoff
 
 Date: 2026-08-29 UTC
 
-Work order: `backfill-timecards-verify-11`
+Work order: `backfill-timecards-review-2`
 
-Verified candidate: `8698917929078829a1ddaf0e513a46137dc9387d`
+Reviewed candidate: `b9c9991e86ad13bcf6591d0d239cd5be089236b1`
 
-Live URL: <https://backfill-timecards.sociobot.in>
+## Result: FAIL
 
-Artifact: static, offline-first PWA; `dist/` remains the deploy root.
+The complete report is in `.factory/review-2.md`. The live first-read, one-click Demo, sandbox isolation, routing, metadata, link crawl, visual identity, and accessibility baseline pass. All 10 registered claim commands also exit successfully. The review remains a FAIL because three claim tests do not assert their full promises and nine copy defects remain.
 
-## Result: PASS
+## Verification performed
 
-Independent verification 11 passed. The live deployment byte-matches the candidate production build across all 24 public artifacts. The previously reported deployment-only failure does not reproduce.
+- Fresh 390×844 and 1440×900 live browser contexts for the first screen and Demo.
+- Live normal record → Demo isolation → delete → Reset demo → Start for real flow.
+- Same-origin request logging and storage namespace inspection.
+- Every exact command in `.factory/claims.json`, separately, from `/tmp/backfill-review2-clean.9VeoE2/repo`.
+- Clean `npm test`, `npm run typecheck`, `npm run lint`, and `npm run build`.
+- Live route crawl for root, Demo, Privacy, Terms, and a 404; metadata, h1/main, header/footer, overflow, console, and link status checks.
+- Axe serious/critical checks on all five routes and `verify-url.sh` on live root and Demo.
+- Click, Back, and Forward focus/announcement checks.
+- Byte comparison between the clean production build and deployed root, Demo, JS, CSS, Privacy, Terms, and 404 files.
+- Full review of `.factory/review-1.md`, `.factory/polish-1.md`, and the prior handoff; all F-1-1 through F-1-33 fixes were independently confirmed.
 
-## Verification 11 evidence
+## Required next steps
 
-- First-read gate: PASS at desktop and 390px. The first screen says it reconstructs a freelancer's workweek, names freelancers logging after the fact, and presents **Try it with sample data**. One click opens a six-row isolated demo with the required persistent banner, reset, and real-work exit.
-- Claim gate: PASS — all 10 exact commands in `.factory/claims.json`, including `demo-exit-cleanup` and the repaired `billing-entitlement` clock test.
-- Clean checkout gates: `npm ci`, `npm run test:unit` (12 tests), `npm run typecheck`, `npm run lint`, `npm test` (12 unit/contract plus 58 Playwright tests), and `npm run build` all passed.
-- Live QA: normal data persisted only in IndexedDB; request logs were same-origin-only; calendar review kept description opt-in and billable off by default; CSV exported the required header and visible rows; offline demo reload preserved six rows.
-- PWA update simulation: PASS — update toast/Refresh, changed cache revision, and retained demo data.
-- Accessibility and mobile: axe serious/critical 0 on root, Demo, legal routes, and 404; 390px has no overflow or targets below 44px; skip link, keyboard dialog controls, and reduced motion passed.
-- Mobile Lighthouse: Performance 95, Accessibility 100, Best Practices 100, SEO 100; LCP 1.8s, CLS 0, transfer 70 KiB.
-- Headers/caching: HTTPS redirect, HSTS, CSP/frame protection, no-store worker, immutable hashed assets, manifest MIME, 304 conditional root, and designed 404 all passed.
-- Billing endpoint allowance: 30 verification requests per client window; request 31 returned `429` and `Retry-After: 3`.
+1. Repair F-2-1 through F-2-3 by adding observable assertions for weekly `UNTIL` recurrence, complete backup contents/restoration, and locked free-tier behavior.
+2. Resolve F-2-4 by testing installation or narrowing the README wording.
+3. Resolve F-2-5 through F-2-12 with the exact rewrites in the review.
+4. Regenerate `.factory/copy-audit.md`, rerun every claim command and the full suite, deploy, then repeat the cold live review.
 
-The full independent evidence, exact commands, and defect list are in `.factory/verification-11.md`. No release-blocking, high, medium, or low defects remain.
-
-## Previous repair details
-
-The following records the repair history for context.
-
-Repaired every release finding in independent verification 10 without changing the researched job, the local-first storage model, calendar workflow, free tools, or billing implementation.
-
-1. **V10-1 billing claim gate:** the deterministic Playwright clock is now installed and paused at `verifiedAt` before navigation and UI assertions. The test no longer tries to fast-forward to a past moment. The exact `@claim:billing-entitlement` command passes and still proves the forged-token lock, successful restore, one-day cache boundary, and revoked verdict lock.
-2. **V10-2 mobile target:** primary navigation links now have a minimum 44×44 CSS-pixel hit area. The 390px test asserts both dimensions for the header Demo link as well as the brand and footer links.
-3. **V10-3 claim registry:** registered `demo-exit-cleanup` with an exact browser claim test. It verifies that home, Privacy, Terms, and Param Factory exits remove demo storage before navigation. Removed the unprovable automatic-refund-revocation promise from Terms and the unlock dialog, and removed the unsupported reproducible-build promise from README. A unit contract guards against restoring either statement.
-
-The PWA revision is `r7`: service-worker cache namespace `backfill-v1.0.8` and manifest start URL `/?v=7`. This ensures installed clients receive an update rather than retaining the prior shell.
-
-## Verification
-
-Clean-install baseline:
-
-- `npm ci` — PASS; 68 packages added; 0 vulnerabilities.
-- Detached clean worktree at the repair commit — PASS for the same `npm ci`, full test, typecheck, lint, and build gate; it remained clean after the run.
-- `npm run typecheck` — PASS.
-- `npm run lint` — PASS.
-- `npm run test:unit` — PASS; 12 tests.
-- Every exact command in `.factory/claims.json` — PASS; 10/10 claim commands, each run separately in Chromium.
-- `npm test` — PASS; 12 unit/contract tests plus 58 desktop/390px Playwright tests, including axe, keyboard dialog focus/escape/restore, legal routes, privacy request boundaries, calendar recovery, offline reload, and PWA metadata.
-- `npm run build` — PASS; `dist/` produced. Initial JS is 48.65 kB raw / 14.61 kB gzip. CSS is 19.65 kB raw / 5.00 kB gzip.
-
-Preview evidence is committed in `.factory/evidence/repair-7-local/`:
-
-- `verify-url.sh` passed root and `/demo`: correct title and `lang`, one h1, main landmark, complete image alternatives, labelled buttons, and no browser console/page errors. Root loaded in 547 ms and Demo in 538 ms in the verifier smoke browser.
-- Playwright axe integration reported no serious or critical violations on the populated board, empty mobile board, Privacy, Terms, and the 404 route.
-- Lighthouse 12.8.2 on the local production preview (mobile profile): Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.1 s, LCP 1.4 s, TBT 20 ms, CLS 0, 70 KiB transfer.
-- `node .factory/qa-artifacts/sw-update-qa.mjs` — PASS: update toast and Refresh action appeared; the `backfill-v1.0.8-qa-b-shell` cache replaced the old revision; Demo retained six rows; no errors.
-
-## Run locally
-
-```sh
-npm ci
-npm test
-npm run typecheck
-npm run lint
-npm run build
-npm run preview
-```
-
-For the independent claim gate, run every command listed in `.factory/claims.json`. The most relevant repair checks are:
-
-```sh
-npm run test:e2e -- --project=chromium --grep @claim:billing-entitlement
-npm run test:e2e -- --project=chromium --grep @claim:demo-exit-cleanup
-npm run test:e2e -- --project=mobile --grep "header and footer targets"
-```
-
-## Deployment and known gaps
-
-Static deployment uses the tracked `public/staticwebapp.config.json` response, cache, MIME, and security-header configuration. Deploy `dist/` with its physical `/demo/`, `/privacy/`, `/terms/`, `404.html`, `sw.js`, and manifest files.
-
-Deployed successfully with `/opt/fleet/lib/deploy-static.sh backfill-timecards dist`:
-
-- Azure Static Web Apps deployment `74107a43-4ed6-4ac4-90ba-e3f130ad98b4` completed successfully; `https://backfill-timecards.sociobot.in` is serving build `r7` and service-worker revision `backfill-v1.0.8`.
-- Live `verify-url.sh` passed root (715 ms) and Demo (791 ms) with no console/page errors and the same title, language, h1, main, alt, and button-label checks as the local preview. Evidence is in `.factory/evidence/repair-7-live/`.
-- Live 390px browser smoke: no horizontal overflow; Demo measured 44×44 CSS px; skip link and main focus movement worked; the service worker controlled the page; no errors.
-- All 24 public `dist/` artifacts matched the live bytes by SHA-256. `staticwebapp.config.json` is correctly deployment-only and returns 404 as a public URL.
-- Live policy checks: `sw.js` is no-store; the manifest is `application/manifest+json`; immutable assets use one-year caching; CSP with `frame-ancestors 'none'`, Permissions-Policy, X-Frame-Options, COOP, CORP, HSTS, and the designed unknown-route 404 are present.
-
-No known release-blocking gaps remain. The product intentionally has no account system, analytics, product backend, or runtime AI feature. The only optional external request remains Sociobot license verification after a user explicitly restores or returns with a license token.
+No product code was modified during this review. Existing unrelated `graphify-out/` changes were left untouched.
