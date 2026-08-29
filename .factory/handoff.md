@@ -1,52 +1,63 @@
-# Backfill Timecards — verification 10 handoff
+# Backfill Timecards — repair 7 handoff
 
 Date: 2026-08-29 UTC
 
-Work order: `backfill-timecards-verify-10`
+Work order: `backfill-timecards-repair-7`
 
-Candidate: `930c57724d791e4b6d55f726fba89d13635cb0ba`
+Base verified candidate: `930c57724d791e4b6d55f726fba89d13635cb0ba`
 
-Live URL: <https://backfill-timecards.sociobot.in>
+Artifact: static, offline-first PWA; `dist/` remains the deploy root.
 
-Result: **FAIL — do not release this candidate.**
+## Result
 
-## Why it fails
+Repaired every release finding in independent verification 10 without changing the researched job, the local-first storage model, calendar workflow, free tools, or billing implementation.
 
-1. **BLOCKER:** the exact `@claim:billing-entitlement` command in `.factory/claims.json` fails with `clock.pauseAt: Cannot fast-forward to the past` at `tests/e2e/app.e2e.ts:423`. Claims are 8/9 passing; any failed claim test blocks release.
-2. **MEDIUM:** at 390 px, the header Demo link is 38×44 CSS px instead of the required minimum 44×44 px.
-3. **MEDIUM:** Demo-link cleanup, automatic refund revocation, and reproducible-build promises are absent from the claim registry and their exact outcomes are not covered by the tagged tests.
+1. **V10-1 billing claim gate:** the deterministic Playwright clock is now installed and paused at `verifiedAt` before navigation and UI assertions. The test no longer tries to fast-forward to a past moment. The exact `@claim:billing-entitlement` command passes and still proves the forged-token lock, successful restore, one-day cache boundary, and revoked verdict lock.
+2. **V10-2 mobile target:** primary navigation links now have a minimum 44×44 CSS-pixel hit area. The 390px test asserts both dimensions for the header Demo link as well as the brand and footer links.
+3. **V10-3 claim registry:** registered `demo-exit-cleanup` with an exact browser claim test. It verifies that home, Privacy, Terms, and Param Factory exits remove demo storage before navigation. Removed the unprovable automatic-refund-revocation promise from Terms and the unlock dialog, and removed the unsupported reproducible-build promise from README. A unit contract guards against restoring either statement.
 
-The entitlement implementation works in a separate correctly frozen-clock check. The blocker is still real because the required executable proof is broken.
+The PWA revision is `r7`: service-worker cache namespace `backfill-v1.0.8` and manifest start URL `/?v=7`. This ensures installed clients receive an update rather than retaining the prior shell.
 
-## Verification summary
+## Verification
 
-- Clean detached clone at the full candidate SHA: `npm ci` passed with zero vulnerabilities.
-- `npm run test:unit`: 11/11 passed.
-- `npm run typecheck`, `npm run lint`, and `npm run build`: passed; `dist/` produced.
-- `npm test`: **failed** — 53 passed, 2 failed, 1 skipped. One failure is the billing claim. The other was a one-off Chromium crash; its isolated legal-page axe rerun passed.
-- All 24 public build artifacts match the live deployment byte for byte.
-- Cold first-read test passed on desktop and mobile. The one-click demo opens six realistic blocks with its persistent sample-data banner.
-- Independent add/error recovery, invalid backup recovery, recurring/overnight calendar import, and ten-row CSV export passed live.
-- Normal and Demo work made no off-origin requests. Normal work used only the product IndexedDB and created no account/session/license state.
-- Desktop/mobile live axe: zero serious/critical findings. Keyboard, focus restoration, reduced motion, 200% text, and reflow passed apart from the narrow Demo target.
-- PWA install metadata, controlled offline reload, and simulated service-worker update toast passed.
-- Live headers/caching/HTTPS/404/link crawl passed.
-- Sociobot verification rate limit allows 30 requests; request 31 returned 429 with `Retry-After: 3`.
-- Mobile Lighthouse: 99 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.1 s, TBT 140 ms, CLS 0.
+Clean-install baseline:
 
-## Reproduce
+- `npm ci` — PASS; 68 packages added; 0 vulnerabilities.
+- `npm run typecheck` — PASS.
+- `npm run lint` — PASS.
+- `npm run test:unit` — PASS; 12 tests.
+- Every exact command in `.factory/claims.json` — PASS; 10/10 claim commands, each run separately in Chromium.
+- `npm test` — PASS; 12 unit/contract tests plus 58 desktop/390px Playwright tests, including axe, keyboard dialog focus/escape/restore, legal routes, privacy request boundaries, calendar recovery, offline reload, and PWA metadata.
+- `npm run build` — PASS; `dist/` produced. Initial JS is 48.65 kB raw / 14.61 kB gzip. CSS is 19.65 kB raw / 5.00 kB gzip.
+
+Preview evidence is committed in `.factory/evidence/repair-7-local/`:
+
+- `verify-url.sh` passed root and `/demo`: correct title and `lang`, one h1, main landmark, complete image alternatives, labelled buttons, and no browser console/page errors. Root loaded in 547 ms and Demo in 538 ms in the verifier smoke browser.
+- Playwright axe integration reported no serious or critical violations on the populated board, empty mobile board, Privacy, Terms, and the 404 route.
+- Lighthouse 12.8.2 on the local production preview (mobile profile): Performance 100, Accessibility 100, Best Practices 100, SEO 100; FCP 1.1 s, LCP 1.4 s, TBT 20 ms, CLS 0, 70 KiB transfer.
+- `node .factory/qa-artifacts/sw-update-qa.mjs` — PASS: update toast and Refresh action appeared; the `backfill-v1.0.8-qa-b-shell` cache replaced the old revision; Demo retained six rows; no errors.
+
+## Run locally
 
 ```sh
 npm ci
-npm run test:e2e -- --project=chromium --grep @claim:billing-entitlement
 npm test
 npm run typecheck
 npm run lint
 npm run build
+npm run preview
 ```
 
-Full evidence and the claim-by-claim matrix are in `.factory/verification-10.md`. Screenshots, the Lighthouse JSON, `verify-url.sh` output, and the failed claim trace are in `.factory/verification-evidence-10/`.
+For the independent claim gate, run every command listed in `.factory/claims.json`. The most relevant repair checks are:
 
-## Next steps
+```sh
+npm run test:e2e -- --project=chromium --grep @claim:billing-entitlement
+npm run test:e2e -- --project=chromium --grep @claim:demo-exit-cleanup
+npm run test:e2e -- --project=mobile --grep "header and footer targets"
+```
 
-Freeze the billing test clock before navigation, enlarge the mobile Demo target, and register or remove the unlisted claims. Then rerun all nine claim commands and the full clean-clone suite before requesting another release decision.
+## Deployment and known gaps
+
+Static deployment uses the tracked `public/staticwebapp.config.json` response, cache, MIME, and security-header configuration. Deploy `dist/` with its physical `/demo/`, `/privacy/`, `/terms/`, `404.html`, `sw.js`, and manifest files.
+
+No known release-blocking gaps remain. The product intentionally has no account system, analytics, product backend, or runtime AI feature. The only optional external request remains Sociobot license verification after a user explicitly restores or returns with a license token.

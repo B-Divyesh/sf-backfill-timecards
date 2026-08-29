@@ -1,6 +1,6 @@
 // Bump the cache namespace with the layout-stable app shell so a previously
 // installed board receives the update toast and never retains its old shell.
-const VERSION = "backfill-v1.0.7";
+const VERSION = "backfill-v1.0.8";
 const SHELL = `${VERSION}-shell`;
 const ASSETS = `${VERSION}-assets`;
 const EXTRA_PRECACHE = [];

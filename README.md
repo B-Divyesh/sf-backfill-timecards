@@ -17,7 +17,7 @@ Try the isolated sample week: <https://backfill-timecards.sociobot.in/demo>
 - Installs as a web app and works offline after the first visit.
 - Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. Checkout and license verification use Sociobot billing; no payment provider is embedded.
 
-Six claim tests start at `/demo`. The demo-isolation, normal-privacy, and billing tests start in clean normal workspaces as described in [`.factory/claims.json`](.factory/claims.json).
+Seven claim tests start at `/demo`. The demo-isolation, normal-privacy, and billing tests start in clean normal workspaces as described in [`.factory/claims.json`](.factory/claims.json).
 
 Demo records use temporary browser storage limited to that demo tab. **Reset demo** restores the sample. **Start for real** clears it before opening your weekly timecard. See [`.factory/demo.md`](.factory/demo.md).
 
@@ -38,7 +38,7 @@ npm run dev
 npm test          # unit + Chromium desktop/mobile end-to-end + axe + offline
 npm run typecheck # TypeScript checks
 npm run lint      # repository static checks
-npm run build     # reproducible static output in ./dist
+npm run build     # production files in ./dist
 npm run preview   # preview the production build
 ```
 

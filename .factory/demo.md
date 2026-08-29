@@ -14,4 +14,4 @@ Demo records use tab-scoped session storage under `demo:backfill-timecards`. Nor
 - Demo links that leave for Privacy, Terms, the home page, or Param Factory also clear demo records first.
 - Reloading the demo restores the original sample. The sample and demo route remain available offline after the service worker controls the page.
 
-Six claim tests open `/demo` in a fresh Playwright browser context. Isolation, normal privacy, and billing claims begin in clean normal workspaces. See `.factory/claims.json` for each exact command and observable assertion.
+Seven claim tests open `/demo` in a fresh Playwright browser context. Isolation, normal privacy, and billing claims begin in clean normal workspaces. See `.factory/claims.json` for each exact command and observable assertion.

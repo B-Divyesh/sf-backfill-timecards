@@ -33,7 +33,7 @@ const server = createServer(async (request, response) => {
     if ((await stat(file)).isDirectory()) file = join(file, "index.html");
     let body = await readFile(file);
     if (pathname === "/sw.js") {
-      body = Buffer.from(body.toString().replace('const VERSION = "backfill-v1.0.6";', `const VERSION = "backfill-v1.0.6-${revision}";`));
+      body = Buffer.from(body.toString().replace('const VERSION = "backfill-v1.0.8";', `const VERSION = "backfill-v1.0.8-${revision}";`));
     }
     response.writeHead(200, {
       "content-type": types[extname(file)] || "application/octet-stream",

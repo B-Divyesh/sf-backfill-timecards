@@ -339,7 +339,7 @@ export class App {
       <footer>
         <p>Private weekly timecards for freelancers.</p>
         <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Param Factory (external)</a></nav>
-        <p class="build-id">Build r6 · 2026-08-29</p>
+        <p class="build-id">Build r7 · 2026-08-29</p>
       </footer>
       <div id="route-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
       <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>`;
@@ -622,7 +622,7 @@ export class App {
         ${this.license.notice ? `<p class="inline-error">${escapeHtml(this.license.notice)}</p>` : ""}
         <a class="primary-button button-link" href="${checkoutUrl}">Buy the one-time unlock</a>
         <form id="restore-form" class="restore-form"><label class="field">Have a license? Paste it here<input name="license" required autocomplete="off" /></label><button type="submit">Verify and restore</button><p class="form-error" role="status" aria-live="polite"></p></form>
-        <p class="fine-print">Checkout is hosted by Sociobot; Dodo is merchant of record. Refunds are handled there and revoke the license. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+        <p class="fine-print">Checkout is hosted by Sociobot; Dodo is merchant of record. Direct refund questions there. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
       </div>`);
     dialog.querySelector<HTMLFormElement>("#restore-form")!.addEventListener("submit", async (event) => {
       event.preventDefault();

@@ -66,7 +66,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | Private weekly timecards for freelancers. | 5 | Footer description |
 | Terms | 1 | Footer link |
 | Param Factory (external) | 3 | External link |
-| Build r6 · 2026-08-29 | 3 | Build label |
+| Build r7 · 2026-08-29 | 3 | Build label |
 
 ## README
 
@@ -87,7 +87,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | Installs as a web app and works offline after the first visit. | 12 |
 | Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. | 14 |
 | Checkout and license verification use Sociobot billing; no payment provider is embedded. | 12 |
-| Six claim tests start at /demo. | 6 |
+| Seven claim tests start at /demo. | 6 |
 | The demo-isolation, normal-privacy, and billing tests start in clean normal workspaces as described in .factory/claims.json. | 16 |
 | Demo records use temporary browser storage limited to that demo tab. | 11 |
 | Reset demo restores the sample. | 5 |

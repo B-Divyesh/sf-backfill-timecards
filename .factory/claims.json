@@ -7,6 +7,13 @@
     "sandbox": "fresh browser context; create one real block; enter /demo; mutate and reset sample; return to the untouched real block; close a second populated demo tab and assert no demo session storage or IndexedDB remains"
   },
   {
+    "id": "demo-exit-cleanup",
+    "claim": "Leaving the demo for home, Privacy, Terms, or Param Factory clears the sample before navigation.",
+    "where": ".factory/demo.md",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:demo-exit-cleanup",
+    "sandbox": "fresh /demo; for each documented exit, assert six sample records, observe demo storage removal before navigation, and confirm same-origin destinations have no demo storage"
+  },
+  {
     "id": "weekly-board",
     "claim": "The weekly board adds, edits, copies, deletes, restores, and recalls the client for a known project.",
     "where": "workspace, README",

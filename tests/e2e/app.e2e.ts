@@ -140,16 +140,19 @@ test("keeps the offline timecard shell after visiting a legal page", async ({ pa
   await expect(page.getByRole("button", { name: "Add work block" }).first()).toBeVisible();
 });
 
-test("keeps footer and home targets at least 44px tall on a 390px viewport", async ({ page }) => {
+test("keeps header and footer targets at least 44px square on a 390px viewport", async ({ page }) => {
   await page.goto("/");
   if (page.viewportSize()?.width !== 390) test.skip();
   for (const link of [
     page.getByRole("link", { name: "Backfill Timecards home" }),
+    page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Demo" }),
     page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Privacy" }),
     page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Terms" }),
     page.getByRole("link", { name: "Param Factory (external)" }),
   ]) {
-    expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+    const bounds = await link.boundingBox();
+    expect(bounds?.width).toBeGreaterThanOrEqual(44);
+    expect(bounds?.height).toBeGreaterThanOrEqual(44);
   }
 });
 
@@ -248,6 +251,41 @@ test("@claim:demo-sandbox keeps sample work separate, resets it, and expires it 
   expect(postCloseStorage.session).toBeNull();
   expect(postCloseStorage.databases).not.toContain("demo:backfill-timecards");
   await closingContext.close();
+});
+
+test("@claim:demo-exit-cleanup clears sample data before every documented demo exit", async ({ page }) => {
+  let demoClearCalls = 0;
+  await page.exposeBinding("recordDemoClear", () => { demoClearCalls += 1; });
+  await page.route("https://sociobot.in/**", (route) => route.fulfill({ contentType: "text/html", body: "<title>Param Factory</title>" }));
+
+  const exits = [
+    { name: "Backfill Timecards home", destination: /http:\/\/127\.0\.0\.1:4173\/$/, navigation: "home" },
+    { name: "Privacy", destination: /http:\/\/127\.0\.0\.1:4173\/privacy\/$/, navigation: "primary" },
+    { name: "Terms", destination: /http:\/\/127\.0\.0\.1:4173\/terms\/$/, navigation: "footer" },
+    { name: "Param Factory (external)", destination: /https:\/\/sociobot\.in\/$/, navigation: "external" },
+  ] as const;
+
+  for (const exit of exits) {
+    await page.goto("/demo");
+    await expect(page.locator(".track")).toHaveCount(6);
+    await page.evaluate(() => {
+      const removeItem = Storage.prototype.removeItem;
+      Storage.prototype.removeItem = function(key: string): void {
+        if (this === sessionStorage && key === "demo:backfill-timecards") void Reflect.get(window, "recordDemoClear")();
+        removeItem.call(this, key);
+      };
+    });
+    const link = exit.navigation === "primary"
+      ? page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: exit.name })
+      : exit.navigation === "footer"
+        ? page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: exit.name })
+        : page.getByRole("link", { name: exit.name });
+    await Promise.all([page.waitForURL(exit.destination), link.click()]);
+    await expect.poll(() => demoClearCalls).toBeGreaterThanOrEqual(exits.indexOf(exit) + 1);
+    if (exit.navigation !== "external") {
+      expect(await page.evaluate(() => sessionStorage.getItem("demo:backfill-timecards"))).toBeNull();
+    }
+  }
 });
 
 test("opens the query-string demo in the same isolated sample sandbox", async ({ page }) => {
@@ -390,7 +428,10 @@ test("@claim:billing-entitlement proves the $18 checkout, verification gate, one
   const verifiedAt = new Date("2030-01-15T12:00:00.000Z").getTime();
   let verifyRequests = 0;
   let restoredTokenRequests = 0;
-  await page.clock.install({ time: verifiedAt - 1_000 });
+  // Freeze the deterministic clock before navigation and any assertions. A
+  // later pause can race the real test work and request a time in the past.
+  await page.clock.install({ time: verifiedAt });
+  await page.clock.pauseAt(verifiedAt);
   await page.route("https://api.sociobot.in/**", async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname !== "/api/v1/products/backfill-timecards/verify") return route.abort();
@@ -420,7 +461,6 @@ test("@claim:billing-entitlement proves the $18 checkout, verification gate, one
   await expect(page.locator("#unlock-dialog iframe")).toHaveCount(0);
   await expect(page.locator('#unlock-dialog input[autocomplete="cc-number"], #unlock-dialog input[name*="card" i]')).toHaveCount(0);
   expect(await page.locator("script[src]").evaluateAll((scripts) => scripts.every((script) => new URL((script as HTMLScriptElement).src).origin === location.origin))).toBe(true);
-  await page.clock.pauseAt(verifiedAt);
   await page.getByRole("textbox", { name: "Have a license? Paste it here" }).fill("verified-qa7");
   await page.getByRole("button", { name: "Verify and restore" }).click();
   await expect(page.locator(".toolbelt")).toContainText("UNLOCKED");

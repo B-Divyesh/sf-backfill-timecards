@@ -14,6 +14,8 @@ const browserTests = readFileSync(new URL("./e2e/app.e2e.ts", import.meta.url), 
 const staticShell = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const privacy = readFileSync(new URL("../public/privacy/index.html", import.meta.url), "utf8");
 const terms = readFileSync(new URL("../public/terms/index.html", import.meta.url), "utf8");
+const appSource = readFileSync(new URL("../src/app.ts", import.meta.url), "utf8");
+const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
 const notFound = readFileSync(new URL("../public/404.html", import.meta.url), "utf8");
 const staticConfig = readFileSync(new URL("../public/staticwebapp.config.json", import.meta.url), "utf8");
 const viteConfig = readFileSync(new URL("../vite.config.ts", import.meta.url), "utf8");
@@ -43,6 +45,12 @@ describe("factory release contracts", () => {
     expect(staticShell).not.toContain("Rebuild the week");
   });
 
+  it("does not make unsupported merchant-refund or reproducible-build promises", () => {
+    expect(terms).not.toMatch(/refunds?.{0,80}(automatically )?revoke/i);
+    expect(appSource).not.toMatch(/refunds?.{0,80}revoke/i);
+    expect(readme).not.toContain("reproducible static output");
+  });
+
   it("ships the required canonical, social, footer identity, and 404 deployment contract", () => {
     for (const document of [staticShell, privacy, terms]) {
       expect(document).toContain('rel="canonical"');
@@ -51,12 +59,13 @@ describe("factory release contracts", () => {
       expect(document).toContain('name="twitter:card"');
       expect(document).toContain("Private weekly timecards for freelancers.");
       expect(document).toContain("Param Factory (external)");
-      expect(document).toContain("Build r6 · 2026-08-29");
+      expect(document).toContain("Build r7 · 2026-08-29");
       expect(document).toContain('href="/icons/apple-touch-icon.png"');
     }
     expect(notFound).toContain("<h1>Page not found</h1>");
     expect(notFound).toContain('property="og:url"');
     expect(notFound).toContain("Open Backfill Timecards");
+    expect(notFound).toContain("Build r7 · 2026-08-29");
     expect(appleTouchIcon.readUInt32BE(16)).toBe(180);
     expect(appleTouchIcon.readUInt32BE(20)).toBe(180);
     expect(staticConfig).toContain('"responseOverrides"');
