@@ -59,6 +59,18 @@ sw.js                 d8590d3c5bd9796b5ecd85120243fd91df7ada1434209310a955a20364
 manifest.webmanifest  a2d6cbbe52a1e3bb816aaf2ae4a76143f176b9fe6c9ac80153dc777444d11cfd
 ```
 
+## Live deployment evidence
+
+The static artifact from repair commit `02213d723aba4300911cdbc171e2ac38b439c228` was deployed to <https://backfill-timecards.sociobot.in/> with Static Web Apps deployment ID `2f02a91b-4b38-4ac2-b816-cb44c8dc404f`.
+
+- Live `/`, `/demo`, `/privacy/`, `/terms/`, `/404.html`, manifest, worker, and social card returned 200. The physical `/demo` entry runs the populated demo and sets `Demo — Backfill Timecards`.
+- `GET /definitely-not-a-route-qa7` now returns HTTP 404 and the designed page title and h1: “Page not found — Backfill Timecards” / “This page is not on the timecard.”
+- Live root, `sw.js`, and manifest SHA-256 values exactly match the final local build hashes above.
+- Live `verify-url.sh` passed with a 747 ms navigation, one h1, `lang=en`, main landmark, complete alt/labels, and zero console/page errors. Screenshots and raw verifier output are in `.factory/evidence/repair-5-live-final/`.
+- Fresh 390 px live browser checks found zero serious/critical Axe violations on root, Privacy, and Terms; no horizontal overflow; working skip-link focus; correct Demo title; zero console/page errors; and no off-origin normal-work request.
+- After service-worker control, a fresh live `/demo` reloaded offline with the demo banner, six sample records, and “Offline · saved here.” The local two-revision update harness also passed as described above.
+- Live response headers include HSTS, CSP with response-header `frame-ancestors 'none'`, nosniff, X-Frame-Options DENY, restrictive Permissions Policy, COOP/CORP, strict-origin referrer policy, and immutable `/assets/*` cache policy.
+
 ## Run and deploy
 
 ```sh
