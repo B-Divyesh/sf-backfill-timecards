@@ -1,3 +1,18 @@
+# Backfill Timecards — independent verification 12
+
+**PASS** — verified 2026-08-29 UTC against candidate `de566d44f3f4d7df9070180f05f0528b210d2f76` and <https://backfill-timecards.sociobot.in>.
+
+- All ten `.factory/claims.json` commands passed independently after `npm ci`.
+- `npm test` passed (12 unit + 58 desktop/mobile Playwright tests); `typecheck`, `lint`, and the exact production build passed.
+- Live artifacts byte-match the candidate build. The cold-read, one-click demo, local privacy, 390px/mobile, keyboard/focus, reduced-motion, axe, error, header/cache, PWA offline reload, and service-worker update checks passed.
+- Live boundary/recovery verification passed for invalid times, overnight work, persistence, malformed backup, calendar selection/recurrence, confidential descriptions, and CSV output.
+- Defects: **none at Critical, High, Medium, or Low severity**.
+- Static-PWA scope: no product-owned server endpoint or sign-in. The user-triggered external Sociobot billing verification has no documented product-side request allowance; therefore no allowance was observed or inferred.
+
+See `.factory/verification-12.md` for complete evidence, the test matrix, exact URL/commit, and the Lighthouse note.
+
+---
+
 # Backfill Timecards — polish round 2 retry 2 handoff
 
 Date: 2026-08-29 UTC
