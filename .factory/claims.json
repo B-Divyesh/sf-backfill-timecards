@@ -60,6 +60,6 @@
     "claim": "Pattern Deck costs $18 once through Sociobot billing; a new or restored token stays locked until verification succeeds, then a successful verdict is cached for one day.",
     "where": "paid section, unlock dialog, privacy policy, terms, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:billing-entitlement",
-    "sandbox": "fresh normal workspace; abort a forged returned-token verification and assert the purchase dialog and no positive verdict; mock one successful restore, assert unlock and Sociobot checkout URL; reload and assert no second verification request"
+    "sandbox": "fresh normal workspace with a controlled clock; abort a forged returned-token verification and assert the locked state; assert the $18 once price and Sociobot checkout URL; mock one successful restore; reload at 86,399,999 ms and assert no recheck; reload at 86,400,000 ms with a revoked response and assert Pattern Deck locks"
   }
 ]

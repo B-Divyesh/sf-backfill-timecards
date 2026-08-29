@@ -332,15 +332,24 @@ test("@claim:privacy-local keeps normal work local with no account or third-part
   }))).toEqual({ databases: ["backfill-timecards"], demoSession: null, license: null, accountControls: 0 });
 });
 
-test("@claim:billing-entitlement verifies a returned license before unlocking and caches only a successful verdict", async ({ page }) => {
-  const verifyEndpoint = "https://api.sociobot.in/api/v1/products/backfill-timecards/verify";
+test("@claim:billing-entitlement proves the $18 checkout, verification gate, one-day cache, and revocation", async ({ page }) => {
+  const dayInMilliseconds = 86_400_000;
+  const verifiedAt = new Date("2030-01-15T12:00:00.000Z").getTime();
   let verifyRequests = 0;
+  let restoredTokenRequests = 0;
+  await page.clock.install({ time: verifiedAt - 1_000 });
   await page.route("https://api.sociobot.in/**", async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname !== "/api/v1/products/backfill-timecards/verify") return route.abort();
     verifyRequests += 1;
     if (url.searchParams.get("license") === "forged-qa7") return route.abort();
-    return route.fulfill({ contentType: "application/json", body: JSON.stringify({ valid: true, reason: "ok" }) });
+    expect(url.searchParams.get("license")).toBe("verified-qa7");
+    restoredTokenRequests += 1;
+    const valid = restoredTokenRequests === 1;
+    return route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ valid, reason: valid ? "ok" : "revoked" }),
+    });
   });
   await page.goto("/?license=forged-qa7");
   await expect(page).toHaveURL(/\/$/);
@@ -348,19 +357,34 @@ test("@claim:billing-entitlement verifies a returned license before unlocking an
     token: localStorage.getItem("sb_license:backfill-timecards"),
     verdict: localStorage.getItem("sb_license:backfill-timecards:verdict"),
   }))).toEqual({ token: "forged-qa7", verdict: null });
+  await expect(page.locator(".toolbelt")).toContainText("$18");
+  await expect(page.locator(".toolbelt")).not.toContainText("UNLOCKED");
   await page.getByRole("button", { name: /Pattern deck/ }).click();
   await expect(page.getByRole("heading", { name: "Make repeat weeks faster" })).toBeVisible();
+  await expect(page.locator("#unlock-dialog .price")).toHaveText("$18 once");
   await expect(page.getByRole("link", { name: "Buy the one-time unlock" })).toHaveAttribute("href", "https://api.sociobot.in/api/v1/products/backfill-timecards/checkout");
+  await expect(page.locator("#unlock-dialog .fine-print")).toContainText("Checkout is hosted by Sociobot");
+  await page.clock.pauseAt(verifiedAt);
   await page.getByRole("textbox", { name: "Have a license? Paste it here" }).fill("verified-qa7");
   await page.getByRole("button", { name: "Verify and restore" }).click();
   await expect(page.locator(".toolbelt")).toContainText("UNLOCKED");
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sb_license:backfill-timecards:verdict") || "{}"))).toMatchObject({ valid: true });
-  const verifiedRequestCount = verifyRequests;
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sb_license:backfill-timecards:verdict") || "{}"))).toEqual({ valid: true, checkedAt: verifiedAt });
+
+  await page.clock.setSystemTime(verifiedAt + dayInMilliseconds - 1);
   await page.reload();
   await expect(page.locator(".toolbelt")).toContainText("UNLOCKED");
-  expect(verifyRequests).toBe(verifiedRequestCount);
   expect(verifyRequests).toBe(2);
-  expect(verifyEndpoint).toContain("api.sociobot.in");
+  expect(restoredTokenRequests).toBe(1);
+
+  await page.clock.setSystemTime(verifiedAt + dayInMilliseconds);
+  await page.reload();
+  await expect(page.locator(".toolbelt")).toContainText("$18");
+  await expect(page.locator(".toolbelt")).not.toContainText("UNLOCKED");
+  expect(verifyRequests).toBe(3);
+  expect(restoredTokenRequests).toBe(2);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("sb_license:backfill-timecards:verdict") || "{}"))).toEqual({ valid: false, checkedAt: verifiedAt + dayInMilliseconds });
+  await page.getByRole("button", { name: /Pattern deck/ }).click();
+  await expect(page.locator("#unlock-dialog .inline-error")).toHaveText("License no longer active.");
 });
 
 test("@claim:pattern-deck previews saved patterns and previous-week copying", async ({ page }) => {
