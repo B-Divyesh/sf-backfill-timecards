@@ -63,4 +63,12 @@ npm run test:e2e -- --project=mobile --grep "header and footer targets"
 
 Static deployment uses the tracked `public/staticwebapp.config.json` response, cache, MIME, and security-header configuration. Deploy `dist/` with its physical `/demo/`, `/privacy/`, `/terms/`, `404.html`, `sw.js`, and manifest files.
 
+Deployed successfully with `/opt/fleet/lib/deploy-static.sh backfill-timecards dist`:
+
+- Azure Static Web Apps deployment `74107a43-4ed6-4ac4-90ba-e3f130ad98b4` completed successfully; `https://backfill-timecards.sociobot.in` is serving build `r7` and service-worker revision `backfill-v1.0.8`.
+- Live `verify-url.sh` passed root (715 ms) and Demo (791 ms) with no console/page errors and the same title, language, h1, main, alt, and button-label checks as the local preview. Evidence is in `.factory/evidence/repair-7-live/`.
+- Live 390px browser smoke: no horizontal overflow; Demo measured 44×44 CSS px; skip link and main focus movement worked; the service worker controlled the page; no errors.
+- All 24 public `dist/` artifacts matched the live bytes by SHA-256. `staticwebapp.config.json` is correctly deployment-only and returns 404 as a public URL.
+- Live policy checks: `sw.js` is no-store; the manifest is `application/manifest+json`; immutable assets use one-year caching; CSP with `frame-ancestors 'none'`, Permissions-Policy, X-Frame-Options, COOP, CORP, HSTS, and the designed unknown-route 404 are present.
+
 No known release-blocking gaps remain. The product intentionally has no account system, analytics, product backend, or runtime AI feature. The only optional external request remains Sociobot license verification after a user explicitly restores or returns with a license token.
