@@ -362,10 +362,10 @@
   "surprises": [
     {
       "source": "App",
-      "target": "TimecardStore",
+      "target": "LicenseState",
       "source_files": [
         "src/app.ts",
-        "src/db.ts"
+        "src/license.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "references",
@@ -373,10 +373,10 @@
     },
     {
       "source": "App",
-      "target": "LicenseState",
+      "target": "TimecardStore",
       "source_files": [
         "src/app.ts",
-        "src/license.ts"
+        "src/db.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "references",
