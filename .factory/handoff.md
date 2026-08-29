@@ -8,7 +8,7 @@ Verifier report: `036bf3afaf17c58043dddc5d70d21b61241bad47` / `.factory/verifica
 
 Rejected candidate: `bef3fb93d3b494de256aeabc65a3964068c13a1b`
 
-Deployed repair commit: `387132eeff23f73508aee679d663d80154ea5a5e`
+Deployed repair commit: `387132e12f514135ca2a924eab2e8f5e1e729fbe`
 
 Azure deployment: `fe62cf51-8a42-409f-b9a3-994ff8c33bb7`
 
