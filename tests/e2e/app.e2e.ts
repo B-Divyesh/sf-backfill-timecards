@@ -13,11 +13,13 @@ async function withIsolatedContext<T>(
   run: (page: Page, context: BrowserContext) => Promise<T>,
 ): Promise<T> {
   const context = await browser.newContext();
+  let page: Page | undefined;
   try {
-    const page = await context.newPage();
+    page = await context.newPage();
     return await run(page, context);
   } finally {
     await context.setOffline(false).catch(() => undefined);
+    await page?.close().catch(() => undefined);
     await context.clearCookies().catch(() => undefined);
     await context.close().catch(() => undefined);
   }
@@ -171,8 +173,8 @@ test("keeps the offline timecard shell after visiting a legal page", async ({ br
 });
 
 test("keeps header and footer targets at least 44px square on a 390px viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  if (page.viewportSize()?.width !== 390) test.skip();
   for (const link of [
     page.getByRole("link", { name: "Backfill Timecards home" }),
     page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Demo" }),
@@ -186,15 +188,17 @@ test("keeps header and footer targets at least 44px square on a 390px viewport",
   }
 });
 
-test("keeps the privacy and terms pages free of serious accessibility violations", async ({ page }) => {
-  for (const path of ["/privacy/", "/terms/"]) {
-    await page.goto(path);
-    await expect(page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Demo" })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Privacy" })).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Terms" })).toBeVisible();
-    const results = await new AxeBuilder({ page: page as never }).analyze();
-    expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
-  }
+test("creates the next isolated context and keeps legal pages free of serious accessibility violations", async ({ browser }) => {
+  await withIsolatedContext(browser, async (page) => {
+    for (const path of ["/privacy/", "/terms/"]) {
+      await page.goto(path);
+      await expect(page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Demo" })).toBeVisible();
+      await expect(page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Privacy" })).toBeVisible();
+      await expect(page.getByRole("navigation", { name: "Legal and product links" }).getByRole("link", { name: "Terms" })).toBeVisible();
+      const results = await new AxeBuilder({ page: page as never }).analyze();
+      expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
+    }
+  });
 });
 
 test("serves route-specific demo metadata before JavaScript", async ({ request }) => {
