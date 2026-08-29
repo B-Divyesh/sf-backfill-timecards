@@ -1,6 +1,6 @@
 // Bump the cache namespace with the layout-stable app shell so a previously
 // installed board receives the update toast and never retains its old shell.
-const VERSION = "backfill-v1.0.3";
+const VERSION = "backfill-v1.0.4";
 const SHELL = `${VERSION}-shell`;
 const ASSETS = `${VERSION}-assets`;
 const EXTRA_PRECACHE = [];
@@ -23,7 +23,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(fetch(request).catch(async () => {
       // Only the app routes may fall back to the app shell. In particular,
       // never let a privacy or terms response overwrite that shell.
-      if (url.pathname === "/" || url.pathname === "/index.html") {
+      if (["/", "/index.html", "/demo", "/demo/"].includes(url.pathname)) {
         return (await caches.match("/index.html")) || caches.match("/offline.html");
       }
       return (await caches.match(request)) || caches.match("/offline.html");

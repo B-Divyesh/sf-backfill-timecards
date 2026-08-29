@@ -33,11 +33,13 @@ An 8px base rhythm with 4px for micro-spacing. Controls are at least 44px. Major
 
 ## Interaction grammar
 
+- A highlighter-yellow demo strip stays pinned above the paper workspace. It marks sample data clearly without changing the established cassette-insert surface.
 - Adding a block resembles inserting a track: the row settles into its chronological slot and the weekly total updates.
 - Source stamps—MANUAL, CALENDAR, PATTERN—make every block explainable; nothing claims inferred time.
 - Destructive deletion names the block and offers Undo.
 - Project selection recalls a saved client mapping but never invents billability or duration.
 - Blue means a primary action; coral marks edit/correction; green communicates completed/ready states with text.
+- The first screen leads with the freelancer's job and pairs the sample action with three tested facts. The cassette language remains visual rather than carrying instructions.
 
 ## Motion
 

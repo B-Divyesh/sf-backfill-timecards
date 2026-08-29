@@ -29,12 +29,18 @@
           <button class="icon-button" type="button" data-action="settings" aria-label="Open data and license settings" title="Data and license settings">☰</button>
         </div>
       </header>
-      <main id="main">
+      <main id="main" tabindex="-1">
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
-            <p class="eyebrow">WEEKLY RECONSTRUCTION · SIDE A</p>
-            <h1 id="hero-title">Rebuild the week.<br /><span>Keep the receipts.</span></h1>
-            <p class="lede">Turn calendar fragments and honest memory into an invoice-ready timecard. No timers. No surveillance. Nothing leaves this device.</p>
+            <p class="eyebrow">PRIVATE WEEKLY TIMECARDS</p>
+            <h1 id="hero-title">Reconstruct your <span>freelance workweek</span></h1>
+            <p class="lede">For freelancers logging work after the fact, turn calendar clues and memory into a timecard ready for invoicing.</p>
+            <div class="hero-actions">
+              <button type="button" class="primary-button" data-action="try-demo">Try it with sample data</button>
+              <button type="button" data-action="add">Add your own work</button>
+              <p>The sample opens a separate timecard without changing your work.</p>
+            </div>
+            <ul class="hero-facts" aria-label="Product facts"><li>Timecards stay on this device.</li><li>Works offline after the first visit.</li><li>The core workspace is free. Pattern Deck costs $18 once.</li></ul>
           </div>
           <figure class="hero-art">
             <picture>
@@ -42,12 +48,12 @@
               <source type="image/webp" srcset="/assets/hero-cassette-640.webp 640w, /assets/hero-cassette-1024.webp 1024w" sizes="(max-width: 820px) 92vw, 38vw" />
               <img src="/assets/hero-cassette-640.webp" width="640" height="427" fetchpriority="high" decoding="async" alt="A collage of a cassette insert arranged as seven blank timecard tracks with pencil marks and calendar scraps" />
             </picture>
-            <figcaption>Reconstruction, not automatic inference.</figcaption>
+            <figcaption>You choose every work block.</figcaption>
           </figure>
         </section>
         <section class="workspace" aria-labelledby="week-heading">
           <div class="week-bar">
-            <div><p class="eyebrow">YOUR WORK TAPE</p><h2 id="week-heading" tabindex="-1">This week</h2></div>
+            <div><p class="eyebrow">WEEKLY BOARD</p><h2 id="week-heading" tabindex="-1">This week</h2></div>
             <nav class="week-nav" aria-label="Choose week">
               <button type="button" class="square-button" data-action="previous-week" aria-label="Previous week">←</button>
               <button type="button" class="text-button" data-action="this-week" disabled>This week</button>
@@ -62,15 +68,24 @@
           </div>
           <div class="empty-state">
             <div class="empty-tape" aria-hidden="true"><span></span><span></span></div>
-            <div><p class="eyebrow">BLANK SIDE</p><h3>No work blocks yet</h3><p>Start from one thing you remember, or bring in a calendar file and choose only the events you want.</p><div class="empty-actions"><button type="button" class="primary-button" data-action="add">Add the first block</button><button type="button" data-action="calendar">Review a calendar file</button></div></div>
+            <div><p class="eyebrow">EMPTY WEEK</p><h3>No work blocks yet</h3><p>Start from one thing you remember, or bring in a calendar file and choose only the events you want.</p><div class="empty-actions"><button type="button" class="primary-button" data-action="add">Add the first block</button><button type="button" data-action="calendar">Review a calendar file</button></div></div>
           </div>
         </section>
+        <section class="how-it-works" aria-labelledby="how-heading">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2 id="how-heading">Review your week in three steps</h2>
+          <ol><li><strong>Gather calendar clues.</strong><span>Import an .ics file and choose only useful events.</span></li><li><strong>Record and correct work.</strong><span>Add details, clients, and billable choices yourself.</span></li><li><strong>Export the week.</strong><span>Download an invoice-ready CSV when every row looks right.</span></li></ol>
+        </section>
         <section class="privacy-note" aria-labelledby="privacy-note-heading">
-          <p class="registration" aria-hidden="true">＋</p><div><p class="eyebrow">PRIVATE BY CONSTRUCTION</p><h2 id="privacy-note-heading">Your week stays in your browser.</h2></div><p>Calendar files are read locally. We run no analytics and have no account database. Export or erase everything whenever you want.</p><button type="button" data-action="settings">Manage local data</button>
+          <p class="registration" aria-hidden="true">＋</p><div><p class="eyebrow">LOCAL DATA</p><h2 id="privacy-note-heading">Your week stays in this browser.</h2></div><p>Calendar files are read here, not uploaded. No account is required. Export, restore, or erase your archive whenever you want.</p><button type="button" data-action="settings">Manage local data</button>
+        </section>
+        <section class="paid-note" aria-labelledby="paid-heading">
+          <div><p class="eyebrow">OPTIONAL ONE-TIME PURCHASE</p><h2 id="paid-heading">Reuse common work with Pattern Deck</h2><p>Pattern Deck costs $18 once. It saves reusable blocks and copies a previous week into matching days.</p><p>The weekly board, calendar import, CSV export, backups, and privacy controls remain free.</p></div>
+          <button type="button" class="primary-button" data-action="patterns">See the $18 Pattern Deck</button>
         </section>
       </main>
       <footer>
-        <p>Backfill Timecards · Built for honest hindsight</p><nav aria-label="Legal and product links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://sociobot.in">Param Factory</a></nav><p class="generated-note">Editorial artwork generated for this product with Azure AI Foundry.</p>
+        <p>Private weekly timecards for freelancers.</p><nav aria-label="Legal and product links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://sociobot.in">Param Factory</a></nav><p class="generated-note">Editorial artwork generated for this product with Azure AI Foundry.</p>
       </footer>
       <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
     </div>

@@ -2,7 +2,9 @@ import "./style.css";
 import { App } from "./app";
 import { captureReturnedLicense } from "./license";
 
-captureReturnedLicense();
+const launchUrl = new URL(location.href);
+const isDemoLaunch = launchUrl.pathname === "/demo" || launchUrl.pathname === "/demo/" || launchUrl.searchParams.get("demo") === "1";
+if (!isDemoLaunch) captureReturnedLicense();
 
 const root = document.querySelector<HTMLElement>("#app");
 if (!root) throw new Error("App mount point is missing");

@@ -6,7 +6,7 @@ test("adds, persists, maps, and exports work blocks", async ({ page }) => {
   const errors: string[] = [];
   page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Rebuild the week");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Reconstruct your freelance workweek");
   await page.getByRole("button", { name: "Add work block" }).first().click();
   await page.getByRole("combobox", { name: "Project", exact: true }).fill("Acme launch");
   await page.getByRole("textbox", { name: /^Client/ }).fill("Acme Studio");
@@ -184,6 +184,151 @@ test("keeps normal local timecard use on this origin", async ({ page }) => {
   expect(externalRequests).toEqual([]);
 });
 
+test("@claim:demo-sandbox keeps sample work separate and resets it", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Add work block" }).first().click();
+  await page.getByRole("combobox", { name: "Project", exact: true }).fill("Private project");
+  await page.getByLabel("What did you do?").fill("Real private record");
+  await page.getByRole("button", { name: "Add work block" }).last().click();
+
+  await page.getByRole("button", { name: "Try it with sample data" }).click();
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page).toHaveTitle("Demo — Backfill Timecards");
+  await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
+  await expect(page.getByText("Plan the website sprint", { exact: true })).toBeVisible();
+  await expect(page.getByText("Real private record")).toHaveCount(0);
+
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Delete Plan the website sprint" }).click();
+  await expect(page.getByText("Plan the website sprint", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Reset demo", exact: true }).click();
+  await expect(page.getByText("Plan the website sprint", { exact: true })).toBeVisible();
+
+  await page.getByRole("link", { name: "Start for real" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByText("Real private record", { exact: true })).toBeVisible();
+  const demoCount = await page.evaluate(async () => new Promise<number>((resolve, reject) => {
+    const request = indexedDB.open("demo:backfill-timecards", 1);
+    request.onsuccess = () => {
+      const count = request.result.transaction("entries").objectStore("entries").count();
+      count.onsuccess = () => { request.result.close(); resolve(count.result); };
+      count.onerror = () => reject(count.error);
+    };
+    request.onerror = () => reject(request.error);
+  }));
+  expect(demoCount).toBe(0);
+});
+
+test("@claim:weekly-board edits, copies, restores, and recalls client work", async ({ page }) => {
+  await page.goto("/demo");
+  await page.getByRole("button", { name: "Add a work block" }).click();
+  await page.getByRole("combobox", { name: "Project", exact: true }).fill("Website refresh");
+  await expect(page.getByRole("textbox", { name: /^Client/ })).toHaveValue("Redwood Studio");
+  await page.getByLabel("What did you do?").fill("Sample client analysis");
+  await page.getByRole("button", { name: "Add work block" }).last().click();
+  await page.getByRole("button", { name: "Edit Sample client analysis" }).click();
+  await page.getByLabel("What did you do?").fill("Sample client analysis revised");
+  await page.getByRole("button", { name: "Save changes" }).click();
+  await page.getByRole("button", { name: "Duplicate Sample client analysis revised" }).click();
+  await expect(page.locator(".track-title", { hasText: "Sample client analysis revised" })).toHaveCount(2);
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Delete Sample client analysis revised" }).first().click();
+  await expect(page.locator(".track-title", { hasText: "Sample client analysis revised" })).toHaveCount(1);
+  await page.getByRole("button", { name: "Undo" }).click();
+  await expect(page.locator(".track-title", { hasText: "Sample client analysis revised" })).toHaveCount(2);
+});
+
+test("@claim:calendar-local imports reviewed recurring and overnight events without uploading them", async ({ page }) => {
+  const externalRequests: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).origin !== "http://127.0.0.1:4173") externalRequests.push(request.url());
+  });
+  await page.goto("/demo");
+  await page.getByRole("button", { name: "Import calendar" }).click();
+  const ics = "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:review\r\nDTSTART:20260824T100000\r\nDTEND:20260824T110000\r\nRRULE:FREQ=DAILY;COUNT=2\r\nSUMMARY:Client review\r\nDESCRIPTION:Private planning notes\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:overnight-claim\r\nDTSTART:20260826T230000\r\nDTEND:20260827T010000\r\nSUMMARY:Overnight release\r\nEND:VEVENT\r\nEND:VCALENDAR";
+  await page.locator("#calendar-file").setInputFiles({ name: "claim-week.ics", mimeType: "text/calendar", buffer: Buffer.from(ics) });
+  await expect(page.getByText("3 timed events found. Select only work you want to record.")).toBeVisible();
+  await expect(page.getByText(/23:00–01:00 \(next day\)/)).toBeVisible();
+  await page.getByLabel("Project for selected events").fill("Release support");
+  await page.getByRole("button", { name: "Add selected events" }).click();
+  await expect(page.locator(".track-title", { hasText: "Client review" })).toHaveCount(2);
+  await expect(page.locator(".track", { hasText: "Overnight release" }).locator(".track-time")).toContainText("2h");
+  await expect(page.getByText("Private planning notes")).toHaveCount(0);
+  expect(externalRequests).toEqual([]);
+  expect(await page.evaluate(async () => (await indexedDB.databases()).map((database) => database.name))).toEqual(["demo:backfill-timecards"]);
+});
+
+test("@claim:csv-export downloads one invoice row per visible sample block", async ({ page }) => {
+  await page.goto("/demo");
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export CSV" }).click();
+  const result = await download;
+  const csv = await readFile(await result.path(), "utf8");
+  expect(result.suggestedFilename()).toMatch(/^timecard-\d{4}-\d{2}-\d{2}\.csv$/);
+  expect(csv.trim().split(/\r?\n/)).toHaveLength(7);
+  expect(csv).toContain('"Date","Start","End","Hours","Client","Project","Description","Billable","Source"');
+  expect(csv).toContain('"Redwood Studio","Website refresh","Plan the website sprint"');
+});
+
+test("@claim:local-archive exports, erases, and restores the demo archive", async ({ page }) => {
+  await page.goto("/demo");
+  await page.getByRole("button", { name: "Open data and license settings" }).click();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export JSON backup" }).click();
+  const backup = await readFile(await (await download).path());
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Erase all local data" }).click();
+  await expect(page.getByRole("heading", { name: "No work blocks yet" })).toBeVisible();
+  await page.getByRole("button", { name: "Open data and license settings" }).click();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator("#restore-data").setInputFiles({ name: "demo-backup.json", mimeType: "application/json", buffer: backup });
+  await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
+});
+
+test("@claim:offline-reload keeps the sample week usable without a network", async ({ page, context }) => {
+  await page.goto("http://127.0.0.1:4174/demo");
+  await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
+  await page.reload();
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByText("Demo — sample data, nothing is saved", { exact: true })).toBeVisible();
+  await expect(page.locator(".track-title", { hasText: "Plan the website sprint" })).toBeVisible();
+  await expect(page.getByText(/Offline · saved here/)).toBeVisible();
+});
+
+test("@claim:pattern-deck previews saved patterns and previous-week copying", async ({ page }) => {
+  await page.goto("/demo");
+  await page.getByRole("button", { name: "Save Plan the website sprint as a pattern" }).click();
+  await expect(page.getByText("Saved “Plan the website sprint” to the pattern deck.")).toBeVisible();
+  await page.locator(".toolbelt [data-action='patterns']").click();
+  await expect(page.getByText("3 blocks from")).toBeVisible();
+  await expect(page.locator("#patterns-dialog").getByText("Plan the website sprint", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Clone into this week" }).click();
+  await expect(page.locator(".summary-strip div", { hasText: "Entries" }).locator("dd")).toHaveText("9");
+  await expect(page.locator(".paid-note")).toContainText("Pattern Deck costs $18 once");
+  await expect(page.locator(".paid-note")).toContainText("weekly board, calendar import, CSV export, backups, and privacy controls remain free");
+});
+
+test("keeps the populated demo accessible and responsive", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/demo");
+  const results = await new AxeBuilder({ page: page as never }).analyze();
+  expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(page.viewportSize()?.width);
+  await page.keyboard.press("Tab");
+  await expect(page.locator(".skip-link")).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#main")).toBeFocused();
+  if (page.viewportSize()?.width === 390) {
+    for (const target of [page.getByRole("button", { name: "Reset demo", exact: true }), page.getByRole("link", { name: "Start for real" })]) {
+      expect((await target.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+    }
+  }
+  expect(errors).toEqual([]);
+});
+
 test("has no serious accessibility violations and remains usable offline", async ({ page, context }) => {
   // A separate origin gives the install test a clean service-worker scope.
   await page.goto("http://127.0.0.1:4174/");
@@ -193,6 +338,6 @@ test("has no serious accessibility violations and remains usable offline", async
   expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact || ""))).toEqual([]);
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Rebuild the week");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Reconstruct your freelance workweek");
   await expect(page.getByText(/Offline · saved here/)).toBeVisible();
 });

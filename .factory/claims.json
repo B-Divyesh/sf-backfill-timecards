@@ -1,0 +1,51 @@
+[
+  {
+    "id": "demo-sandbox",
+    "claim": "The one-click sample week uses separate demo storage, can be reset, and never changes the user's real archive.",
+    "where": "first screen, demo banner, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:demo-sandbox",
+    "sandbox": "fresh browser context; create one real block; enter /demo; mutate and reset sample; return to the untouched real block; assert demo store is empty on exit"
+  },
+  {
+    "id": "weekly-board",
+    "claim": "The weekly board adds, edits, copies, deletes, restores, and recalls the client for a known project.",
+    "where": "workspace, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:weekly-board",
+    "sandbox": "fresh /demo; use shipped project mapping; add, edit, copy, delete, and undo a work block"
+  },
+  {
+    "id": "calendar-local",
+    "claim": "Calendar files are reviewed and imported locally, including bounded recurrences and overnight events; descriptions and billability require explicit choices.",
+    "where": "how it works, local data section, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:calendar-local",
+    "sandbox": "fresh /demo; import a local fixture with recurrence, private description, and overnight event; assert results, defaults, demo-only IndexedDB, and no off-origin requests"
+  },
+  {
+    "id": "csv-export",
+    "claim": "Exports the selected week as an invoice-ready CSV with one row per visible work block.",
+    "where": "workspace, how it works, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:csv-export",
+    "sandbox": "fresh /demo sample week; download CSV; assert filename, complete header, row count, and sample fields"
+  },
+  {
+    "id": "local-archive",
+    "claim": "Exports, erases, and restores the complete local JSON archive.",
+    "where": "local data section, settings, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:local-archive",
+    "sandbox": "fresh /demo; export JSON; erase demo archive; restore downloaded file; assert sample returns"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "Works offline after the first visit.",
+    "where": "first-screen facts, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:offline-reload",
+    "sandbox": "fresh /demo on isolated service-worker origin; wait for control; go offline; reload; assert sample board and offline status"
+  },
+  {
+    "id": "pattern-deck",
+    "claim": "The optional $18 one-time Pattern Deck saves reusable blocks and copies the previous week; core tools remain free.",
+    "where": "first-screen facts, paid section, README",
+    "test": "npm run test:e2e -- --project=chromium --grep @claim:pattern-deck",
+    "sandbox": "fresh /demo with paid preview enabled; save a pattern; clone three prior blocks; assert current count and price/free-tier copy"
+  }
+]

@@ -1,19 +1,23 @@
 # Backfill Timecards
 
-Backfill Timecards is a private, offline-first weekly board for freelancers who reconstruct work after the fact. It turns memory and selectively imported calendar events into clear client/project time blocks and an invoice-ready CSV—without surveillance, timers, accounts, or cloud storage.
+Backfill Timecards is a private weekly board for freelancers who reconstruct work after the fact. It turns memory and reviewed calendar events into clear work blocks and an invoice-ready CSV.
 
 Live product: <https://backfill-timecards.sociobot.in>
+
+Try the isolated sample week: <https://backfill-timecards.sociobot.in/demo>
 
 ## What it does
 
 - Adds, edits, copies, and deletes source-labelled work blocks across a seven-day board.
-- Imports `.ics` calendar files locally, with event-by-event selection, optional descriptions, and an explicit billable choice that defaults off.
-- Expands bounded daily/weekly recurring events for review; open-ended or unsupported recurrence rules are rejected with export guidance rather than silently undercounted.
+- Imports `.ics` calendar files locally, with event selection, optional descriptions, and an explicit billable choice that defaults off.
+- Reviews bounded daily or weekly recurring events and overnight events before import.
 - Remembers project→client mappings to speed up repeat entry.
 - Exports the selected week as invoice-ready CSV.
 - Exports, restores, and erases a complete local JSON archive.
 - Installs as a PWA and works offline after the first visit.
 - Offers an optional $18 one-time Pattern Deck unlock for saved patterns and previous-week cloning. Checkout and license verification use Sociobot billing; no payment provider is embedded.
+
+Every visitor-facing claim has a browser test in [`.factory/claims.json`](.factory/claims.json). All claim tests start at `/demo`, where realistic sample records use the separate `demo:backfill-timecards` IndexedDB database. **Reset demo** restores the sample, and **Start for real** clears it before opening the normal workspace. See [`.factory/demo.md`](.factory/demo.md).
 
 All timecard data lives in IndexedDB on the current device. A purchased license token is kept in localStorage. See [`/privacy`](public/privacy/index.html) and [`/terms`](public/terms/index.html).
 
@@ -58,6 +62,8 @@ Deploy the contents of `dist/` as a static site, with `index.html` at its root. 
 - Scope and research: [`.factory/brief.json`](.factory/brief.json)
 - Visual system and generated-art provenance: [`.factory/design.md`](.factory/design.md)
 - Build verification and known gaps: [`.factory/handoff.md`](.factory/handoff.md)
+- Claim registry: [`.factory/claims.json`](.factory/claims.json)
+- Demo sandbox: [`.factory/demo.md`](.factory/demo.md)
 
 ## License
 

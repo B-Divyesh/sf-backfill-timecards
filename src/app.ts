@@ -1,12 +1,44 @@
 import { downloadText, entriesToCsv } from "./csv";
 import { addDays, entryMinutes, formatDuration, formatWeekRange, fromIso, weekDates, weekStart } from "./dates";
-import { store } from "./db";
+import { demoStore, store, type TimecardStore } from "./db";
 import { parseIcs } from "./ics";
 import { checkoutUrl, initialLicenseState, saveLicense, verifyLicense, type LicenseState } from "./license";
 import type { AppBackup, CalendarEvent, Pattern, ProjectMapping, TimeEntry } from "./types";
 
 const escapeHtml = (value: string) => value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character] || character);
 const uid = () => crypto.randomUUID();
+
+function sampleBackup(): AppBackup {
+  const monday = weekStart();
+  const previousMonday = addDays(monday, -7);
+  const now = Date.now();
+  const makeEntry = (id: string, date: string, start: string, end: string, client: string, project: string, description: string, billable: boolean, source: TimeEntry["source"]): TimeEntry => ({
+    id, date, start, end, client, project, description, billable, source, createdAt: now, updatedAt: now,
+  });
+  return {
+    version: 1,
+    exportedAt: new Date(now).toISOString(),
+    entries: [
+      makeEntry("demo-current-1", monday, "09:00", "10:30", "Redwood Studio", "Website refresh", "Plan the website sprint", true, "manual"),
+      makeEntry("demo-current-2", monday, "11:00", "12:00", "Northstar Press", "Book launch", "Review launch copy", true, "calendar"),
+      makeEntry("demo-current-3", addDays(monday, 1), "09:30", "12:00", "Redwood Studio", "Website refresh", "Build the checkout flow", true, "pattern"),
+      makeEntry("demo-current-4", addDays(monday, 2), "13:00", "14:30", "Northstar Press", "Book launch", "Run the client workshop", true, "calendar"),
+      makeEntry("demo-current-5", addDays(monday, 3), "10:00", "12:00", "Redwood Studio", "Website refresh", "Test the mobile release", true, "manual"),
+      makeEntry("demo-current-6", addDays(monday, 4), "15:00", "16:00", "", "Admin", "Prepare August invoices", false, "manual"),
+      makeEntry("demo-previous-1", previousMonday, "09:00", "10:30", "Redwood Studio", "Website refresh", "Plan the website sprint", true, "manual"),
+      makeEntry("demo-previous-2", addDays(previousMonday, 1), "09:30", "12:00", "Redwood Studio", "Website refresh", "Build the checkout flow", true, "manual"),
+      makeEntry("demo-previous-3", addDays(previousMonday, 3), "13:00", "14:30", "Northstar Press", "Book launch", "Run the client workshop", true, "calendar"),
+    ],
+    mappings: [
+      { project: "Website refresh", client: "Redwood Studio", updatedAt: now },
+      { project: "Book launch", client: "Northstar Press", updatedAt: now },
+    ],
+    patterns: [{
+      id: "demo-pattern-1", title: "Weekly planning", start: "09:00", end: "10:30", project: "Website refresh",
+      client: "Redwood Studio", description: "Plan the website sprint", billable: true, updatedAt: now,
+    }],
+  };
+}
 
 function dateLabel(value: string): { weekday: string; date: string } {
   const date = fromIso(value);
@@ -21,10 +53,17 @@ export class App {
   private mappings: ProjectMapping[] = [];
   private patterns: Pattern[] = [];
   private currentWeek = weekStart();
-  private license: LicenseState = initialLicenseState();
+  private license: LicenseState;
+  private readonly demoMode: boolean;
+  private readonly dataStore: TimecardStore;
   private toastTimer = 0;
 
-  constructor(private readonly root: HTMLElement) {}
+  constructor(private readonly root: HTMLElement) {
+    const url = new URL(location.href);
+    this.demoMode = url.pathname === "/demo" || url.pathname === "/demo/" || url.searchParams.get("demo") === "1";
+    this.dataStore = this.demoMode ? demoStore : store;
+    this.license = this.demoMode ? { unlocked: true, checking: false, notice: "" } : initialLicenseState();
+  }
 
   async start(): Promise<void> {
     // index.html supplies an inert, geometry-matched empty board. Keeping it
@@ -32,8 +71,10 @@ export class App {
     // with the full board after FCP (a mobile CLS source under CPU throttling).
     this.bindGlobalEvents();
     this.registerServiceWorker();
-    [this.entries, this.mappings, this.patterns] = await Promise.all([store.entries(), store.mappings(), store.patterns()]);
-    const hasLicense = Boolean(localStorage.getItem("sb_license:backfill-timecards"));
+    if (this.demoMode && (await this.dataStore.entries()).length === 0) await this.dataStore.importAll(sampleBackup());
+    [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
+    const hasLicense = !this.demoMode && Boolean(localStorage.getItem("sb_license:backfill-timecards"));
+    document.title = this.demoMode ? "Demo — Backfill Timecards" : "Backfill Timecards — reconstruct your workweek";
     if (this.entries.length === 0 && !hasLicense) this.hydrateEmptyShell();
     else this.render();
     if (hasLicense) {
@@ -85,9 +126,28 @@ export class App {
       if (action === "patterns") this.openPatternsDialog();
       if (action === "export-csv") this.exportCsv();
       if (action === "settings") this.openSettingsDialog();
+      if (action === "try-demo") location.assign("/demo");
+      if (action === "reset-demo") void this.resetDemo();
+      if (action === "start-real") { event.preventDefault(); void this.startForReal(target); }
     });
     window.addEventListener("online", () => { this.render(); this.showToast("Back online. Your local work was always available."); });
     window.addEventListener("offline", () => { this.render(); this.showToast("Offline. You can keep working; changes stay on this device."); });
+  }
+
+  private async resetDemo(): Promise<void> {
+    if (!this.demoMode) return;
+    await this.dataStore.clearAll();
+    await this.dataStore.importAll(sampleBackup());
+    [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
+    this.currentWeek = weekStart();
+    this.render();
+    this.showToast("Demo reset to the original sample week.");
+  }
+
+  private async startForReal(target: HTMLElement): Promise<void> {
+    if (!this.demoMode) return;
+    await this.dataStore.clearAll();
+    location.assign(target.closest<HTMLAnchorElement>("a")?.href || "/");
   }
 
   private changeWeek(days: number): void {
@@ -103,11 +163,13 @@ export class App {
     const clients = new Set(entries.map((entry) => entry.client.trim()).filter(Boolean)).size;
     const isCurrentWeek = this.currentWeek === weekStart();
     const offline = !navigator.onLine;
+    const leaveDemo = this.demoMode ? 'data-action="start-real"' : "";
 
     this.root.removeAttribute("aria-busy");
     this.root.innerHTML = `
+      ${this.demoMode ? `<aside class="demo-banner" aria-label="Demo mode"><strong>Demo — sample data, nothing is saved</strong><span>Use the sample without changing your real timecard.</span><div><button type="button" data-action="reset-demo">Reset demo</button><a class="button-link" href="/" data-action="start-real">Start for real</a></div></aside>` : ""}
       <header class="site-header">
-        <a class="brand" href="/" aria-label="Backfill Timecards home">
+        <a class="brand" href="/" ${leaveDemo} aria-label="Backfill Timecards home">
           <img src="/icons/icon.svg" width="40" height="40" alt="" />
           <span>Backfill<br>Timecards</span>
         </a>
@@ -116,12 +178,18 @@ export class App {
           <button class="icon-button" type="button" data-action="settings" aria-label="Open data and license settings" title="Data and license settings">☰</button>
         </div>
       </header>
-      <main id="main">
+      <main id="main" tabindex="-1">
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
-            <p class="eyebrow">WEEKLY RECONSTRUCTION · SIDE A</p>
-            <h1 id="hero-title">Rebuild the week.<br><span>Keep the receipts.</span></h1>
-            <p class="lede">Turn calendar fragments and honest memory into an invoice-ready timecard. No timers. No surveillance. Nothing leaves this device.</p>
+            <p class="eyebrow">PRIVATE WEEKLY TIMECARDS</p>
+            <h1 id="hero-title">Reconstruct your <span>freelance workweek</span></h1>
+            <p class="lede">For freelancers logging work after the fact, turn calendar clues and memory into a timecard ready for invoicing.</p>
+            <div class="hero-actions">
+              ${this.demoMode
+                ? '<button type="button" class="primary-button" data-action="add">Add a work block</button><button type="button" data-action="reset-demo">Reset sample data</button><p>Six sample blocks and the paid Pattern Deck preview are ready to use.</p>'
+                : '<button type="button" class="primary-button" data-action="try-demo">Try it with sample data</button><button type="button" data-action="add">Add your own work</button><p>The sample opens a separate timecard without changing your work.</p>'}
+            </div>
+            <ul class="hero-facts" aria-label="Product facts"><li>Timecards stay on this device.</li><li>Works offline after the first visit.</li><li>The core workspace is free. Pattern Deck costs $18 once.</li></ul>
           </div>
           <figure class="hero-art">
             <picture>
@@ -129,14 +197,14 @@ export class App {
               <source type="image/webp" srcset="/assets/hero-cassette-640.webp 640w, /assets/hero-cassette-1024.webp 1024w" sizes="(max-width: 820px) 92vw, 38vw" />
               <img src="/assets/hero-cassette-640.webp" width="640" height="427" fetchpriority="high" decoding="async" alt="A collage of a cassette insert arranged as seven blank timecard tracks with pencil marks and calendar scraps" />
             </picture>
-            <figcaption>Reconstruction, not automatic inference.</figcaption>
+            <figcaption>You choose every work block.</figcaption>
           </figure>
         </section>
 
         <section class="workspace" aria-labelledby="week-heading">
           <div class="week-bar">
             <div>
-              <p class="eyebrow">YOUR WORK TAPE</p>
+              <p class="eyebrow">WEEKLY BOARD</p>
               <h2 id="week-heading" tabindex="-1">${formatWeekRange(this.currentWeek)}</h2>
             </div>
             <nav class="week-nav" aria-label="Choose week">
@@ -162,16 +230,25 @@ export class App {
 
           ${entries.length ? this.renderDays(entries) : this.renderEmptyState()}
         </section>
+        <section class="how-it-works" aria-labelledby="how-heading">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2 id="how-heading">Review your week in three steps</h2>
+          <ol><li><strong>Gather calendar clues.</strong><span>Import an .ics file and choose only useful events.</span></li><li><strong>Record and correct work.</strong><span>Add details, clients, and billable choices yourself.</span></li><li><strong>Export the week.</strong><span>Download an invoice-ready CSV when every row looks right.</span></li></ol>
+        </section>
         <section class="privacy-note" aria-labelledby="privacy-note-heading">
           <p class="registration" aria-hidden="true">＋</p>
-          <div><p class="eyebrow">PRIVATE BY CONSTRUCTION</p><h2 id="privacy-note-heading">Your week stays in your browser.</h2></div>
-          <p>Calendar files are read locally. We run no analytics and have no account database. Export or erase everything whenever you want.</p>
+          <div><p class="eyebrow">LOCAL DATA</p><h2 id="privacy-note-heading">Your week stays in this browser.</h2></div>
+          <p>Calendar files are read here, not uploaded. No account is required. Export, restore, or erase your archive whenever you want.</p>
           <button type="button" data-action="settings">Manage local data</button>
+        </section>
+        <section class="paid-note" aria-labelledby="paid-heading">
+          <div><p class="eyebrow">OPTIONAL ONE-TIME PURCHASE</p><h2 id="paid-heading">Reuse common work with Pattern Deck</h2><p>Pattern Deck costs $18 once. It saves reusable blocks and copies a previous week into matching days.</p><p>The weekly board, calendar import, CSV export, backups, and privacy controls remain free.</p></div>
+          <button type="button" class="primary-button" data-action="patterns">${this.demoMode ? "Try Pattern Deck" : "See the $18 Pattern Deck"}</button>
         </section>
       </main>
       <footer>
-        <p>Backfill Timecards · Built for honest hindsight</p>
-        <nav aria-label="Legal and product links"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://sociobot.in">Param Factory</a></nav>
+        <p>Private weekly timecards for freelancers.</p>
+        <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Param Factory</a></nav>
         <p class="generated-note">Editorial artwork generated for this product with Azure AI Foundry.</p>
       </footer>
       <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>`;
@@ -182,7 +259,7 @@ export class App {
       <div class="empty-state">
         <div class="empty-tape" aria-hidden="true"><span></span><span></span></div>
         <div>
-          <p class="eyebrow">BLANK SIDE</p>
+          <p class="eyebrow">EMPTY WEEK</p>
           <h3>No work blocks yet</h3>
           <p>Start from one thing you remember, or bring in a calendar file and choose only the events you want.</p>
           <div class="empty-actions"><button type="button" class="primary-button" data-action="add">Add the first block</button><button type="button" data-action="calendar">Review a calendar file</button></div>
@@ -231,7 +308,7 @@ export class App {
     if (!original) return;
     const now = Date.now();
     const copy: TimeEntry = { ...original, id: uid(), source: "pattern", createdAt: now, updatedAt: now };
-    await store.saveEntry(copy);
+    await this.dataStore.saveEntry(copy);
     this.entries.push(copy);
     this.render();
     this.showToast(`Copied “${copy.description}”.`);
@@ -240,11 +317,11 @@ export class App {
   private async deleteEntry(id: string): Promise<void> {
     const entry = this.entries.find((item) => item.id === id);
     if (!entry || !confirm(`Delete “${entry.description}” from ${entry.date}?`)) return;
-    await store.deleteEntry(id);
+    await this.dataStore.deleteEntry(id);
     this.entries = this.entries.filter((item) => item.id !== id);
     this.render();
     this.showToast(`Deleted “${entry.description}”.`, "Undo", async () => {
-      await store.saveEntry(entry);
+      await this.dataStore.saveEntry(entry);
       this.entries.push(entry);
       this.render();
       this.showToast("Work block restored.");
@@ -304,10 +381,10 @@ export class App {
         updatedAt: now,
         endsNextDay,
       };
-      await store.saveEntry(saved);
+      await this.dataStore.saveEntry(saved);
       if (saved.project && saved.client) {
         const mapping = { project: saved.project, client: saved.client, updatedAt: now };
-        await store.saveMapping(mapping);
+        await this.dataStore.saveMapping(mapping);
         this.mappings = this.mappings.filter((item) => item.project !== mapping.project).concat(mapping);
       }
       this.entries = this.entries.filter((item) => item.id !== saved.id).concat(saved);
@@ -381,10 +458,10 @@ export class App {
           billable, source: "calendar" as const, createdAt: now, updatedAt: now,
         };
       });
-      await Promise.all(additions.map((entry) => store.saveEntry(entry)));
+      await Promise.all(additions.map((entry) => this.dataStore.saveEntry(entry)));
       if (project.value.trim() && client.value.trim()) {
         const mapping = { project: project.value.trim(), client: client.value.trim(), updatedAt: now };
-        await store.saveMapping(mapping);
+        await this.dataStore.saveMapping(mapping);
         this.mappings = this.mappings.filter((item) => item.project !== mapping.project).concat(mapping);
       }
       this.entries.push(...additions);
@@ -414,7 +491,7 @@ export class App {
     dialog.querySelector("#clone-week")?.addEventListener("click", async () => {
       const now = Date.now();
       const additions = previousEntries.map((entry) => ({ ...entry, id: uid(), date: addDays(entry.date, 7), source: "pattern" as const, createdAt: now, updatedAt: now }));
-      await Promise.all(additions.map((entry) => store.saveEntry(entry)));
+      await Promise.all(additions.map((entry) => this.dataStore.saveEntry(entry)));
       this.entries.push(...additions);
       dialog.close(); this.render(); this.showToast(`Cloned ${additions.length} blocks. Review them before exporting.`);
     });
@@ -427,7 +504,7 @@ export class App {
     dialog.querySelectorAll<HTMLElement>("[data-delete-pattern]").forEach((button) => button.addEventListener("click", async () => {
       const pattern = this.patterns.find((item) => item.id === button.dataset.deletePattern);
       if (!pattern || !confirm(`Delete the “${pattern.title}” pattern?`)) return;
-      await store.deletePattern(pattern.id);
+      await this.dataStore.deletePattern(pattern.id);
       this.patterns = this.patterns.filter((item) => item.id !== pattern.id);
       dialog.close(); this.openPatternsDialog();
     }));
@@ -439,7 +516,7 @@ export class App {
     if (!entry) return;
     const existing = this.patterns.find((item) => item.title === entry.description && item.project === entry.project);
     const pattern: Pattern = { id: existing?.id || uid(), title: entry.description, start: entry.start, end: entry.end, project: entry.project, client: entry.client, description: entry.description, billable: entry.billable, updatedAt: Date.now(), endsNextDay: entry.endsNextDay };
-    await store.savePattern(pattern);
+    await this.dataStore.savePattern(pattern);
     this.patterns = this.patterns.filter((item) => item.id !== pattern.id).concat(pattern);
     this.showToast(`Saved “${pattern.title}” to the pattern deck.`);
   }
@@ -477,11 +554,11 @@ export class App {
         <div class="settings-actions"><button id="backup-data" type="button">Export JSON backup</button><label class="button-file">Import JSON backup<input id="restore-data" type="file" accept="application/json,.json" /></label><button id="erase-data" type="button" class="danger-button">Erase all local data</button></div>
         <p id="settings-status" role="status" aria-live="polite"></p>
         <hr />
-        <div class="license-row"><div><h3>Pattern deck</h3><p>${this.license.unlocked ? "One-time license active on this device." : "Free workspace · one-time pattern unlock available."}</p></div><button id="manage-license" type="button">${this.license.unlocked ? "Recheck license" : "See $18 unlock"}</button></div>
+        <div class="license-row"><div><h3>Pattern Deck</h3><p>${this.demoMode ? "The paid features are available only for this demo." : this.license.unlocked ? "One-time license active on this device." : "Free workspace · one-time Pattern Deck purchase available."}</p></div><button id="manage-license" type="button" ${this.demoMode ? "disabled" : ""}>${this.demoMode ? "Demo preview active" : this.license.unlocked ? "Recheck license" : "See $18 Pattern Deck"}</button></div>
       </div>`);
     const status = dialog.querySelector<HTMLElement>("#settings-status")!;
     dialog.querySelector("#backup-data")!.addEventListener("click", async () => {
-      downloadText(`backfill-timecards-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(await store.exportAll(), null, 2), "application/json");
+      downloadText(`backfill-timecards-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(await this.dataStore.exportAll(), null, 2), "application/json");
       status.textContent = "Backup downloaded.";
     });
     dialog.querySelector<HTMLInputElement>("#restore-data")!.addEventListener("change", async (event) => {
@@ -490,17 +567,18 @@ export class App {
       try {
         const backup = JSON.parse(await file.text()) as AppBackup;
         if (!confirm(`Replace current local data with the backup from ${backup.exportedAt || "this file"}?`)) return;
-        await store.importAll(backup);
-        [this.entries, this.mappings, this.patterns] = await Promise.all([store.entries(), store.mappings(), store.patterns()]);
+        await this.dataStore.importAll(backup);
+        [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
         dialog.close(); this.render(); this.showToast("Local backup restored.");
       } catch (error) { status.textContent = error instanceof Error ? error.message : "The backup could not be imported."; }
     });
     dialog.querySelector("#erase-data")!.addEventListener("click", async () => {
       if (!confirm(`Erase all ${this.entries.length} work blocks, project mappings, and saved patterns from this browser? This cannot be undone.`)) return;
-      await store.clearAll(); this.entries = []; this.mappings = []; this.patterns = [];
+      await this.dataStore.clearAll(); this.entries = []; this.mappings = []; this.patterns = [];
       dialog.close(); this.render(); this.showToast("All local timecard data erased.");
     });
     dialog.querySelector("#manage-license")!.addEventListener("click", async () => {
+      if (this.demoMode) return;
       if (this.license.unlocked) {
         status.textContent = "Checking license…";
         this.license = await verifyLicense(true);

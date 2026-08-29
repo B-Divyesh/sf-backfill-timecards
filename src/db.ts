@@ -1,6 +1,7 @@
 import type { AppBackup, Pattern, ProjectMapping, TimeEntry } from "./types";
 
 const DB_NAME = "backfill-timecards";
+export const DEMO_DB_NAME = "demo:backfill-timecards";
 const DB_VERSION = 1;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
@@ -68,9 +69,9 @@ export function validateBackup(value: unknown): asserts value is AppBackup {
   if (invalidPattern >= 0) throw new Error(`Backup pattern ${invalidPattern + 1} is incomplete or invalid. Nothing was changed.`);
 }
 
-function openDb(): Promise<IDBDatabase> {
+function openDb(dbName: string): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(dbName, DB_VERSION);
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains("entries")) db.createObjectStore("entries", { keyPath: "id" });
@@ -82,27 +83,27 @@ function openDb(): Promise<IDBDatabase> {
   });
 }
 
-async function all<T>(storeName: string): Promise<T[]> {
-  const db = await openDb();
+async function all<T>(dbName: string, storeName: string): Promise<T[]> {
+  const db = await openDb(dbName);
   return new Promise((resolve, reject) => {
     const request = db.transaction(storeName).objectStore(storeName).getAll();
-    request.onsuccess = () => resolve(request.result as T[]);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { db.close(); resolve(request.result as T[]); };
+    request.onerror = () => { db.close(); reject(request.error); };
   });
 }
 
-async function put<T>(storeName: string, value: T): Promise<void> {
-  const db = await openDb();
+async function put<T>(dbName: string, storeName: string, value: T): Promise<void> {
+  const db = await openDb(dbName);
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, "readwrite");
     transaction.objectStore(storeName).put(value);
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
+    transaction.oncomplete = () => { db.close(); resolve(); };
+    transaction.onerror = () => { db.close(); reject(transaction.error); };
   });
 }
 
-async function replaceAll(backup: AppBackup): Promise<void> {
-  const db = await openDb();
+async function replaceAll(dbName: string, backup: AppBackup): Promise<void> {
+  const db = await openDb(dbName);
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(["entries", "mappings", "patterns"], "readwrite");
     transaction.objectStore("entries").clear();
@@ -111,53 +112,60 @@ async function replaceAll(backup: AppBackup): Promise<void> {
     backup.entries.forEach((entry) => transaction.objectStore("entries").put(entry));
     backup.mappings.forEach((mapping) => transaction.objectStore("mappings").put(mapping));
     backup.patterns.forEach((pattern) => transaction.objectStore("patterns").put(pattern));
-    transaction.oncomplete = () => resolve();
-    transaction.onabort = () => reject(transaction.error || new Error("The backup could not be saved."));
-    transaction.onerror = () => reject(transaction.error || new Error("The backup could not be saved."));
+    transaction.oncomplete = () => { db.close(); resolve(); };
+    transaction.onabort = () => { db.close(); reject(transaction.error || new Error("The backup could not be saved.")); };
+    transaction.onerror = () => { db.close(); reject(transaction.error || new Error("The backup could not be saved.")); };
   });
 }
 
-async function remove(storeName: string, key: IDBValidKey): Promise<void> {
-  const db = await openDb();
+async function remove(dbName: string, storeName: string, key: IDBValidKey): Promise<void> {
+  const db = await openDb(dbName);
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(storeName, "readwrite");
     transaction.objectStore(storeName).delete(key);
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
+    transaction.oncomplete = () => { db.close(); resolve(); };
+    transaction.onerror = () => { db.close(); reject(transaction.error); };
   });
 }
 
-export const store = {
+export type TimecardStore = ReturnType<typeof createStore>;
+
+export function createStore(dbName: string) {
+  return {
   // Filter data written by an older broken build. The settings screen remains
   // usable so the owner can export valid records or erase the damaged store.
-  entries: async () => (await all<unknown>("entries")).filter(isTimeEntry),
-  mappings: async () => (await all<unknown>("mappings")).filter(isMapping),
-  patterns: async () => (await all<unknown>("patterns")).filter(isPattern),
-  saveEntry: (value: TimeEntry) => put("entries", value),
-  saveMapping: (value: ProjectMapping) => put("mappings", value),
-  savePattern: (value: Pattern) => put("patterns", value),
-  deleteEntry: (id: string) => remove("entries", id),
-  deletePattern: (id: string) => remove("patterns", id),
-  async exportAll(): Promise<AppBackup> {
-    return {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      entries: (await all<unknown>("entries")).filter(isTimeEntry),
-      mappings: (await all<unknown>("mappings")).filter(isMapping),
-      patterns: (await all<unknown>("patterns")).filter(isPattern),
-    } as AppBackup;
-  },
-  async importAll(backup: AppBackup): Promise<void> {
-    validateBackup(backup);
-    await replaceAll(backup);
-  },
-  async clearAll(): Promise<void> {
-    const db = await openDb();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(["entries", "mappings", "patterns"], "readwrite");
-      ["entries", "mappings", "patterns"].forEach((name) => transaction.objectStore(name).clear());
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
-    });
-  },
-};
+    entries: async () => (await all<unknown>(dbName, "entries")).filter(isTimeEntry),
+    mappings: async () => (await all<unknown>(dbName, "mappings")).filter(isMapping),
+    patterns: async () => (await all<unknown>(dbName, "patterns")).filter(isPattern),
+    saveEntry: (value: TimeEntry) => put(dbName, "entries", value),
+    saveMapping: (value: ProjectMapping) => put(dbName, "mappings", value),
+    savePattern: (value: Pattern) => put(dbName, "patterns", value),
+    deleteEntry: (id: string) => remove(dbName, "entries", id),
+    deletePattern: (id: string) => remove(dbName, "patterns", id),
+    async exportAll(): Promise<AppBackup> {
+      return {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        entries: (await all<unknown>(dbName, "entries")).filter(isTimeEntry),
+        mappings: (await all<unknown>(dbName, "mappings")).filter(isMapping),
+        patterns: (await all<unknown>(dbName, "patterns")).filter(isPattern),
+      } as AppBackup;
+    },
+    async importAll(backup: AppBackup): Promise<void> {
+      validateBackup(backup);
+      await replaceAll(dbName, backup);
+    },
+    async clearAll(): Promise<void> {
+      const db = await openDb(dbName);
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(["entries", "mappings", "patterns"], "readwrite");
+        ["entries", "mappings", "patterns"].forEach((name) => transaction.objectStore(name).clear());
+        transaction.oncomplete = () => { db.close(); resolve(); };
+        transaction.onerror = () => { db.close(); reject(transaction.error); };
+      });
+    },
+  };
+}
+
+export const store = createStore(DB_NAME);
+export const demoStore = createStore(DEMO_DB_NAME);
