@@ -1,0 +1,68 @@
+{
+  "origin": "https://backfill-timecards.sociobot.in",
+  "routes": {
+    "root": {
+      "status": 200,
+      "title": "Backfill Timecards — reconstruct your workweek",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "privacy": {
+      "status": 200,
+      "title": "Privacy — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "terms": {
+      "status": 200,
+      "title": "Terms — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "missing-round-three": {
+      "status": 404,
+      "title": "Page not found — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "seriousOrCritical": [],
+      "errors": []
+    }
+  },
+  "findings": {
+    "demo": {
+      "factsInFirstViewport": true,
+      "visibleSampleRows": 6,
+      "firstTrackY": 751.21875,
+      "banner": true,
+      "reset": true,
+      "startForReal": true,
+      "backFocusesH1": true
+    },
+    "queryDemo": {
+      "title": "Demo — Backfill Timecards",
+      "sampleRows": 6,
+      "banner": true
+    },
+    "copy": {
+      "descriptiveUnlockHeading": true,
+      "noUnlimitedPromise": true,
+      "noMerchantRolePromise": true,
+      "noAccountDatabasePromise": true
+    },
+    "offline": {
+      "sampleRows": 6,
+      "offlineStatus": true
+    }
+  },
+  "errors": []
+}
