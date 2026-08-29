@@ -7,6 +7,7 @@ import type { AppBackup, CalendarEvent, Pattern, ProjectMapping, TimeEntry } fro
 
 const escapeHtml = (value: string) => value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character] || character);
 const uid = () => crypto.randomUUID();
+const DEMO_SESSION_KEY = "backfill-timecards:demo-active";
 
 function sampleBackup(): AppBackup {
   const monday = weekStart();
@@ -63,6 +64,7 @@ export class App {
     this.demoMode = url.pathname === "/demo" || url.pathname === "/demo/" || url.searchParams.get("demo") === "1";
     this.dataStore = this.demoMode ? demoStore : store;
     this.license = this.demoMode ? { unlocked: true, checking: false, notice: "" } : initialLicenseState();
+    if (this.demoMode) sessionStorage.setItem(DEMO_SESSION_KEY, "1");
   }
 
   async start(): Promise<void> {
@@ -71,7 +73,12 @@ export class App {
     // with the full board after FCP (a mobile CLS source under CPU throttling).
     this.bindGlobalEvents();
     this.registerServiceWorker();
-    if (this.demoMode && (await this.dataStore.entries()).length === 0) await this.dataStore.importAll(sampleBackup());
+    if (this.demoMode) {
+      await this.dataStore.clearAll();
+      await this.dataStore.importAll(sampleBackup());
+    } else if (sessionStorage.getItem(DEMO_SESSION_KEY)) {
+      await this.discardDemoData();
+    }
     [this.entries, this.mappings, this.patterns] = await Promise.all([this.dataStore.entries(), this.dataStore.mappings(), this.dataStore.patterns()]);
     const hasLicense = !this.demoMode && Boolean(localStorage.getItem("sb_license:backfill-timecards"));
     document.title = this.demoMode ? "Demo — Backfill Timecards" : "Backfill Timecards — reconstruct your workweek";
@@ -132,6 +139,8 @@ export class App {
     });
     window.addEventListener("online", () => { this.render(); this.showToast("Back online. Your local work was always available."); });
     window.addEventListener("offline", () => { this.render(); this.showToast("Offline. You can keep working; changes stay on this device."); });
+    window.addEventListener("pageshow", () => { if (!this.demoMode && sessionStorage.getItem(DEMO_SESSION_KEY)) void this.discardDemoData(); });
+    window.addEventListener("pagehide", () => { if (this.demoMode) void this.dataStore.clearAll(); });
   }
 
   private async resetDemo(): Promise<void> {
@@ -146,8 +155,13 @@ export class App {
 
   private async startForReal(target: HTMLElement): Promise<void> {
     if (!this.demoMode) return;
-    await this.dataStore.clearAll();
+    await this.discardDemoData();
     location.assign(target.closest<HTMLAnchorElement>("a")?.href || "/");
+  }
+
+  private async discardDemoData(): Promise<void> {
+    await demoStore.clearAll();
+    sessionStorage.removeItem(DEMO_SESSION_KEY);
   }
 
   private changeWeek(days: number): void {

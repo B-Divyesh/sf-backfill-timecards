@@ -9,6 +9,6 @@ Demo records use the IndexedDB database `demo:backfill-timecards`. Normal work u
 - **Reset demo** clears the demo database and restores the shipped sample.
 - **Start for real** clears the demo database before returning to the normal workspace.
 - Demo links that leave for Privacy, Terms, the home page, or Param Factory also clear demo records first.
-- Reloading while still in the demo keeps demo changes. The sample and demo route remain available offline after the service worker controls the page.
+- Reloading the demo restores the original sample. The sample and demo route remain available offline after the service worker controls the page.
 
 Claim tests always open `/demo` in a fresh Playwright browser context. See `.factory/claims.json` for the exact command and observable assertions for each claim.
