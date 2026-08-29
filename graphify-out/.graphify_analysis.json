@@ -10,9 +10,12 @@
       "src_csv_entriestocsv",
       "src_csv_quote",
       "src_dates",
+      "src_dates_adddays",
       "src_dates_dateonly",
       "src_dates_entryminutes",
       "src_dates_formatduration",
+      "src_dates_formatweekrange",
+      "src_dates_fromiso",
       "src_dates_isodate",
       "src_dates_minutesbetween",
       "src_dates_weekdates",
@@ -49,6 +52,46 @@
       "tests_core_test"
     ],
     "1": [
+      "factory_qa_artifacts_live_index_a",
+      "factory_qa_artifacts_live_index_e",
+      "factory_qa_artifacts_live_index_i",
+      "factory_qa_artifacts_live_index_ie",
+      "factory_qa_artifacts_live_index_je",
+      "factory_qa_artifacts_live_index_l",
+      "factory_qa_artifacts_live_index_n",
+      "factory_qa_artifacts_live_index_p",
+      "factory_qa_artifacts_live_index_pe",
+      "factory_qa_artifacts_live_index_pe_bindglobalevents",
+      "factory_qa_artifacts_live_index_pe_changeweek",
+      "factory_qa_artifacts_live_index_pe_deleteentry",
+      "factory_qa_artifacts_live_index_pe_discarddemodata",
+      "factory_qa_artifacts_live_index_pe_duplicateentry",
+      "factory_qa_artifacts_live_index_pe_exportcsv",
+      "factory_qa_artifacts_live_index_pe_hydrateemptyshell",
+      "factory_qa_artifacts_live_index_pe_makedialog",
+      "factory_qa_artifacts_live_index_pe_opencalendardialog",
+      "factory_qa_artifacts_live_index_pe_openentrydialog",
+      "factory_qa_artifacts_live_index_pe_openpatternsdialog",
+      "factory_qa_artifacts_live_index_pe_opensettingsdialog",
+      "factory_qa_artifacts_live_index_pe_openunlockdialog",
+      "factory_qa_artifacts_live_index_pe_registerserviceworker",
+      "factory_qa_artifacts_live_index_pe_render",
+      "factory_qa_artifacts_live_index_pe_rendercalendarreview",
+      "factory_qa_artifacts_live_index_pe_renderdays",
+      "factory_qa_artifacts_live_index_pe_renderemptystate",
+      "factory_qa_artifacts_live_index_pe_renderentry",
+      "factory_qa_artifacts_live_index_pe_resetdemo",
+      "factory_qa_artifacts_live_index_pe_saveentryaspattern",
+      "factory_qa_artifacts_live_index_pe_showtoast",
+      "factory_qa_artifacts_live_index_pe_start",
+      "factory_qa_artifacts_live_index_pe_startforreal",
+      "factory_qa_artifacts_live_index_pe_weekentries",
+      "factory_qa_artifacts_live_index_t",
+      "factory_qa_artifacts_live_index_x",
+      "factory_qa_artifacts_live_index_y",
+      "factory_qa_artifacts_live_index_z"
+    ],
+    "2": [
       "src_app_app",
       "src_app_app_bindglobalevents",
       "src_app_app_changeweek",
@@ -83,50 +126,9 @@
       "src_app_samplebackup",
       "src_app_uid",
       "src_csv_downloadtext",
-      "src_dates_adddays",
-      "src_dates_formatweekrange",
-      "src_dates_fromiso",
       "src_dates_weekstart",
       "src_db_clearlegacydemodatabase",
       "src_license_verifylicense"
-    ],
-    "2": [
-      "factory_qa_artifacts_live_index_a",
-      "factory_qa_artifacts_live_index_i",
-      "factory_qa_artifacts_live_index_ie",
-      "factory_qa_artifacts_live_index_je",
-      "factory_qa_artifacts_live_index_l",
-      "factory_qa_artifacts_live_index_n",
-      "factory_qa_artifacts_live_index_p",
-      "factory_qa_artifacts_live_index_pe",
-      "factory_qa_artifacts_live_index_pe_bindglobalevents",
-      "factory_qa_artifacts_live_index_pe_changeweek",
-      "factory_qa_artifacts_live_index_pe_deleteentry",
-      "factory_qa_artifacts_live_index_pe_discarddemodata",
-      "factory_qa_artifacts_live_index_pe_duplicateentry",
-      "factory_qa_artifacts_live_index_pe_exportcsv",
-      "factory_qa_artifacts_live_index_pe_hydrateemptyshell",
-      "factory_qa_artifacts_live_index_pe_makedialog",
-      "factory_qa_artifacts_live_index_pe_opencalendardialog",
-      "factory_qa_artifacts_live_index_pe_openentrydialog",
-      "factory_qa_artifacts_live_index_pe_openpatternsdialog",
-      "factory_qa_artifacts_live_index_pe_opensettingsdialog",
-      "factory_qa_artifacts_live_index_pe_openunlockdialog",
-      "factory_qa_artifacts_live_index_pe_registerserviceworker",
-      "factory_qa_artifacts_live_index_pe_render",
-      "factory_qa_artifacts_live_index_pe_rendercalendarreview",
-      "factory_qa_artifacts_live_index_pe_renderdays",
-      "factory_qa_artifacts_live_index_pe_renderemptystate",
-      "factory_qa_artifacts_live_index_pe_renderentry",
-      "factory_qa_artifacts_live_index_pe_resetdemo",
-      "factory_qa_artifacts_live_index_pe_saveentryaspattern",
-      "factory_qa_artifacts_live_index_pe_showtoast",
-      "factory_qa_artifacts_live_index_pe_start",
-      "factory_qa_artifacts_live_index_pe_startforreal",
-      "factory_qa_artifacts_live_index_pe_weekentries",
-      "factory_qa_artifacts_live_index_x",
-      "factory_qa_artifacts_live_index_y",
-      "factory_qa_artifacts_live_index_z"
     ],
     "3": [
       "factory_qa_artifacts_live_index",
@@ -134,7 +136,6 @@
       "factory_qa_artifacts_live_index_ce",
       "factory_qa_artifacts_live_index_d",
       "factory_qa_artifacts_live_index_de",
-      "factory_qa_artifacts_live_index_e",
       "factory_qa_artifacts_live_index_ee",
       "factory_qa_artifacts_live_index_f",
       "factory_qa_artifacts_live_index_g",
@@ -154,7 +155,6 @@
       "factory_qa_artifacts_live_index_re",
       "factory_qa_artifacts_live_index_s",
       "factory_qa_artifacts_live_index_se",
-      "factory_qa_artifacts_live_index_t",
       "factory_qa_artifacts_live_index_te",
       "factory_qa_artifacts_live_index_u",
       "factory_qa_artifacts_live_index_ue",
@@ -267,63 +267,70 @@
       "factory_evidence_polish_2_round2_live_cold_live_check_severe"
     ],
     "9": [
+      "factory_evidence_polish_3_live_live_check",
+      "factory_evidence_polish_3_live_live_check_audit",
+      "factory_evidence_polish_3_live_live_check_open",
+      "factory_evidence_polish_3_live_live_check_report"
+    ],
+    "10": [
       "factory_qa_artifacts_live_qa",
       "factory_qa_artifacts_live_qa_allerrors",
       "factory_qa_artifacts_live_qa_results",
       "factory_qa_artifacts_live_qa_watch"
     ],
-    "10": [
+    "11": [
       "factory_qa_artifacts_live_sw",
       "factory_qa_artifacts_live_sw_extra_precache",
       "factory_qa_artifacts_live_sw_precache"
     ],
-    "11": [
+    "12": [
       "factory_qa_artifacts_sw_update_qa",
       "factory_qa_artifacts_sw_update_qa_server",
       "factory_qa_artifacts_sw_update_qa_types"
     ],
-    "12": [
+    "13": [
       "public_sw",
       "public_sw_extra_precache",
       "public_sw_precache"
     ],
-    "13": [
+    "14": [
       "tests_e2e_app_e2e",
       "tests_e2e_app_e2e_withisolatedcontext"
     ],
-    "14": [
+    "15": [
       "vite_config",
       "vite_config_injectserviceworkerassets"
     ],
-    "15": [
+    "16": [
       "playwright_config"
     ],
-    "16": [
+    "17": [
       "tests_e2e_app_e2e_storage_removeitem"
     ],
-    "17": [
+    "18": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.09371980676328502,
-    "1": 0.17435897435897435,
-    "2": 0.1761904761904762,
-    "3": 0.10084033613445378,
+    "0": 0.09438775510204081,
+    "1": 0.1678520625889047,
+    "2": 0.18768768768768768,
+    "3": 0.09848484848484848,
     "4": 0.06896551724137931,
     "5": 0.2134387351778656,
     "6": 0.09090909090909091,
     "7": 0.15384615384615385,
     "8": 0.5,
     "9": 0.5,
-    "10": 0.6666666666666666,
+    "10": 0.5,
     "11": 0.6666666666666666,
     "12": 0.6666666666666666,
-    "13": 1.0,
+    "13": 0.6666666666666666,
     "14": 1.0,
     "15": 1.0,
     "16": 1.0,
-    "17": 1.0
+    "17": 1.0,
+    "18": 1.0
   },
   "gods": [
     {
@@ -379,8 +386,8 @@
   ],
   "surprises": [
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "sampleBackup()",
+      "target": "addDays()",
       "source_files": [
         "src/app.ts",
         "src/dates.ts"
@@ -412,8 +419,8 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "sampleBackup()",
-      "target": "addDays()",
+      "source": "dateLabel()",
+      "target": "fromIso()",
       "source_files": [
         "src/app.ts",
         "src/dates.ts"
