@@ -1,16 +1,36 @@
-# Backfill Timecards — repair 7 handoff
+# Backfill Timecards — verification 11 handoff
 
 Date: 2026-08-29 UTC
 
-Work order: `backfill-timecards-repair-7`
+Work order: `backfill-timecards-verify-11`
 
-Base verified candidate: `930c57724d791e4b6d55f726fba89d13635cb0ba`
+Verified candidate: `8698917929078829a1ddaf0e513a46137dc9387d`
 
-Repair commit: `847a2cca9f5a505bc6c2dbac93b86450ff75c51c`
+Live URL: <https://backfill-timecards.sociobot.in>
 
 Artifact: static, offline-first PWA; `dist/` remains the deploy root.
 
-## Result
+## Result: PASS
+
+Independent verification 11 passed. The live deployment byte-matches the candidate production build across all 24 public artifacts. The previously reported deployment-only failure does not reproduce.
+
+## Verification 11 evidence
+
+- First-read gate: PASS at desktop and 390px. The first screen says it reconstructs a freelancer's workweek, names freelancers logging after the fact, and presents **Try it with sample data**. One click opens a six-row isolated demo with the required persistent banner, reset, and real-work exit.
+- Claim gate: PASS — all 10 exact commands in `.factory/claims.json`, including `demo-exit-cleanup` and the repaired `billing-entitlement` clock test.
+- Clean checkout gates: `npm ci`, `npm run test:unit` (12 tests), `npm run typecheck`, `npm run lint`, `npm test` (12 unit/contract plus 58 Playwright tests), and `npm run build` all passed.
+- Live QA: normal data persisted only in IndexedDB; request logs were same-origin-only; calendar review kept description opt-in and billable off by default; CSV exported the required header and visible rows; offline demo reload preserved six rows.
+- PWA update simulation: PASS — update toast/Refresh, changed cache revision, and retained demo data.
+- Accessibility and mobile: axe serious/critical 0 on root, Demo, legal routes, and 404; 390px has no overflow or targets below 44px; skip link, keyboard dialog controls, and reduced motion passed.
+- Mobile Lighthouse: Performance 95, Accessibility 100, Best Practices 100, SEO 100; LCP 1.8s, CLS 0, transfer 70 KiB.
+- Headers/caching: HTTPS redirect, HSTS, CSP/frame protection, no-store worker, immutable hashed assets, manifest MIME, 304 conditional root, and designed 404 all passed.
+- Billing endpoint allowance: 30 verification requests per client window; request 31 returned `429` and `Retry-After: 3`.
+
+The full independent evidence, exact commands, and defect list are in `.factory/verification-11.md`. No release-blocking, high, medium, or low defects remain.
+
+## Previous repair details
+
+The following records the repair history for context.
 
 Repaired every release finding in independent verification 10 without changing the researched job, the local-first storage model, calendar workflow, free tools, or billing implementation.
 
