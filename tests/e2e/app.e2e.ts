@@ -476,6 +476,9 @@ test("@claim:privacy-local keeps normal work local with no account or third-part
   await page.getByRole("combobox", { name: "Project", exact: true }).fill("Local archive");
   await page.getByLabel("What did you do?").fill("Keep this record local");
   await page.getByRole("button", { name: "Add work block" }).last().click();
+  await page.getByRole("button", { name: "Open data and license settings" }).click();
+  await expect(page.locator("#settings-dialog")).toContainText("You can use the app without an account.");
+  await expect(page.locator("#settings-dialog")).not.toContainText("There is no cloud account.");
   expect(externalRequests).toEqual([]);
   expect(await page.evaluate(async () => ({
     databases: (await indexedDB.databases()).map((database) => database.name),

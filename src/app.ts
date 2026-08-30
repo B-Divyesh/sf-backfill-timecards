@@ -339,7 +339,7 @@ export class App {
       <footer>
         <p>Private weekly timecards for freelancers.</p>
         <nav aria-label="Legal and product links"><a href="/privacy/" ${leaveDemo}>Privacy</a><a href="/terms/" ${leaveDemo}>Terms</a><a href="https://sociobot.in" ${leaveDemo}>Param Factory (external)</a></nav>
-        <p class="build-id">Build r7 · 2026-08-29</p>
+        <p class="build-id">Build r8 · 2026-08-30</p>
       </footer>
       <div id="route-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
       <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>`;
@@ -641,7 +641,7 @@ export class App {
     const dialog = this.makeDialog("settings-dialog", `
       <div class="dialog-card wide-dialog">
         <div class="dialog-heading"><div><p class="eyebrow">DATA + OWNERSHIP</p><h2>Your local data</h2></div><button type="button" class="close-button" data-close aria-label="Close dialog">×</button></div>
-        <p>All ${this.entries.length} work block${this.entries.length === 1 ? " is" : "s are"} stored in this browser. There is no cloud account.</p>
+        <p>All ${this.entries.length} work block${this.entries.length === 1 ? " is" : "s are"} stored in this browser. You can use the app without an account.</p>
         <div class="settings-actions"><button id="backup-data" type="button">Export JSON backup</button><label class="button-file">Import JSON backup<input id="restore-data" type="file" accept="application/json,.json" /></label><button id="erase-data" type="button" class="danger-button">Erase all local data</button></div>
         <p id="settings-status" role="status" aria-live="polite"></p>
         <hr />

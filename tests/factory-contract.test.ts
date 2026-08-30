@@ -58,6 +58,8 @@ describe("factory release contracts", () => {
     expect(appSource).toContain("Checkout is hosted by Sociobot. Send payment and refund questions there.");
     expect(privacy).toContain("You can use the app without an account.");
     expect(privacy).not.toContain("account database");
+    expect(appSource).toContain("You can use the app without an account.");
+    expect(appSource).not.toContain("There is no cloud account.");
     for (const document of [privacy, terms]) {
       expect(document).toContain("Checkout is hosted by Sociobot. Send payment and refund questions there.");
       expect(document).not.toMatch(/merchant[- ]of[- ]record|Dodo/i);
@@ -74,13 +76,13 @@ describe("factory release contracts", () => {
       expect(document).toContain('name="twitter:card"');
       expect(document).toContain("Private weekly timecards for freelancers.");
       expect(document).toContain("Param Factory (external)");
-      expect(document).toContain("Build r7 · 2026-08-29");
+      expect(document).toContain("Build r8 · 2026-08-30");
       expect(document).toContain('href="/icons/apple-touch-icon.png"');
     }
     expect(notFound).toContain("<h1>Page not found</h1>");
     expect(notFound).toContain('property="og:url"');
     expect(notFound).toContain("Open Backfill Timecards");
-    expect(notFound).toContain("Build r7 · 2026-08-29");
+    expect(notFound).toContain("Build r8 · 2026-08-30");
     expect(appleTouchIcon.readUInt32BE(16)).toBe(180);
     expect(appleTouchIcon.readUInt32BE(20)).toBe(180);
     expect(staticConfig).toContain('"responseOverrides"');

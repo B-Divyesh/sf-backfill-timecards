@@ -3,7 +3,7 @@
   "short_name": "Backfill",
   "description": "Reconstruct a freelance workweek privately and export invoice-ready time.",
   "id": "/?source=pwa",
-  "start_url": "/?v=7",
+  "start_url": "/?v=8",
   "scope": "/",
   "display": "standalone",
   "background_color": "#F2E8D5",

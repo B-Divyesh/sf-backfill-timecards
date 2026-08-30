@@ -1,6 +1,6 @@
 # Product copy audit
 
-Audited: 2026-08-29 UTC. Word counts treat hyphenated terms as one word. Sentences are split into separate rows. Code blocks are excluded. No line exceeds 22 words, and no line contains a banned marketing word.
+Audited: 2026-08-30 UTC. Word counts treat hyphenated terms as one word. Sentences are split into separate rows. Code blocks are excluded. No line exceeds 22 words, and no line contains a banned marketing word.
 
 ## Rendered landing page
 
@@ -66,7 +66,7 @@ This table includes headings, visible labels, buttons, links, values, and access
 | Private weekly timecards for freelancers. | 5 | Footer description |
 | Terms | 1 | Footer link |
 | Param Factory (external) | 3 | External link |
-| Build r7 · 2026-08-29 | 3 | Build label |
+| Build r8 · 2026-08-30 | 3 | Build label |
 
 ## README
 
@@ -129,7 +129,8 @@ The changed dialog and legal wording remains under 22 words per sentence, uses t
 | Save reusable work patterns | 4 | Pattern Deck dialog feature |
 | Checkout is hosted by Sociobot. | 5 | Pattern Deck dialog, Privacy, Terms |
 | Send payment and refund questions there. | 6 | Pattern Deck dialog, Privacy, Terms |
-| You can use the app without an account. | 8 | Privacy policy |
+| All 1 work block is stored in this browser. | 9 | Settings dialog example |
+| You can use the app without an account. | 8 | Settings dialog, Privacy policy |
 
 ## Terminology
 

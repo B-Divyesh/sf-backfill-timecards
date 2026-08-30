@@ -58,9 +58,9 @@
   {
     "id": "privacy-local",
     "claim": "Normal timecard work uses browser storage without an account or third-party runtime, analytics, advertising, font, or script requests.",
-    "where": "privacy policy, local data section, README",
+    "where": "settings, privacy policy, local data section, README",
     "test": "npm run test:e2e -- --project=chromium --grep @claim:privacy-local",
-    "sandbox": "fresh normal workspace; add a record; log every request; assert only same-origin requests, the real IndexedDB archive, no demo storage, no license, and no account controls"
+    "sandbox": "fresh normal workspace; add a record; open settings and assert observable no-account wording; log every request; assert only same-origin requests, the real IndexedDB archive, no demo storage, no license, and no account controls"
   },
   {
     "id": "billing-entitlement",
