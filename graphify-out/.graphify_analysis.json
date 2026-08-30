@@ -1,57 +1,6 @@
 {
   "communities": {
     "0": [
-      "src_app",
-      "src_app_app_constructor",
-      "src_app_app_renderdays",
-      "src_app_app_renderentry",
-      "src_app_datelabel",
-      "src_csv",
-      "src_csv_entriestocsv",
-      "src_csv_quote",
-      "src_dates",
-      "src_dates_adddays",
-      "src_dates_dateonly",
-      "src_dates_entryminutes",
-      "src_dates_formatduration",
-      "src_dates_formatweekrange",
-      "src_dates_fromiso",
-      "src_dates_isodate",
-      "src_dates_minutesbetween",
-      "src_dates_weekdates",
-      "src_db_demostore",
-      "src_db_store",
-      "src_db_timecardstore",
-      "src_ics",
-      "src_ics_addcalendardays",
-      "src_ics_formattime",
-      "src_ics_parseics",
-      "src_ics_parseicsdate",
-      "src_ics_parsepositiveinteger",
-      "src_ics_recurrencestarts",
-      "src_ics_unescapetext",
-      "src_ics_unfold",
-      "src_license",
-      "src_license_cachedverdict",
-      "src_license_capturereturnedlicense",
-      "src_license_checkouturl",
-      "src_license_initiallicensestate",
-      "src_license_licensestate",
-      "src_license_savelicense",
-      "src_main",
-      "src_main_app",
-      "src_main_launchurl",
-      "src_main_root",
-      "src_types",
-      "src_types_appbackup",
-      "src_types_calendarevent",
-      "src_types_entrysource",
-      "src_types_pattern",
-      "src_types_projectmapping",
-      "src_types_timeentry",
-      "tests_core_test"
-    ],
-    "1": [
       "factory_qa_artifacts_live_index_a",
       "factory_qa_artifacts_live_index_e",
       "factory_qa_artifacts_live_index_i",
@@ -90,6 +39,45 @@
       "factory_qa_artifacts_live_index_x",
       "factory_qa_artifacts_live_index_y",
       "factory_qa_artifacts_live_index_z"
+    ],
+    "1": [
+      "src_app",
+      "src_app_app_renderdays",
+      "src_app_app_renderentry",
+      "src_app_datelabel",
+      "src_csv",
+      "src_csv_entriestocsv",
+      "src_csv_quote",
+      "src_dates",
+      "src_dates_adddays",
+      "src_dates_dateonly",
+      "src_dates_entryminutes",
+      "src_dates_formatduration",
+      "src_dates_formatweekrange",
+      "src_dates_fromiso",
+      "src_dates_isodate",
+      "src_dates_minutesbetween",
+      "src_dates_weekdates",
+      "src_db_demostore",
+      "src_db_store",
+      "src_db_timecardstore",
+      "src_ics",
+      "src_ics_addcalendardays",
+      "src_ics_formattime",
+      "src_ics_parseics",
+      "src_ics_parseicsdate",
+      "src_ics_parsepositiveinteger",
+      "src_ics_recurrencestarts",
+      "src_ics_unescapetext",
+      "src_ics_unfold",
+      "src_types",
+      "src_types_appbackup",
+      "src_types_calendarevent",
+      "src_types_entrysource",
+      "src_types_pattern",
+      "src_types_projectmapping",
+      "src_types_timeentry",
+      "tests_core_test"
     ],
     "2": [
       "src_app_app",
@@ -261,76 +249,100 @@
       "tests_factory_contract_test_viteconfig"
     ],
     "8": [
+      "src_app_app_constructor",
+      "src_license",
+      "src_license_cachedverdict",
+      "src_license_capturereturnedlicense",
+      "src_license_checkouturl",
+      "src_license_initiallicensestate",
+      "src_license_licensestate",
+      "src_license_savelicense",
+      "src_main",
+      "src_main_app",
+      "src_main_launchurl",
+      "src_main_root"
+    ],
+    "9": [
+      "factory_evidence_polish_4_live_cold_check",
+      "factory_evidence_polish_4_live_cold_check_audit",
+      "factory_evidence_polish_4_live_cold_check_open",
+      "factory_evidence_polish_4_live_cold_check_origin_evidence_deployment_live",
+      "factory_evidence_polish_4_live_cold_check_report",
+      "factory_evidence_polish_4_live_cold_check_unexpectederrors"
+    ],
+    "10": [
       "factory_evidence_polish_2_round2_live_cold_live_check",
       "factory_evidence_polish_2_round2_live_cold_live_check_assert",
       "factory_evidence_polish_2_round2_live_cold_live_check_report",
       "factory_evidence_polish_2_round2_live_cold_live_check_severe"
     ],
-    "9": [
+    "11": [
       "factory_evidence_polish_3_live_live_check",
       "factory_evidence_polish_3_live_live_check_audit",
       "factory_evidence_polish_3_live_live_check_open",
       "factory_evidence_polish_3_live_live_check_report"
     ],
-    "10": [
+    "12": [
       "factory_qa_artifacts_live_qa",
       "factory_qa_artifacts_live_qa_allerrors",
       "factory_qa_artifacts_live_qa_results",
       "factory_qa_artifacts_live_qa_watch"
     ],
-    "11": [
+    "13": [
       "factory_qa_artifacts_live_sw",
       "factory_qa_artifacts_live_sw_extra_precache",
       "factory_qa_artifacts_live_sw_precache"
     ],
-    "12": [
+    "14": [
       "factory_qa_artifacts_sw_update_qa",
       "factory_qa_artifacts_sw_update_qa_server",
       "factory_qa_artifacts_sw_update_qa_types"
     ],
-    "13": [
+    "15": [
       "public_sw",
       "public_sw_extra_precache",
       "public_sw_precache"
     ],
-    "14": [
+    "16": [
       "tests_e2e_app_e2e",
       "tests_e2e_app_e2e_withisolatedcontext"
     ],
-    "15": [
+    "17": [
       "vite_config",
       "vite_config_injectserviceworkerassets"
     ],
-    "16": [
+    "18": [
       "playwright_config"
     ],
-    "17": [
+    "19": [
       "tests_e2e_app_e2e_storage_removeitem"
     ],
-    "18": [
+    "20": [
       "vitest_config"
     ]
   },
   "cohesion": {
-    "0": 0.09438775510204081,
-    "1": 0.1678520625889047,
+    "0": 0.1678520625889047,
+    "1": 0.13963963963963963,
     "2": 0.18768768768768768,
     "3": 0.09848484848484848,
     "4": 0.06896551724137931,
     "5": 0.2134387351778656,
     "6": 0.09090909090909091,
     "7": 0.15384615384615385,
-    "8": 0.5,
-    "9": 0.5,
+    "8": 0.18181818181818182,
+    "9": 0.4,
     "10": 0.5,
-    "11": 0.6666666666666666,
-    "12": 0.6666666666666666,
+    "11": 0.5,
+    "12": 0.5,
     "13": 0.6666666666666666,
-    "14": 1.0,
-    "15": 1.0,
+    "14": 0.6666666666666666,
+    "15": 0.6666666666666666,
     "16": 1.0,
     "17": 1.0,
-    "18": 1.0
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0
   },
   "gods": [
     {
@@ -397,10 +409,10 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "dateLabel()",
-      "target": "fromIso()",
+      "source": "entriesToCsv()",
+      "target": "entryMinutes()",
       "source_files": [
-        "src/app.ts",
+        "src/csv.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
@@ -408,10 +420,10 @@
       "why": "cross-file semantic connection"
     },
     {
-      "source": "entriesToCsv()",
-      "target": "entryMinutes()",
+      "source": "dateLabel()",
+      "target": "fromIso()",
       "source_files": [
-        "src/csv.ts",
+        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
