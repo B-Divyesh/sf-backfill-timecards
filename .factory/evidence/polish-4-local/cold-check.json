@@ -1,0 +1,106 @@
+{
+  "origin": "http://127.0.0.1:4175",
+  "deployment": "local",
+  "routes": {
+    "root": {
+      "status": 200,
+      "title": "Backfill Timecards — reconstruct your workweek",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "missingAlt": 0,
+      "canonical": "https://backfill-timecards.sociobot.in/",
+      "horizontalOverflow": false,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "demo": {
+      "status": 200,
+      "title": "Demo — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "missingAlt": 0,
+      "canonical": "https://backfill-timecards.sociobot.in/demo",
+      "horizontalOverflow": false,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "privacy": {
+      "status": 200,
+      "title": "Privacy — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "missingAlt": 0,
+      "canonical": "https://backfill-timecards.sociobot.in/privacy/",
+      "horizontalOverflow": false,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "terms": {
+      "status": 200,
+      "title": "Terms — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "missingAlt": 0,
+      "canonical": "https://backfill-timecards.sociobot.in/terms/",
+      "horizontalOverflow": false,
+      "seriousOrCritical": [],
+      "errors": []
+    },
+    "not-found": {
+      "status": 200,
+      "title": "Page not found — Backfill Timecards",
+      "lang": "en",
+      "h1": 1,
+      "main": true,
+      "missingAlt": 0,
+      "canonical": "https://backfill-timecards.sociobot.in/404.html",
+      "horizontalOverflow": false,
+      "seriousOrCritical": [],
+      "errors": []
+    }
+  },
+  "findings": {
+    "firstScreenAndDemo": {
+      "factBottoms": {
+        "privacy": 685.296875,
+        "offline": 713.296875,
+        "price": 762.296875
+      },
+      "firstTrackY": 751.21875,
+      "sampleRows": 6,
+      "banner": true,
+      "reset": true,
+      "startForReal": true,
+      "backFocusesH1": true,
+      "requestOrigins": [
+        "http://127.0.0.1:4175"
+      ]
+    },
+    "queryDemo": {
+      "title": "Demo — Backfill Timecards",
+      "sampleRows": 6,
+      "storage": {
+        "demo": true,
+        "demoActive": "1",
+        "databases": []
+      },
+      "requestOrigins": [
+        "http://127.0.0.1:4175"
+      ]
+    },
+    "copy": {
+      "settingsNoAccount": true,
+      "rejectedArchitectureClaimAbsent": true,
+      "paidCopy": true
+    },
+    "offline": {
+      "sampleRows": 6,
+      "offlineStatus": true
+    }
+  },
+  "errors": []
+}
