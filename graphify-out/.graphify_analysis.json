@@ -344,13 +344,13 @@
       "degree": 27
     },
     {
-      "id": "src_dates_weekstart",
-      "label": "weekStart()",
+      "id": "factory_qa_artifacts_live_index_e",
+      "label": "E()",
       "degree": 12
     },
     {
-      "id": "factory_qa_artifacts_live_index_e",
-      "label": "E()",
+      "id": "src_dates_weekstart",
+      "label": "weekStart()",
       "degree": 12
     },
     {
@@ -359,13 +359,13 @@
       "degree": 12
     },
     {
-      "id": "src_ics_parseics",
-      "label": "parseIcs()",
+      "id": "src_dates_adddays",
+      "label": "addDays()",
       "degree": 11
     },
     {
-      "id": "src_dates_adddays",
-      "label": "addDays()",
+      "id": "src_ics_parseics",
+      "label": "parseIcs()",
       "degree": 11
     },
     {
@@ -397,6 +397,17 @@
       "why": "bridges separate communities"
     },
     {
+      "source": "dateLabel()",
+      "target": "fromIso()",
+      "source_files": [
+        "src/app.ts",
+        "src/dates.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
       "source": "entriesToCsv()",
       "target": "entryMinutes()",
       "source_files": [
@@ -412,17 +423,6 @@
       "target": "isoDate()",
       "source_files": [
         "src/ics.ts",
-        "src/dates.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "cross-file semantic connection"
-    },
-    {
-      "source": "dateLabel()",
-      "target": "fromIso()",
-      "source_files": [
-        "src/app.ts",
         "src/dates.ts"
       ],
       "confidence": "EXTRACTED",
